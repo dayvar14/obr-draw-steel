@@ -1,0 +1,32 @@
+name: Start Render deployment on new main release
+
+on:
+  release:
+    types:
+      - created
+
+jobs:
+  curl-on-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check if release target is main
+        run: |
+          if [ "${{ github.event.release.target_commitish }}" != "main" ]; then
+            echo "Not on main branch. Skipping the curl command."
+            exit 0
+          fi
+
+      - name: Curl Render to run new deploy
+        if: success()
+        run: |
+          CURL_URL="https://api.render.com/deploy/${{secrets.RENDER_DEPLOY_APP_TOKEN}}?key=${{secrets.RENDER_DEPLOY_KEY}}"
+
+          HTTP_STATUS=$(curl -i -X POST "${CURL_URL}" -o /dev/null -w "%{http_code}")
+          
+          if [[ $HTTP_STATUS -ge 200 && $HTTP_STATUS -lt 300 ]]; then
+            echo "Render build started successfully."
+          else
+            echo "Render build failed with a status code of ${HTTP_STATUS}"
+            exit 1
+          fi
