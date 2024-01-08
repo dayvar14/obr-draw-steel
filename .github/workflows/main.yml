@@ -1,4 +1,4 @@
-name: Start Render deployment on new main release
+name: render-app-deployment
 
 on:
   release:
