@@ -6,7 +6,8 @@ on:
       - created
 
 jobs:
-  curl-on-release:
+  deploy:
+    environment: production
     runs-on: ubuntu-latest
 
     steps:
