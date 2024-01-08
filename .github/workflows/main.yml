@@ -1,14 +1,11 @@
 name: render-app-deployment
 
 on:
-  push:
-    branches: [main]
-    tags:
-    - 'v*'
-  pull_request:
   release:
     types:
       - created
+    branches:
+      - main
 
 jobs:
   deploy:
@@ -30,9 +27,4 @@ jobs:
 
           HTTP_STATUS=$(curl -i -X POST "${CURL_URL}" -o /dev/null -w "%{http_code}")
           
-          if [[ $HTTP_STATUS -ge 200 && $HTTP_STATUS -lt 300 ]]; then
-            echo "Render build started successfully."
-          else
-            echo "Render build failed with a status code of ${HTTP_STATUS}"
-            exit 1
-          fi
+          if [[ $HTTP_STATUS -ge 200 && $HTTP_STATUS -lt 
