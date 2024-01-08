@@ -24,8 +24,7 @@ jobs:
       - name: Curl Render to run new deploy
         if: success()
         run: |
-          COMMIT_SHA=$(git rev-parse HEAD)
-          CURL_URL="https://api.render.com/deploy/${{secrets.RENDER_DEPLOY_APP_TOKEN}}?key=${{secrets.RENDER_DEPLOY_KEY}}&ref=${COMMIT_SHA}"
+          CURL_URL="https://api.render.com/deploy/${{secrets.RENDER_DEPLOY_APP_TOKEN}}?key=${{secrets.RENDER_DEPLOY_KEY}}&ref=${{ github.sha }}"
 
           HTTP_STATUS=$(curl -i -X POST "${CURL_URL}" -o /dev/null -w "%{http_code}")
           
