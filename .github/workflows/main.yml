@@ -1,6 +1,11 @@
 name: render-app-deployment
 
 on:
+  push:
+    branches: [main]
+    tags:
+    - 'v*'
+  pull_request:
   release:
     types:
       - created
@@ -14,7 +19,7 @@ jobs:
       - name: Check if release target is main
         run: |
           if [ "${{ github.event.release.target_commitish }}" != "main" ]; then
-            echo "Not on main branch. Skipping the curl command."
+            echo "Not on the main branch. Skipping the curl command."
             exit 0
           fi
 
