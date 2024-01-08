@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import clsx from 'clsx'
 
 import { Token, TokenRoles } from '../../obr/tokens.ts'
@@ -9,7 +9,6 @@ import {
 } from '../../obr/contextmenu.ts'
 import { PartyState } from '../../obr/party.ts'
 import { PermissionState } from '../../obr/permissions.ts'
-import OBR from '@owlbear-rodeo/sdk'
 
 const InitiativeListItem = (props: {
   index: number
@@ -19,9 +18,9 @@ const InitiativeListItem = (props: {
   partyState: PartyState
   permissionState: PermissionState
   onCheckedChange: (isChecked: boolean, token: Token) => void
-  onDragStart: React.DOMAttributes<HTMLLIElement>['onDragStart']
-  onDragOver: React.DOMAttributes<HTMLLIElement>['onDragOver']
-  onDragEnd: React.DOMAttributes<HTMLLIElement>['onDragEnd']
+  // onDragStart: React.DOMAttributes<HTMLLIElement>['onDragStart']
+  // onDragOver: React.DOMAttributes<HTMLLIElement>['onDragOver']
+  // onDragEnd: React.DOMAttributes<HTMLLIElement>['onDragEnd']
 }) => {
   const [isChecked, setChecked] = useState(false)
   const [isMouseOverToken, setMouseOverToken] = useState(false)
@@ -83,9 +82,9 @@ const InitiativeListItem = (props: {
     <li
       className={listClassnames}
       draggable={hasModifyPermissions}
-      onDragStart={props.onDragStart}
-      onDragOver={props.onDragOver}
-      onDragEnd={props.onDragEnd}
+      // onDragStart={props.onDragStart}
+      // onDragOver={props.onDragOver}
+      // onDragEnd={props.onDragEnd}
     >
       <img
         src={props.token.imageUrl}

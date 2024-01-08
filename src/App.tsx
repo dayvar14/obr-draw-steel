@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import OBR from '@owlbear-rodeo/sdk'
-import DrawSteel from './components/drawsteel/drawsteel'
+import DrawSteel from './components/drawsteel/drawSteel'
 
 export function App() {
   const [isOBRReady, setOBRReady] = useState(false)

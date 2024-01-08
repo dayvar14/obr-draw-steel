@@ -16,9 +16,6 @@ const InitiativeList = (props: {
 }) => {
   const [tokens] = useState(props.tokens)
   const [checkedList, setCheckedList] = useState({} as Record<string, Token>)
-  const [draggedRowIndex, setDraggedRowIndex] = useState(
-    undefined as number | undefined,
-  )
 
   useEffect(() => {
     const startingCheckList: Record<string, Token> = Object.fromEntries(
@@ -56,13 +53,6 @@ const InitiativeList = (props: {
       partyState={props.partyState}
       permissionState={props.permissionState}
       onCheckedChange={onCheckedChange}
-      onDragStart={element => {
-        element.dataTransfer.effectAllowed = 'move'
-        // element.dataTransfer.setData('text/html', element.target.parentNode)
-        // setDraggedRowIndex(index)
-      }}
-      onDragOver={element => {}}
-      onDragEnd={element => {}}
     />
   ))
 
