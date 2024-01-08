@@ -35,7 +35,7 @@ Feel free to contribute.
 [Open an issue](https://github.com/dayvar14/obr-draw-steel/issues/new) or submit
 PRs.
 
-Standard Readme follows the
+Draw Steel! follows the
 [Contributor Covenant](https://www.contributor-covenant.org/version/2/1/code_of_conduct/)
 Code of Conduct.
 
