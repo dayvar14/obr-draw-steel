@@ -1,4 +1,4 @@
-name: render-app-deployment
+name: release-deployment
 
 on:
   release:
