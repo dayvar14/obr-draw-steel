@@ -15,13 +15,16 @@
 
 An unoffical MCDM initiave tracker for Owlbear Rodeo.
 
-Draw Steel! is a MCDM RPG initiave tracker. Born out of a yearn for a digital initiative tracker for the unnamed MCDM rpg, the repo strives to
-provide a initiative tracker better suited for the rotating turns between friend
-and foe.
+Draw Steel! is a MCDM RPG initiave tracker. Born out of a yearn for a digital
+initiative tracker for the unnamed MCDM rpg, the repo strives to provide a
+initiative tracker better suited for the rotating turns between friend and foe.
 
 ## Installing
 
-Follow this [guide](https://docs.owlbear.rodeo/extensions/tutorial-hello-world/install-your-extension) and use this [manifest link](https://obr-draw-steal.onrender.com/manifest.json) to install then extension in Owlbear.
+Follow this
+[guide](https://docs.owlbear.rodeo/extensions/tutorial-hello-world/install-your-extension)
+and use this [manifest link](https://obr-draw-steal.onrender.com/manifest.json)
+to install then extension in Owlbear.
 
 ## Maintainers
 

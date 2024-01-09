@@ -27,7 +27,7 @@ jobs:
           CURL_URL="https://api.render.com/deploy/${{secrets.RENDER_DEPLOY_APP_TOKEN}}?key=${{secrets.RENDER_DEPLOY_KEY}}&ref=${{ github.sha }}"
 
           HTTP_STATUS=$(curl -i -X POST "${CURL_URL}" -o /dev/null -w "%{http_code}")
-          
+
           if [[ $HTTP_STATUS -ge 200 && $HTTP_STATUS -lt 300 ]]; then
             echo "Render build started successfully."
           else
