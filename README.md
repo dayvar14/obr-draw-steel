@@ -1,8 +1,8 @@
 # obr-draw-steel
 
-[![version](https://img.shields.io/badge/version-0.1.1-red.svg)](https://github.com/dayvar14/obr-draw-steel/releases/tag/v0.1.1)
+[![version](https://img.shields.io/badge/version-0.2.0-red.svg)](https://github.com/dayvar14/obr-draw-steel/releases/tag/v0.1.1)
 [![GitHub Actions](https://github.com/dayvar14/obr-draw-steel/workflows/deployment/badge.svg)](https://github.com/dayvar14/obr-draw-steel/actions)
-[![commits since version](https://img.shields.io/github/commits-since/dayvar14/obr-draw-steel/v0.1.1.svg)](https://github.com/dayvar14/obr-draw-steel/compare/releases/v0.1.1...main)
+[![commits since version](https://img.shields.io/github/commits-since/dayvar14/obr-draw-steel/v0.2.0.svg)](https://github.com/dayvar14/obr-draw-steel/compare/releases/v0.2.0...main)
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org)
 [![github followers](https://img.shields.io/github/followers/dayvar14.svg?style=social&label=Follow&maxAge=2592000)](https://github.com/dayvar14?tab=followers)
