@@ -2,7 +2,11 @@ import { useEffect, useState } from 'react'
 
 import OBR from '@owlbear-rodeo/sdk'
 import DrawSteel from './components/drawsteel/drawSteel'
-import { ThemeState, getThemeState, setThemeStateListener } from './obr/theme.ts'
+import {
+  ThemeState,
+  getThemeState,
+  setThemeStateListener,
+} from './obr/theme.ts'
 
 export function App() {
   const [isOBRReady, setOBRReady] = useState(false)
@@ -14,6 +18,10 @@ export function App() {
   useEffect(() => {
     OBR.onReady(() => {
       setOBRReady(true)
+    })
+
+    OBR.scene.isReady().then(ready => {
+      setSceneReady(ready)
     })
 
     setThemeStateListener(theme => {
@@ -29,7 +37,6 @@ export function App() {
         setSceneReady(ready)
       })
     }
-
   }, [isOBRReady])
 
   if (isOBRReady && isSceneReady && themeState) {
