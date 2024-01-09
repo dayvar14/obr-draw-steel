@@ -2,7 +2,12 @@ import { useEffect, useState } from 'react'
 import clsx from 'clsx'
 
 import { Token } from '../../obr/tokens.ts'
-import { PlayerRole, PlayerState } from '../../obr/player.ts'
+import {
+  PlayerRole,
+  PlayerState,
+  centerPlayerOnToken,
+  selectToken,
+} from '../../obr/player.ts'
 import { toggleTokenTurn } from '../../obr/contextmenu.ts'
 import { PartyState } from '../../obr/party.ts'
 import { PermissionState } from '../../obr/permissions.ts'
@@ -62,10 +67,18 @@ const InitiativeListItem = (props: {
 
   const listClassnames = clsx({ done: isChecked })
 
+  async function handleDoubleClick() {
+    centerPlayerOnToken(props.token.id)
+  }
+
+  async function handleClick() {
+    selectToken(props.token.id)
+  }
+
   return (
     <li
       className={listClassnames}
-      draggable={hasModifyPermissions}
+      // draggable={hasModifyPermissions}
       // onDragStart={props.onDragStart}
       // onDragOver={props.onDragOver}
       // onDragEnd={props.onDragEnd}
@@ -73,18 +86,17 @@ const InitiativeListItem = (props: {
       <img
         src={props.token.imageUrl}
         alt={`Token image of ${props.token.name}`}
+        onClick={handleClick}
+        onDoubleClick={handleDoubleClick}
         onMouseEnter={() => {
           setMouseOverToken(true)
-          console.log(isMouseOverToken)
         }}
         onMouseLeave={() => {
           setMouseOverToken(false)
         }}
         style={
           isMouseOverToken && playerOwner?.color
-            ? {
-                boxShadow: `box-shadow: 0px 0px 20px ${playerOwner.color}`,
-              }
+            ? { boxShadow: `0px 0px 10px ${playerOwner.color}` }
             : {}
         }
       />
@@ -98,12 +110,12 @@ const InitiativeListItem = (props: {
           handleCheckboxChange()
         }}
         type={'checkbox'}
-        id={props.tokenRole + props.token.id}
+        id={props.token.id}
       />
       <label
         title={isChecked ? 'Reset turn' : 'Finish turn'}
         className={clsx({ disabled: !hasModifyPermissions })}
-        htmlFor={props.tokenRole + props.token.id}
+        htmlFor={props.token.id}
         role={'application'}
       >
         {isChecked ? (
