@@ -23,7 +23,7 @@ and foe.
 
 ## Installing
 
-Follow this [guide](https://docs.owlbear.rodeo/extensions/tutorial-hello-world/install-your-extension) and this [manifest link](https://obr-draw-steal.onrender.com/manifest.json) to install then extension in Owlbear.
+Follow this [guide](https://docs.owlbear.rodeo/extensions/tutorial-hello-world/install-your-extension) and use this [manifest link](https://obr-draw-steal.onrender.com/manifest.json) to install then extension in Owlbear.
 
 ## Maintainers
 
