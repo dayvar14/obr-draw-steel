@@ -14,12 +14,14 @@ export function App() {
         setSceneReady(ready)
       })
     })
-  })
+  }, [])
+
 
   if (isOBRReady && isSceneReady) {
     return <DrawSteel />
   } else {
-    // Show a basic header when the scene isn't ready
     return <></>
   }
+
+
 }
