@@ -18,10 +18,9 @@ export function App() {
   useEffect(() => {
     OBR.onReady(() => {
       setOBRReady(true)
-    })
-
-    OBR.scene.isReady().then(ready => {
-      setSceneReady(ready)
+      OBR.scene.isReady().then(ready => {
+        setSceneReady(ready)
+      })
     })
 
     setThemeStateListener(theme => {
