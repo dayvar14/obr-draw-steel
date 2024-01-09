@@ -6,6 +6,7 @@ import { PartyState } from '../../obr/party.ts'
 import { PermissionState } from '../../obr/permissions.ts'
 import InitiativeListItem from './initiativeListItem.tsx'
 import { clearFoes, clearFriends } from '../../obr/contextmenu.ts'
+import { ThemeState } from '../../obr/theme.ts'
 
 const InitiativeList = (props: {
   tokens: Token[]
@@ -13,6 +14,7 @@ const InitiativeList = (props: {
   playerState: PlayerState
   partyState: PartyState
   permissionState: PermissionState
+  themeState: ThemeState
 }) => {
   const [tokens] = useState(props.tokens)
   const [checkedList, setCheckedList] = useState({} as Record<string, Token>)
@@ -46,6 +48,7 @@ const InitiativeList = (props: {
       playerState={props.playerState}
       partyState={props.partyState}
       permissionState={props.permissionState}
+      themeState={props.themeState}
       onCheckedChange={onCheckedChange}
     />
   ))
@@ -68,19 +71,54 @@ const InitiativeList = (props: {
             <button>
               <img src={'./sort-from-top-to-bottom.svg'} />
             </button> */}
-            <button>
-              <img
+            <button
+              title={`Clear all ${props.title}`}
+              onClick={() => {
+                if (props.title === 'Friends') {
+                  clearFriends()
+                }
+                if (props.title === 'Foes') {
+                  clearFoes()
+                }
+              }}
+            >
+              <svg
+                width='24'
+                height='24'
+                viewBox='0 0 24 24'
+                fill='none'
+                xmlns='http://www.w3.org/2000/svg'
+              >
+                <path
+                  d='M9 9L15 15'
+                  stroke={props.themeState.text.secondary}
+                  stroke-width='2'
+                  stroke-linecap='round'
+                  stroke-linejoin='round'
+                />
+                <path
+                  d='M15 9L9 15'
+                  stroke={props.themeState.text.secondary}
+                  stroke-width='2'
+                  stroke-linecap='round'
+                  stroke-linejoin='round'
+                />
+                <circle
+                  cx='12'
+                  cy='12'
+                  r='9'
+                  stroke={props.themeState.text.secondary}
+                  stroke-width='2'
+                  stroke-linecap='round'
+                  stroke-linejoin='round'
+                />
+              </svg>
+
+              {/* <img
                 title={`Clear all ${props.title}`}
                 src={'./clear-circle.svg'}
-                onClick={() => {
-                  if (props.title === 'Friends') {
-                    clearFriends()
-                  }
-                  if (props.title === 'Foes') {
-                    clearFoes()
-                  }
-                }}
-              />
+                style={{ fill: props.iconColor }}
+              /> */}
             </button>
           </div>
         )}

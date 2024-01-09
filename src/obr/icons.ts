@@ -90,7 +90,7 @@ export const turnIcons: ContextMenuIcon[] = [
           key: ['metadata', FRIENDS_TOGGLE_METADATA_ID],
           value: undefined,
           operator: '!=',
-          coordinator: '||'
+          coordinator: '||',
         },
         {
           key: ['metadata', FOES_TOGGLE_METADATA_ID],
@@ -110,7 +110,7 @@ export const turnIcons: ContextMenuIcon[] = [
           key: ['metadata', FRIENDS_TOGGLE_METADATA_ID],
           value: undefined,
           operator: '!=',
-          coordinator: '||'
+          coordinator: '||',
         },
         {
           key: ['metadata', FOES_TOGGLE_METADATA_ID],

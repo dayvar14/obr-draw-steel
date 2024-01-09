@@ -24,9 +24,12 @@ import {
   getPartyState,
   setPartyStateListener,
 } from '../../obr/party.ts'
-import { clearAllTurns } from '../../obr/contextmenu.ts'
 
-const DrawSteel = () => {
+import { clearAllTurns } from '../../obr/contextmenu.ts'
+import { ThemeState } from '../../obr/theme.ts'
+import Icon from '../icon.tsx'
+
+const DrawSteel = (props: { themeState: ThemeState }) => {
   const [tokenState, setTokenState] = useState({
     friends: [],
     foes: [],
@@ -131,21 +134,43 @@ const DrawSteel = () => {
   }, [])
 
   return (
-    <div className={'container'}>
+    <div
+      style={{
+        color: props.themeState.text.primary,
+      }}
+      className={'container'}
+    >
       <div className={'app-header'}>
         <h1>Draw Steel!</h1>
         <div>
           {(tokenState.friends.length > 0 || tokenState.foes.length > 0) && (
             <button
+              title='Refresh all turns'
               onClick={() => {
                 clearAllTurns()
               }}
             >
-              <img
+              <svg
+                width='24'
+                height='24'
+                viewBox='0 0 24 24'
+                fill='none'
+                xmlns='http://www.w3.org/2000/svg'
+              >
+                <path
+                  d='M4.06189 13C4.02104 12.6724 4 12.3387 4 12C4 7.58172 7.58172 4 12 4C14.5006 4 16.7332 5.14727 18.2002 6.94416M19.9381 11C19.979 11.3276 20 11.6613 20 12C20 16.4183 16.4183 20 12 20C9.61061 20 7.46589 18.9525 6 17.2916M9 17H6V17.2916M18.2002 4V6.94416M18.2002 6.94416V6.99993L15.2002 7M6 20V17.2916'
+                  stroke={props.themeState.text.secondary}
+                  stroke-width='2'
+                  stroke-linecap='round'
+                  stroke-linejoin='round'
+                />
+              </svg>
+
+              {/* <img
                 src={'./refresh.svg'}
                 alt='Refresh icon'
                 title='Refresh all turns'
-              />
+              /> */}
             </button>
           )}
           {/* to be enabled in future feature */}
@@ -167,6 +192,7 @@ const DrawSteel = () => {
           playerState={playerState}
           partyState={partyState}
           permissionState={permissionState}
+          themeState={props.themeState}
         />
         <InitiativeList
           title={'Foes'}
@@ -174,6 +200,7 @@ const DrawSteel = () => {
           playerState={playerState}
           partyState={partyState}
           permissionState={permissionState}
+          themeState={props.themeState}
         />
       </div>
     </div>
