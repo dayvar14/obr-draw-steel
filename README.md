@@ -9,8 +9,7 @@
 
 > This repository is still under development. Expect a full release at version
 > 1.0.0 along with an attempt to deploy the extension into the Owlbear Extension
-> explorer. It is currently feature complete, but it is necessary to host the
-> app online to fully utilize it in Owlbear.
+> explorer. It currently is feature complete but may contain bugs.
 
 ## Draw Steel! - Owlbear Plugin
 
