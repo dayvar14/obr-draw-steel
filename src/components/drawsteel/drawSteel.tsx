@@ -27,7 +27,6 @@ import {
 
 import { clearAllTurns } from '../../obr/contextmenu.ts'
 import { ThemeState } from '../../obr/theme.ts'
-import Icon from '../icon.tsx'
 
 const DrawSteel = (props: { themeState: ThemeState }) => {
   const [tokenState, setTokenState] = useState({
