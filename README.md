@@ -15,8 +15,7 @@
 
 An unoffical MCDM initiave tracker for Owlbear Rodeo.
 
-Draw Steel! is a unoffical MCDM RPG initiave tracker. Born out of a yearn for a
-better initiative digital tracker for the unnamed MCDM rpg, the repo strives to
+Draw Steel! is a MCDM RPG initiave tracker. Born out of a yearn for a digital initiative tracker for the unnamed MCDM rpg, the repo strives to
 provide a initiative tracker better suited for the rotating turns between friend
 and foe.
 
