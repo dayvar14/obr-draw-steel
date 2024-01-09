@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react'
 
 import './drawSteel.sass'
 import {
-  TokenRoles,
   TokenState,
   getTokenState,
   setTokenStateListener,
@@ -163,14 +162,14 @@ const DrawSteel = () => {
       <div ref={listContainerRef} className={'list-container'}>
         <hr />
         <InitiativeList
-          tokenRole={TokenRoles.FRIEND}
+          title={'Friends'}
           tokens={tokenState.friends}
           playerState={playerState}
           partyState={partyState}
           permissionState={permissionState}
         />
         <InitiativeList
-          tokenRole={TokenRoles.FOE}
+          title={'Foes'}
           tokens={tokenState.foes}
           playerState={playerState}
           partyState={partyState}

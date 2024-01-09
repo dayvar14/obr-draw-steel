@@ -1,19 +1,15 @@
 import { useEffect, useState } from 'react'
 import clsx from 'clsx'
 
-import { Token, TokenRoles } from '../../obr/tokens.ts'
+import { Token } from '../../obr/tokens.ts'
 import { PlayerRole, PlayerState } from '../../obr/player.ts'
-import {
-  toggleFoeTokenTurn,
-  toggleFriendTokenTurn,
-} from '../../obr/contextmenu.ts'
+import { toggleTokenTurn } from '../../obr/contextmenu.ts'
 import { PartyState } from '../../obr/party.ts'
 import { PermissionState } from '../../obr/permissions.ts'
 
 const InitiativeListItem = (props: {
   index: number
   token: Token
-  tokenRole: TokenRoles
   playerState: PlayerState
   partyState: PartyState
   permissionState: PermissionState
@@ -50,13 +46,7 @@ const InitiativeListItem = (props: {
   useEffect(() => {
     let checked = false
 
-    if (props.tokenRole === TokenRoles.FRIEND) {
-      checked = props.token.hasFriendTurn
-    }
-
-    if (props.tokenRole === TokenRoles.FOE) {
-      checked = props.token.hasFoeTurn
-    }
+    checked = props.token.hasTurn
 
     setChecked(checked)
   }, [props.token])
@@ -65,13 +55,7 @@ const InitiativeListItem = (props: {
     const checked = !isChecked
     setChecked(checked)
 
-    if (props.tokenRole === TokenRoles.FRIEND) {
-      toggleFriendTokenTurn(props.token.id, checked)
-    }
-
-    if (props.tokenRole === TokenRoles.FOE) {
-      toggleFoeTokenTurn(props.token.id, checked)
-    }
+    toggleTokenTurn(props.token.id, checked)
 
     props.onCheckedChange(checked, props.token)
   }

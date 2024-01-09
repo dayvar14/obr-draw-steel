@@ -3,19 +3,12 @@ import OBR, { ContextMenuItem } from '@owlbear-rodeo/sdk'
 import {
   FOES_TOGGLE_CONTEXT_MENU_ID,
   FOES_TOGGLE_METADATA_ID,
-  FOES_TURN_TOGGLE_CONTEXT_MENU_ID,
-  FOES_TURN_TOGGLE_METADATA_ID,
   FRIENDS_TOGGLE_CONTEXT_MENU_ID,
   FRIENDS_TOGGLE_METADATA_ID,
-  FRIENDS_TURN_TOGGLE_CONTEXT_MENU_ID,
-  FRIENDS_TURN_TOGGLE_METADATA_ID,
+  TURN_TOGGLE_CONTEXT_MENU_ID,
+  TURN_TOGGLE_METADATA_ID,
 } from '../config.ts'
-import {
-  foesIcons,
-  friendsIcons,
-  foeTurnIcons,
-  friendTurnIcons,
-} from './icons.ts'
+import { foesIcons, friendsIcons, turnIcons } from './icons.ts'
 
 const createToggleClickFunc = (metadataId: string, turnMetadataId: string) => {
   const ToggleClickFunc: ContextMenuItem['onClick'] = context => {
@@ -71,7 +64,7 @@ export const setupContextMenu = () => {
       icons: friendsIcons,
       onClick: createToggleClickFunc(
         FRIENDS_TOGGLE_METADATA_ID,
-        FRIENDS_TURN_TOGGLE_METADATA_ID,
+        TURN_TOGGLE_METADATA_ID,
       ),
     })
 
@@ -80,20 +73,14 @@ export const setupContextMenu = () => {
       icons: foesIcons,
       onClick: createToggleClickFunc(
         FOES_TOGGLE_METADATA_ID,
-        FOES_TURN_TOGGLE_METADATA_ID,
+        TURN_TOGGLE_METADATA_ID,
       ),
     })
 
     OBR.contextMenu.create({
-      id: FRIENDS_TURN_TOGGLE_CONTEXT_MENU_ID,
-      icons: friendTurnIcons,
-      onClick: createTurnToggleClickFunc(FRIENDS_TURN_TOGGLE_METADATA_ID),
-    })
-
-    OBR.contextMenu.create({
-      id: FOES_TURN_TOGGLE_CONTEXT_MENU_ID,
-      icons: foeTurnIcons,
-      onClick: createTurnToggleClickFunc(FOES_TURN_TOGGLE_METADATA_ID),
+      id: TURN_TOGGLE_CONTEXT_MENU_ID,
+      icons: turnIcons,
+      onClick: createTurnToggleClickFunc(TURN_TOGGLE_METADATA_ID),
     })
   })
 }
@@ -113,11 +100,11 @@ const clearMetadata = (metadataId: string, turnMetadataId: string) => {
 }
 
 export const clearFriends = () => {
-  clearMetadata(FRIENDS_TOGGLE_METADATA_ID, FRIENDS_TURN_TOGGLE_METADATA_ID)
+  clearMetadata(FRIENDS_TOGGLE_METADATA_ID, TURN_TOGGLE_METADATA_ID)
 }
 
 export const clearFoes = () => {
-  clearMetadata(FOES_TOGGLE_METADATA_ID, FOES_TURN_TOGGLE_METADATA_ID)
+  clearMetadata(FOES_TOGGLE_METADATA_ID, TURN_TOGGLE_METADATA_ID)
 }
 
 const toggleTurnMetadata = (
@@ -139,12 +126,8 @@ const toggleTurnMetadata = (
   )
 }
 
-export const toggleFriendTokenTurn = (id: string, isChecked: boolean) => {
-  toggleTurnMetadata(id, FRIENDS_TURN_TOGGLE_METADATA_ID, isChecked)
-}
-
-export const toggleFoeTokenTurn = (id: string, isChecked: boolean) => {
-  toggleTurnMetadata(id, FOES_TURN_TOGGLE_METADATA_ID, isChecked)
+export const toggleTokenTurn = (id: string, isChecked: boolean) => {
+  toggleTurnMetadata(id, TURN_TOGGLE_METADATA_ID, isChecked)
 }
 
 const clearTurnMetadata = (turnMetadataId: string) => {
@@ -159,6 +142,5 @@ const clearTurnMetadata = (turnMetadataId: string) => {
 }
 
 export const clearAllTurns = () => {
-  clearTurnMetadata(FRIENDS_TURN_TOGGLE_METADATA_ID)
-  clearTurnMetadata(FOES_TURN_TOGGLE_METADATA_ID)
+  clearTurnMetadata(TURN_TOGGLE_METADATA_ID)
 }

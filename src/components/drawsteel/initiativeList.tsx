@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { Token, TokenRoles } from '../../obr/tokens.ts'
+import { Token } from '../../obr/tokens.ts'
 import { PlayerRole, PlayerState } from '../../obr/player.ts'
 import { PartyState } from '../../obr/party.ts'
 import { PermissionState } from '../../obr/permissions.ts'
@@ -8,8 +8,8 @@ import InitiativeListItem from './initiativeListItem.tsx'
 import { clearFoes, clearFriends } from '../../obr/contextmenu.ts'
 
 const InitiativeList = (props: {
-  tokenRole: TokenRoles
   tokens: Token[]
+  title: string
   playerState: PlayerState
   partyState: PartyState
   permissionState: PermissionState
@@ -38,17 +38,11 @@ const InitiativeList = (props: {
     }
   }
 
-  const listName =
-    props.tokenRole.charAt(0).toUpperCase() +
-    props.tokenRole.slice(1).toLowerCase() +
-    's'
-
   const listItems = props.tokens.map((item, index) => (
     <InitiativeListItem
       key={item.id}
       index={index}
       token={item}
-      tokenRole={props.tokenRole}
       playerState={props.playerState}
       partyState={props.partyState}
       permissionState={props.permissionState}
@@ -59,7 +53,7 @@ const InitiativeList = (props: {
   return (
     <>
       <div className='list-header'>
-        <h2>{listName}</h2>
+        <h2>{props.title}</h2>
         {/* To be enabled in future feature */}
         {/* {Object.keys(props.tokens).length > 0 && (
           <small>{`${Object.keys(checkedList).length}/${
@@ -76,13 +70,13 @@ const InitiativeList = (props: {
             </button> */}
             <button>
               <img
-                title={`Clear all ${listName}`}
+                title={`Clear all ${props.title}`}
                 src={'./clear-circle.svg'}
                 onClick={() => {
-                  if (props.tokenRole === TokenRoles.FRIEND) {
+                  if (props.title === 'Friends') {
                     clearFriends()
                   }
-                  if (props.tokenRole === TokenRoles.FOE) {
+                  if (props.title === 'Foes') {
                     clearFoes()
                   }
                 }}

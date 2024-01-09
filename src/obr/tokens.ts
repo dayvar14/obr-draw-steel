@@ -2,19 +2,13 @@ import OBR, { Image, Item, isImage } from '@owlbear-rodeo/sdk'
 import SceneItemsApi from '@owlbear-rodeo/sdk/lib/api/scene/SceneItemsApi'
 import {
   FOES_TOGGLE_METADATA_ID,
-  FOES_TURN_TOGGLE_METADATA_ID,
   FRIENDS_TOGGLE_METADATA_ID,
-  FRIENDS_TURN_TOGGLE_METADATA_ID,
+  TURN_TOGGLE_METADATA_ID,
 } from '../config'
 
 export interface TokenState {
   friends: Token[]
   foes: Token[]
-}
-
-export enum TokenRoles {
-  FRIEND = 'FRIEND',
-  FOE = 'FOE',
 }
 
 export interface Token {
@@ -25,8 +19,7 @@ export interface Token {
   isVisible: boolean
   isFriend: boolean
   isFoe: boolean
-  hasFriendTurn: boolean
-  hasFoeTurn: boolean
+  hasTurn: boolean
   mapPosition: {
     x: number
     y: number
@@ -87,10 +80,7 @@ const generateTokenStateFromSceneItems = (items: Item[]) => {
 const generateImageFromToken = (image: Image) => {
   const isFriend = image.metadata.hasOwnProperty(FRIENDS_TOGGLE_METADATA_ID)
   const isFoe = image.metadata.hasOwnProperty(FOES_TOGGLE_METADATA_ID)
-  const hasFriendTurn = image.metadata.hasOwnProperty(
-    FRIENDS_TURN_TOGGLE_METADATA_ID,
-  )
-  const hasFoeTurn = image.metadata.hasOwnProperty(FOES_TURN_TOGGLE_METADATA_ID)
+  const hasTurn = image.metadata.hasOwnProperty(TURN_TOGGLE_METADATA_ID)
 
   const token: Token = {
     createdUserId: image.createdUserId,
@@ -100,8 +90,7 @@ const generateImageFromToken = (image: Image) => {
     isVisible: image.visible,
     isFriend: isFriend,
     isFoe: isFoe,
-    hasFriendTurn: hasFriendTurn,
-    hasFoeTurn: hasFoeTurn,
+    hasTurn: hasTurn,
     mapPosition: {
       x: image.position.x,
       y: image.position.y,
