@@ -85,7 +85,7 @@ const generateImageFromToken = (image: Image) => {
   const token: Token = {
     createdUserId: image.createdUserId,
     id: image.id,
-    name: image.name,
+    name: image.text.plainText ? image.text.plainText : image.name,
     imageUrl: image.image.url,
     isVisible: image.visible,
     isFriend: isFriend,
