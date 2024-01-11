@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react'
 
 import './drawSteel.sass'
 import {
-  Token,
   TokenState,
   getTokenState,
   setTokenStateListener,
@@ -25,7 +24,7 @@ import {
   setPartyStateListener,
 } from '../../obr/party.ts'
 
-import { clearAllTurns } from '../../obr/contextmenu.ts'
+import Metadata from '../../obr/metadata.ts'
 import { ThemeState } from '../../obr/theme.ts'
 
 const DrawSteel = (props: { themeState: ThemeState }) => {
@@ -139,7 +138,7 @@ const DrawSteel = (props: { themeState: ThemeState }) => {
               <button
                 title='Refresh all turns'
                 onClick={() => {
-                  clearAllTurns()
+                  Metadata.clearAllTurns()
                 }}
               >
                 <svg

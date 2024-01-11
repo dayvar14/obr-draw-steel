@@ -1,12 +1,12 @@
 import OBR, { Image, Item, isImage } from '@owlbear-rodeo/sdk'
 import SceneItemsApi from '@owlbear-rodeo/sdk/lib/api/scene/SceneItemsApi'
-import { v5 as uuidv5 } from 'uuid'
 
 import {
   FOES_TOGGLE_METADATA_ID,
   FRIENDS_TOGGLE_METADATA_ID,
   TURN_TOGGLE_METADATA_ID,
 } from '../config'
+import { generateGroupIdFromImage } from './common'
 
 export interface TokenState {
   friendGroups: Map<string, Token[]>
@@ -53,6 +53,7 @@ const generateTokenStateFromSceneItems = (items: Item[]) => {
       continue
     }
 
+    // If the token doesn't already have metadata, skip it
     if (
       item.metadata[FRIENDS_TOGGLE_METADATA_ID] === undefined &&
       item.metadata[FOES_TOGGLE_METADATA_ID] === undefined
@@ -60,9 +61,7 @@ const generateTokenStateFromSceneItems = (items: Item[]) => {
       continue
     }
 
-    const image = item as Image
-
-    const token = generateImageFromToken(image)
+    const token = generateImageFromToken(item)
 
     if (!tokensMap.has(token.groupId)) {
       tokensMap.set(token.groupId, [])
@@ -110,7 +109,7 @@ const generateImageFromToken = (image: Image) => {
   const hasTurn = image.metadata[TURN_TOGGLE_METADATA_ID] !== undefined
 
   const name = image.text.plainText ? image.text.plainText : image.name
-  const groupId = uuidv5(image.image.url + name, uuidv5.DNS)
+  const groupId = generateGroupIdFromImage(image)
 
   const token: Token = {
     createdUserId: image.createdUserId,
