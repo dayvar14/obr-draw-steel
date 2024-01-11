@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react'
 
 import './drawSteel.sass'
 import {
-  Token,
   TokenState,
   getTokenState,
   setTokenStateListener,
