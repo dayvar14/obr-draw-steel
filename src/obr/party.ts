@@ -50,7 +50,7 @@ export const getPartyState = (): Promise<PartyState> => {
       })
     } catch (error) {
       console.error('Error during getPartyState:', error)
-      const playerState = {} as PartyState
+      const playerState = { playerStates: [] }
       resolve(playerState)
     }
   })

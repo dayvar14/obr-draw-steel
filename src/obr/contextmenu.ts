@@ -9,6 +9,7 @@ import {
   TURN_TOGGLE_METADATA_ID,
 } from '../config.ts'
 import { foesIcons, friendsIcons, turnIcons } from './icons.ts'
+import { Token } from './tokens.ts'
 
 const createToggleClickFunc = (metadataId: string, turnMetadataId: string) => {
   const ToggleClickFunc: ContextMenuItem['onClick'] = context => {
@@ -85,6 +86,14 @@ export const setupContextMenu = () => {
   })
 }
 
+export const clearFriends = () => {
+  clearMetadata(FRIENDS_TOGGLE_METADATA_ID, TURN_TOGGLE_METADATA_ID)
+}
+
+export const clearFoes = () => {
+  clearMetadata(FOES_TOGGLE_METADATA_ID, TURN_TOGGLE_METADATA_ID)
+}
+
 const clearMetadata = (metadataId: string, turnMetadataId: string) => {
   OBR.scene.items.updateItems(
     item =>
@@ -99,21 +108,18 @@ const clearMetadata = (metadataId: string, turnMetadataId: string) => {
   )
 }
 
-export const clearFriends = () => {
-  clearMetadata(FRIENDS_TOGGLE_METADATA_ID, TURN_TOGGLE_METADATA_ID)
-}
-
-export const clearFoes = () => {
-  clearMetadata(FOES_TOGGLE_METADATA_ID, TURN_TOGGLE_METADATA_ID)
+export const toggleTokensTurn = (tokens: Token[], isChecked: boolean) => {
+  toggleTurnMetadata(tokens, TURN_TOGGLE_METADATA_ID, isChecked)
 }
 
 const toggleTurnMetadata = (
-  id: string,
+  tokens: Token[],
   turnMetadataId: string,
   isChecked: boolean,
 ) => {
+  const tokenIds = new Set(tokens.map((token) => token.id))
   OBR.scene.items.updateItems(
-    item => item.id === id,
+    item => tokenIds.has(item.id),
     items => {
       for (const item of items) {
         if (isChecked) {
@@ -124,10 +130,6 @@ const toggleTurnMetadata = (
       }
     },
   )
-}
-
-export const toggleTokenTurn = (id: string, isChecked: boolean) => {
-  toggleTurnMetadata(id, TURN_TOGGLE_METADATA_ID, isChecked)
 }
 
 const clearTurnMetadata = (turnMetadataId: string) => {

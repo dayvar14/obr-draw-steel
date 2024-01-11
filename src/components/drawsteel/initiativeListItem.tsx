@@ -5,25 +5,22 @@ import { Token } from '../../obr/tokens.ts'
 import {
   PlayerRole,
   PlayerState,
-  centerPlayerOnToken,
-  selectToken,
+  centerPlayerOnTokens,
+  selectTokens,
 } from '../../obr/player.ts'
-import { toggleTokenTurn } from '../../obr/contextmenu.ts'
+import { toggleTokensTurn } from '../../obr/contextmenu.ts'
 import { PartyState } from '../../obr/party.ts'
 import { PermissionState } from '../../obr/permissions.ts'
 import { ThemeState } from '../../obr/theme.ts'
 
 const InitiativeListItem = (props: {
-  index: number
-  token: Token
+  groupId: string
+  tokens: Token[]
   playerState: PlayerState
   partyState: PartyState
   permissionState: PermissionState
   themeState: ThemeState
-  onCheckedChange: (isChecked: boolean, token: Token) => void
-  // onDragStart: React.DOMAttributes<HTMLLIElement>['onDragStart']
-  // onDragOver: React.DOMAttributes<HTMLLIElement>['onDragOver']
-  // onDragEnd: React.DOMAttributes<HTMLLIElement>['onDragEnd']
+  onCheckedChange: (isChecked: boolean, groupId: string) => void
 }) => {
   const [isChecked, setChecked] = useState(false)
   const [isMouseOverToken, setMouseOverToken] = useState(false)
@@ -33,48 +30,62 @@ const InitiativeListItem = (props: {
   )
 
   const isGM = props.playerState.role === PlayerRole.GM
-  const isOwner = props.playerState.id === props.token.createdUserId
+
+  const ownerIds = new Set<string>()
+  for (const token of props.tokens) {
+    ownerIds.add(token.createdUserId)
+  }
+
+  const isOwner = ownerIds.has(props.playerState.id)
 
   const hasModifyPermissions = isGM || !isOwnerOnly || (isOwnerOnly && isOwner)
 
-  let playerOwner: PlayerState | undefined = props.playerState
+  const playerOwners: PlayerState[] = []
 
-  // TODO figure out why partystate is being set to null causing this to require null chekcs
   if (!isOwner && props.partyState && props.partyState.playerStates) {
-    const filteredPlayerStates = props.partyState.playerStates.filter(
-      playerState => playerState.id === props.token.createdUserId,
-    )
-
-    if (filteredPlayerStates.length > 0) {
-      playerOwner = filteredPlayerStates[0]
+    for (const playerState of props.partyState.playerStates) {
+      if (ownerIds.has(playerState.id)) {
+        playerOwners.push(playerState)
+      }
     }
   }
 
   useEffect(() => {
-    let checked = false
+    // Default the group's hasTurn to true if group members don't have the same turn state
+    let isChecked = true
+    const tokensWithoutTurns: Token[] = []
 
-    checked = props.token.hasTurn
+    for (const token of props.tokens) {
+      if (!token.hasTurn) {
+        isChecked = false
+      } else {
+        tokensWithoutTurns.push(token)
+      }
+    }
 
-    setChecked(checked)
-  }, [props.token])
+    // Set the metadata for each token to have a turn if group members don't have the same turn state
+    if (isChecked === true && tokensWithoutTurns.length > 0) {
+      toggleTokensTurn(props.tokens, isChecked)
+    }
+
+    setChecked(isChecked)
+  }, [props.tokens])
 
   const handleCheckboxChange = () => {
     const checked = !isChecked
     setChecked(checked)
-
-    toggleTokenTurn(props.token.id, checked)
-
-    props.onCheckedChange(checked, props.token)
+    toggleTokensTurn(props.tokens, isChecked)
+    props.onCheckedChange(checked, props.groupId)
   }
 
   const listClassnames = clsx({ done: isChecked })
 
   async function handleDoubleClick() {
-    centerPlayerOnToken(props.token.id)
+    centerPlayerOnTokens(props.tokens)
   }
 
   async function handleClick() {
-    selectToken(props.token.id)
+    selectTokens(props.tokens)
   }
 
   return (
@@ -86,23 +97,24 @@ const InitiativeListItem = (props: {
       // onDragEnd={props.onDragEnd}
     >
       <img
-        src={props.token.imageUrl}
-        alt={`Token image of ${props.token.name}`}
+        src={props.tokens[0].imageUrl}
+        alt={`Token image of ${props.tokens[0].name}`}
         onClick={handleClick}
         onDoubleClick={handleDoubleClick}
         onMouseEnter={() => {
           setMouseOverToken(true)
         }}
         onMouseLeave={() => {
-          setMouseOverToken(false)
+          setMouseOverToken(true)
         }}
         style={
-          isMouseOverToken && playerOwner?.color
-            ? { boxShadow: `0px 0px 10px ${playerOwner.color}` }
+          isMouseOverToken && playerOwners[0]?.color
+            ? { boxShadow: `0px 0px 10px ${playerOwners[0].color}` }
             : {}
         }
       />
-      <span>{props.token.name}</span>
+      <span>{props.tokens[0].name}</span>
+      {props.tokens.length > 1 && <small>x{props.tokens.length}</small>}
       <input
         checked={isChecked}
         disabled={!hasModifyPermissions}
@@ -112,12 +124,12 @@ const InitiativeListItem = (props: {
           handleCheckboxChange()
         }}
         type={'checkbox'}
-        id={props.token.id}
+        id={props.groupId}
       />
       <label
         title={isChecked ? 'Reset turn' : 'Finish turn'}
         className={clsx({ disabled: !hasModifyPermissions })}
-        htmlFor={props.token.id}
+        htmlFor={props.groupId}
         role={'application'}
       >
         {isChecked ? (
@@ -135,9 +147,9 @@ const InitiativeListItem = (props: {
                   ? props.themeState.primary.light
                   : props.themeState.text.primary
               }
-              stroke-width='2'
-              stroke-linecap='round'
-              stroke-linejoin='round'
+              strokeWidth='2'
+              strokeLinecap='round'
+              strokeLinejoin='round'
             />
           </svg>
         ) : (
@@ -165,9 +177,9 @@ const InitiativeListItem = (props: {
                   ? props.themeState.primary.light
                   : props.themeState.text.primary
               }
-              stroke-width='2'
-              stroke-linecap='round'
-              stroke-linejoin='round'
+              strokeWidth='2'
+              strokeLinecap='round'
+              strokeLinejoin='round'
             />
           </svg>
 
