@@ -5,7 +5,7 @@ import { PlayerRole, PlayerState } from '../../obr/player.ts'
 import { PartyState } from '../../obr/party.ts'
 import { PermissionState } from '../../obr/permissions.ts'
 import InitiativeListItem from './initiativeListItem.tsx'
-import { clearFoes, clearFriends } from '../../obr/contextmenu.ts'
+import Metadata from '../../obr/metadata.ts'
 import { ThemeState } from '../../obr/theme.ts'
 
 const InitiativeList = (props: {
@@ -76,10 +76,10 @@ const InitiativeList = (props: {
               title={`Clear all ${props.title}`}
               onClick={() => {
                 if (props.title === 'Friends') {
-                  clearFriends()
+                  Metadata.clearFriends()
                 }
                 if (props.title === 'Foes') {
-                  clearFoes()
+                  Metadata.clearFoes()
                 }
               }}
             >
@@ -114,7 +114,6 @@ const InitiativeList = (props: {
                   strokeLinejoin='round'
                 />
               </svg>
-
             </button>
           </div>
         )}
