@@ -1,5 +1,7 @@
 import OBR, { Image, Item, isImage } from '@owlbear-rodeo/sdk'
 import SceneItemsApi from '@owlbear-rodeo/sdk/lib/api/scene/SceneItemsApi'
+import { v5 as uuidv5 } from 'uuid'
+
 import {
   FOES_TOGGLE_METADATA_ID,
   FRIENDS_TOGGLE_METADATA_ID,
@@ -7,13 +9,14 @@ import {
 } from '../config'
 
 export interface TokenState {
-  friends: Token[]
-  foes: Token[]
+  friendGroups: Map<string, Token[]>
+  foeGroups: Map<string, Token[]>
 }
 
 export interface Token {
   createdUserId: string
   id: string
+  groupId: string
   name: string
   imageUrl: string
   isVisible: boolean
@@ -41,8 +44,8 @@ const createOnTokenStateChangeFunc = (onStateChange: OnStageChange) => {
 }
 
 const generateTokenStateFromSceneItems = (items: Item[]) => {
-  let friends: Token[] = []
-  let foes: Token[] = []
+  // Uses the group id as a key and Token as a value
+  const tokensMap: Map<string, Token[]> = new Map()
 
   for (const item of items) {
     //isn't an image, or isn't on the character layer
@@ -51,8 +54,8 @@ const generateTokenStateFromSceneItems = (items: Item[]) => {
     }
 
     if (
-      !item.metadata.hasOwnProperty(FRIENDS_TOGGLE_METADATA_ID) &&
-      !item.metadata.hasOwnProperty(FOES_TOGGLE_METADATA_ID)
+      item.metadata[FRIENDS_TOGGLE_METADATA_ID] === undefined &&
+      item.metadata[FOES_TOGGLE_METADATA_ID] === undefined
     ) {
       continue
     }
@@ -61,31 +64,59 @@ const generateTokenStateFromSceneItems = (items: Item[]) => {
 
     const token = generateImageFromToken(image)
 
-    if (token.isFriend) {
-      friends.push(token)
+    if (!tokensMap.has(token.groupId)) {
+      tokensMap.set(token.groupId, [])
     }
 
-    if (token.isFoe) {
-      foes.push(token)
-    }
+    const tokenList = tokensMap.get(token.groupId) as Token[]
+    tokenList.push(token)
+    tokensMap.set(token.groupId, tokenList)
   }
 
   const tokenState: TokenState = {
-    friends: friends,
-    foes: foes,
+    friendGroups: new Map<string, Token[]>(),
+    foeGroups: new Map<string, Token[]>(),
   }
+
+  updateTokenGroups(tokenState, tokensMap)
+
   return tokenState
 }
 
+function updateTokenGroups(
+  tokenState: TokenState,
+  tokensMap: Map<string, Token[]>,
+) {
+  tokensMap.forEach((tokens, groupId) => {
+    const friendGroup = tokenState.friendGroups.get(groupId) || []
+    const foeGroup = tokenState.foeGroups.get(groupId) || []
+
+    tokens.forEach(token => {
+      if (token.isFriend) {
+        friendGroup.push(token)
+        tokenState.friendGroups.set(groupId, friendGroup)
+      }
+      if (token.isFoe) {
+        foeGroup.push(token)
+        tokenState.foeGroups.set(groupId, foeGroup)
+      }
+    })
+  })
+}
+
 const generateImageFromToken = (image: Image) => {
-  const isFriend = image.metadata.hasOwnProperty(FRIENDS_TOGGLE_METADATA_ID)
-  const isFoe = image.metadata.hasOwnProperty(FOES_TOGGLE_METADATA_ID)
-  const hasTurn = image.metadata.hasOwnProperty(TURN_TOGGLE_METADATA_ID)
+  const isFriend = image.metadata[FRIENDS_TOGGLE_METADATA_ID] !== undefined
+  const isFoe = image.metadata[FOES_TOGGLE_METADATA_ID] !== undefined
+  const hasTurn = image.metadata[TURN_TOGGLE_METADATA_ID] !== undefined
+
+  const name = image.text.plainText ? image.text.plainText : image.name
+  const groupId = uuidv5(image.image.url + name, uuidv5.DNS)
 
   const token: Token = {
     createdUserId: image.createdUserId,
     id: image.id,
-    name: image.text.plainText ? image.text.plainText : image.name,
+    groupId: groupId,
+    name: name,
     imageUrl: image.image.url,
     isVisible: image.visible,
     isFriend: isFriend,
@@ -100,6 +131,7 @@ const generateImageFromToken = (image: Image) => {
       y: image.scale.y,
     },
   }
+
   return token
 }
 
@@ -110,7 +142,7 @@ export const setTokenStateListener = (onStateChange: OnStageChange) => {
 }
 
 export const getTokenState = (): Promise<TokenState> => {
-  return new Promise(async resolve => {
+  return new Promise(resolve => {
     try {
       OBR.onReady(async () => {
         const images = await OBR.scene.items.getItems()
@@ -120,7 +152,10 @@ export const getTokenState = (): Promise<TokenState> => {
       })
     } catch (error) {
       console.error('Error during getTokenState:', error)
-      const tokenState = { foes: [], friends: [] } as TokenState
+      const tokenState: TokenState = {
+        foeGroups: new Map<string, Token[]>(),
+        friendGroups: new Map<string, Token[]>(),
+      }
       resolve(tokenState)
     }
   })

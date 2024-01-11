@@ -1,5 +1,6 @@
 import OBR, { Math2, Player, Vector2 } from '@owlbear-rodeo/sdk'
 import PlayerApi from '@owlbear-rodeo/sdk/lib/api/PlayerApi'
+import { Token } from './tokens'
 
 export enum PlayerRole {
   GM = 'GM',
@@ -65,15 +66,19 @@ export const getPlayerState = (): Promise<PlayerState> => {
   })
 }
 
-export const centerPlayerOnToken = async (tokenId: string) => {
+export const centerPlayerOnTokens = async (tokens: Token[]) => {
   window.getSelection()?.removeAllRanges()
 
-  await OBR.player.select([tokenId])
+  selectTokens(tokens)
+
+  const tokenIds = tokens.map(token => token.id)
+
+  await OBR.player.select(tokenIds)
 
   // Focus on this item
 
   // Convert the center of the selected item to screen-space
-  const bounds = await OBR.scene.items.getItemBounds([tokenId])
+  const bounds = await OBR.scene.items.getItemBounds(tokenIds)
   const boundsAbsoluteCenter = await OBR.viewport.transformPoint(bounds.center)
 
   // Get the center of the viewport in screen-space
@@ -101,6 +106,7 @@ export const centerPlayerOnToken = async (tokenId: string) => {
   })
 }
 
-export const selectToken = async (tokenId: string) => {
-  await OBR.player.select([tokenId])
+export const selectTokens = async (tokens: Token[]) => {
+  const tokenIds = tokens.map(token => token.id)
+  await OBR.player.select(tokenIds)
 }
