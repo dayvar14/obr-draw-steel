@@ -8,7 +8,7 @@ import {
   centerPlayerOnTokens,
   selectTokens,
 } from '../../obr/player.ts'
-import { toggleTokensTurn } from '../../obr/contextmenu.ts'
+import MetaData from '../../obr/metadata.ts'
 import { PartyState } from '../../obr/party.ts'
 import { PermissionState } from '../../obr/permissions.ts'
 import { ThemeState } from '../../obr/theme.ts'
@@ -20,10 +20,11 @@ const InitiativeListItem = (props: {
   partyState: PartyState
   permissionState: PermissionState
   themeState: ThemeState
-  onCheckedChange: (isChecked: boolean, groupId: string) => void
+  onCheckedChange: (hasTurn: boolean, groupId: string) => void
 }) => {
-  const [isChecked, setChecked] = useState(false)
+  const [hasTurn, setHasTurn] = useState(false)
   const [isMouseOverToken, setMouseOverToken] = useState(false)
+  const [currentTokens, setCurrentTokens] = useState<Token[]>(props.tokens)
 
   const isOwnerOnly = props.permissionState.permissions.includes(
     'CHARACTER_OWNER_ONLY',
@@ -51,34 +52,53 @@ const InitiativeListItem = (props: {
   }
 
   useEffect(() => {
-    // Default the group's hasTurn to true if group members don't have the same turn state
-    let isChecked = true
-    const tokensWithoutTurns: Token[] = []
-
-    for (const token of props.tokens) {
-      if (!token.hasTurn) {
-        isChecked = false
-      } else {
-        tokensWithoutTurns.push(token)
+    // If a token is added to the group update it so that it matched the checked state
+    if (currentTokens.length < props.tokens.length) {
+      const currentTokenIds = new Set<string>()
+      for (const token of currentTokens) {
+        currentTokenIds.add(token.id)
       }
-    }
 
-    // Set the metadata for each token to have a turn if group members don't have the same turn state
-    if (isChecked === true && tokensWithoutTurns.length > 0) {
-      toggleTokensTurn(props.tokens, isChecked)
-    }
+      const newTokens: Token[] = []
+      for (const token of props.tokens) {
+        if (!currentTokenIds.has(token.id)) {
+          newTokens.push(token)
+        }
+      }
 
-    setChecked(isChecked)
+      setCurrentTokens(props.tokens)
+
+      MetaData.setTurnMetadataFromTokens(newTokens, hasTurn)
+    }
+    // If a token in the state was updated ensure that the checked state matches
+    else if (currentTokens.length === props.tokens.length) {
+      const changedTokens = props.tokens.filter(
+        token => token.hasTurn !== hasTurn,
+      )
+
+      if (changedTokens.length != props.tokens.length) {
+        setHasTurn(!hasTurn)
+      }
+    } else {
+      setCurrentTokens(props.tokens)
+    }
   }, [props.tokens])
 
+  // useEffect(() => {
+  //   // If a token in the state was updated ensure that the checked state matches
+  //   const unchangedTokens = props.tokens.filter(
+  //     token => token.hasTurn != hasTurn,
+  //   )
+
+  //   MetaData.setTurnMetadataFromTokens(unchangedTokens, hasTurn)
+  // }, [hasTurn])
+
   const handleCheckboxChange = () => {
-    const checked = !isChecked
-    setChecked(checked)
-    toggleTokensTurn(props.tokens, isChecked)
+    const checked = !hasTurn
+    setHasTurn(checked)
+    MetaData.setTurnMetadataFromTokens(currentTokens, checked)
     props.onCheckedChange(checked, props.groupId)
   }
-
-  const listClassnames = clsx({ done: isChecked })
 
   async function handleDoubleClick() {
     centerPlayerOnTokens(props.tokens)
@@ -87,6 +107,8 @@ const InitiativeListItem = (props: {
   async function handleClick() {
     selectTokens(props.tokens)
   }
+
+  const listClassnames = clsx({ done: !hasTurn })
 
   return (
     <li
@@ -116,23 +138,24 @@ const InitiativeListItem = (props: {
       <span>{props.tokens[0].name}</span>
       {props.tokens.length > 1 && <small>x{props.tokens.length}</small>}
       <input
-        checked={isChecked}
+        checked={!hasTurn}
         disabled={!hasModifyPermissions}
         className={clsx({ disabled: !hasModifyPermissions })}
         onChange={() => {
-          if (!hasModifyPermissions) return
-          handleCheckboxChange()
+          if (hasModifyPermissions) {
+            handleCheckboxChange()
+          }
         }}
         type={'checkbox'}
         id={props.groupId}
       />
       <label
-        title={isChecked ? 'Reset turn' : 'Finish turn'}
+        title={!hasTurn ? 'Reset turn' : 'Finish turn'}
         className={clsx({ disabled: !hasModifyPermissions })}
         htmlFor={props.groupId}
         role={'application'}
       >
-        {isChecked ? (
+        {!hasTurn ? (
           <svg
             width='15'
             height='15'
@@ -153,12 +176,6 @@ const InitiativeListItem = (props: {
             />
           </svg>
         ) : (
-          // <img
-          //   width={15}
-          //   height={15}
-          //   src={'./flag_done.svg'}
-          //   alt={`Reset turn flag for the ${props.token.name} token`}
-          // />
           <svg
             width='15'
             height='15'
@@ -182,29 +199,22 @@ const InitiativeListItem = (props: {
               strokeLinejoin='round'
             />
           </svg>
-
-          // <img
-          //   width={15}
-          //   height={15}
-          //   src={'./flag_not_done.svg'}
-          //   alt={`Finish turn flag for the ${props.token.name} token`}
-          // />
         )}
       </label>
 
-      {/* to be enabled in future feature */}
-      {/* <button
-        title={'More options'}
-        className={clsx({ disabled: !hasModifyPermissions })}
-        onClick={() => {}}
-      >
-        <img
-          alt={`More options for the ${props.token.name} token`}
-          width={15}
-          height={15}
-          src={'./vhamburger.svg'}
-        />
-      </button> */}
+      <button title={'More options'} onClick={() => {}}>
+        <svg
+          width='15'
+          height='15'
+          viewBox='0 0 32 32'
+          xmlns='http://www.w3.org/2000/svg'
+        >
+          <path
+            d='M19 16a3 3 0 0 1-3 3 3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3zm0 13a3 3 0 0 1-3 3 3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3zm0-26a3 3 0 0 1-3 3 3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3z'
+            fill={props.themeState.text.secondary}
+          />
+        </svg>
+      </button>
     </li>
   )
 }
