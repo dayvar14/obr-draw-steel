@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 import { Token } from '../../obr/tokens.ts'
 import { PlayerRole, PlayerState } from '../../obr/player.ts'
