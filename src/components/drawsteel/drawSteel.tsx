@@ -8,7 +8,6 @@ import {
   setTokenStateListener,
 } from '../../obr/tokens.ts'
 import {
-  PlayerRole,
   PlayerState,
   getPlayerState,
   setPlayerStateListener,
