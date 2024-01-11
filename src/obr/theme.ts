@@ -2,8 +2,8 @@ import OBR, { Theme } from '@owlbear-rodeo/sdk'
 import ThemeApi from '@owlbear-rodeo/sdk/lib/api/ThemeApi'
 
 export interface ThemeState {
-  mode: Theme["mode"]
-  primary: Theme["primary"]
+  mode: Theme['mode']
+  primary: Theme['primary']
   secondary: Theme['primary']
   background: Theme['background']
   text: Theme['text']
