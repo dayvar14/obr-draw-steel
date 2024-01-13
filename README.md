@@ -1,6 +1,6 @@
 # obr-draw-steel
 
-[![version](https://img.shields.io/badge/version-0.2.1-red.svg)](https://github.com/dayvar14/obr-draw-steel/releases/tag/v0.3.0)
+[![version](https://img.shields.io/badge/version-0.3.0-red.svg)](https://github.com/dayvar14/obr-draw-steel/releases/tag/v0.3.0)
 [![GitHub Actions](https://github.com/dayvar14/obr-draw-steel/workflows/deployment/badge.svg)](https://github.com/dayvar14/obr-draw-steel/actions)
 [![commits since version](https://img.shields.io/github/commits-since/dayvar14/obr-draw-steel/v0.3.0.svg)](https://github.com/dayvar14/obr-draw-steel/compare/releases/v0.3.0...main)
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
@@ -52,3 +52,5 @@ This project exists thanks to all the people who contribute.
 ## License
 
 [MIT](LICENSE) © Daniel Ayvar
+
+Vectors and icons by [SVG Repo](https://www.svgrepo.com)
