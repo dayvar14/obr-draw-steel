@@ -15,5 +15,9 @@ export const TURN_TOGGLE_CONTEXT_MENU_ID = `${EXTENSION_ID}/turn-toggle`
 export const TURN_TOGGLE_METADATA_ID = `${EXTENSION_ID}/turn-toggle-metadata-id`
 
 // ID prefix used to generate a group id for a token
-export const FRIENDS_GROUP_ID_PREFIX = `friends-`
+export const FRIENDS_GROUP_ID_PREFIX = `${EXTENSION_ID}/friends-turn-metadata-id-`
 export const FOES_GROUP_ID_PREFIX = `${EXTENSION_ID}/foes-turn-metadata-id-`
+
+// Size of the app
+export const APP_WIDTH = 350
+export const APP_HEIGHT = 150

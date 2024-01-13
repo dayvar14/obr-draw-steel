@@ -1,10 +1,10 @@
-import ReactDOM from 'react-dom/client'
 import React from 'react'
-import './main.sass'
-import { setupContextMenu } from './obr/contextmenu'
-import { App } from './App'
+import ReactDOM from 'react-dom/client'
+import { ContextMenu } from '@obr'
+import '@styles/main.scss'
+import DrawSteel from '@components/DrawSteel'
 
-setupContextMenu()
+ContextMenu.setupContextMenu()
 
 const root = ReactDOM.createRoot(<HTMLElement>document.querySelector('#root'))
-root.render(React.createElement(App))
+root.render(React.createElement(DrawSteel))

@@ -1,112 +1,116 @@
-import OBR, { Math2, Player, Vector2 } from '@owlbear-rodeo/sdk'
+import OBR, { Math2, Player as OBRPLayer, Vector2 } from '@owlbear-rodeo/sdk'
 import PlayerApi from '@owlbear-rodeo/sdk/lib/api/PlayerApi'
 import { Token } from './tokens'
 
-export enum PlayerRole {
-  GM = 'GM',
-  PLAYER = 'PLAYER',
-}
-
-export interface PlayerState {
-  id: string
-  name: string
-  role: PlayerRole
-  color: string
-}
-
-type OnStageChange = (playerState: PlayerState) => void
-
-const createOnPlayerStateChangeFunc = (onStateChange: OnStageChange) => {
-  const onStateChangeFunc: Parameters<PlayerApi['onChange']>[0] = player => {
-    const playerState = generatePlayerStateFromPlayer(player)
-    onStateChange(playerState)
+export module Player {
+  export enum PlayerRole {
+    GM = 'GM',
+    PLAYER = 'PLAYER',
   }
-  return onStateChangeFunc
-}
 
-export const generatePlayerStateFromPlayer = (player: Player) => {
-  const playerState: PlayerState = {
-    id: player.id,
-    name: player.name,
-    role: player.role === 'GM' ? PlayerRole.GM : PlayerRole.PLAYER,
-    color: player.color,
+  export interface PlayerState {
+    id: string
+    name: string
+    role: PlayerRole
+    color: string
   }
-  return playerState
-}
 
-export const setPlayerStateListener = (onStateChange: OnStageChange) => {
-  OBR.onReady(() => {
-    OBR.player.onChange(createOnPlayerStateChangeFunc(onStateChange))
-  })
-}
+  type OnStageChange = (playerState: PlayerState) => void
 
-export const getPlayerState = (): Promise<PlayerState> => {
-  return new Promise(async resolve => {
-    try {
-      OBR.onReady(async () => {
-        const id = OBR.player.id
-        const name = await OBR.player.getName()
-        const role = await OBR.player.getRole()
-        const color = await OBR.player.getColor()
-
-        const playerState: PlayerState = {
-          id: id,
-          name: name,
-          role: role === 'GM' ? PlayerRole.GM : PlayerRole.PLAYER,
-          color: color,
-        }
-
-        resolve(playerState)
-      })
-    } catch (error) {
-      console.error('Error during getPlayerState:', error)
-      const playerState = {} as PlayerState
-      resolve(playerState)
+  const createOnPlayerStateChangeFunc = (onStateChange: OnStageChange) => {
+    const onStateChangeFunc: Parameters<PlayerApi['onChange']>[0] = player => {
+      const playerState = generatePlayerStateFromPlayer(player)
+      onStateChange(playerState)
     }
-  })
-}
-
-export const centerPlayerOnTokens = async (tokens: Token[]) => {
-  window.getSelection()?.removeAllRanges()
-
-  selectTokens(tokens)
-
-  const tokenIds = tokens.map(token => token.id)
-
-  await OBR.player.select(tokenIds)
-
-  // Focus on this item
-
-  // Convert the center of the selected item to screen-space
-  const bounds = await OBR.scene.items.getItemBounds(tokenIds)
-  const boundsAbsoluteCenter = await OBR.viewport.transformPoint(bounds.center)
-
-  // Get the center of the viewport in screen-space
-  const viewportWidth = await OBR.viewport.getWidth()
-  const viewportHeight = await OBR.viewport.getHeight()
-  const viewportCenter: Vector2 = {
-    x: viewportWidth / 2,
-    y: viewportHeight / 2,
+    return onStateChangeFunc
   }
 
-  // Offset the item center by the viewport center
-  const absoluteCenter = Math2.subtract(boundsAbsoluteCenter, viewportCenter)
+  export const generatePlayerStateFromPlayer = (player: OBRPLayer) => {
+    const playerState: PlayerState = {
+      id: player.id,
+      name: player.name,
+      role: player.role === 'GM' ? PlayerRole.GM : PlayerRole.PLAYER,
+      color: player.color,
+    }
+    return playerState
+  }
 
-  // Convert the center to world-space
-  const relativeCenter =
-    await OBR.viewport.inverseTransformPoint(absoluteCenter)
+  export const setPlayerStateListener = (onStateChange: OnStageChange) => {
+    OBR.onReady(() => {
+      OBR.player.onChange(createOnPlayerStateChangeFunc(onStateChange))
+    })
+  }
 
-  // Invert and scale the world-space position to match a viewport position offset
-  const viewportScale = await OBR.viewport.getScale()
-  const viewportPosition = Math2.multiply(relativeCenter, -viewportScale)
+  export const getPlayerState = (): Promise<PlayerState> => {
+    return new Promise(async resolve => {
+      try {
+        OBR.onReady(async () => {
+          const id = OBR.player.id
+          const name = await OBR.player.getName()
+          const role = await OBR.player.getRole()
+          const color = await OBR.player.getColor()
 
-  await OBR.viewport.animateTo({
-    scale: viewportScale,
-    position: viewportPosition,
-  })
-}
+          const playerState: PlayerState = {
+            id: id,
+            name: name,
+            role: role === 'GM' ? PlayerRole.GM : PlayerRole.PLAYER,
+            color: color,
+          }
 
-export const selectTokens = async (tokens: Token[]) => {
-  const tokenIds = tokens.map(token => token.id)
-  await OBR.player.select(tokenIds)
+          resolve(playerState)
+        })
+      } catch (error) {
+        console.error('Error during getPlayerState:', error)
+        const playerState = {} as PlayerState
+        resolve(playerState)
+      }
+    })
+  }
+
+  export const centerPlayerOnTokens = async (tokens: Token.Token[]) => {
+    window.getSelection()?.removeAllRanges()
+
+    selectTokens(tokens)
+
+    const tokenIds = tokens.map(token => token.id)
+
+    await OBR.player.select(tokenIds)
+
+    // Focus on this item
+
+    // Convert the center of the selected item to screen-space
+    const bounds = await OBR.scene.items.getItemBounds(tokenIds)
+    const boundsAbsoluteCenter = await OBR.viewport.transformPoint(
+      bounds.center,
+    )
+
+    // Get the center of the viewport in screen-space
+    const viewportWidth = await OBR.viewport.getWidth()
+    const viewportHeight = await OBR.viewport.getHeight()
+    const viewportCenter: Vector2 = {
+      x: viewportWidth / 2,
+      y: viewportHeight / 2,
+    }
+
+    // Offset the item center by the viewport center
+    const absoluteCenter = Math2.subtract(boundsAbsoluteCenter, viewportCenter)
+
+    // Convert the center to world-space
+    const relativeCenter =
+      await OBR.viewport.inverseTransformPoint(absoluteCenter)
+
+    // Invert and scale the world-space position to match a viewport position offset
+    const viewportScale = await OBR.viewport.getScale()
+    const viewportPosition = Math2.multiply(relativeCenter, -viewportScale)
+
+    await OBR.viewport.animateTo({
+      scale: viewportScale,
+      position: viewportPosition,
+    })
+  }
+
+  export const selectTokens = async (tokens: Token.Token[]) => {
+    const tokenIds = tokens.map(token => token.id)
+    await OBR.player.select(tokenIds)
+  }
 }

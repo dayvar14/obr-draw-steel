@@ -7,13 +7,13 @@ import {
   FRIENDS_TOGGLE_METADATA_ID,
   TURN_TOGGLE_CONTEXT_MENU_ID,
   TURN_TOGGLE_METADATA_ID,
-} from '../config.ts'
+} from '../config.js'
 
 import { createToggleClickFunc, createTurnToggleClickFunc } from './metadata.ts'
 
-export const friendsIcons: ContextMenuIcon[] = [
+const friendsIcons: ContextMenuIcon[] = [
   {
-    icon: '/add.svg',
+    icon: '/icons/add.svg',
     label: 'Add to Friends',
     filter: {
       every: [
@@ -30,7 +30,7 @@ export const friendsIcons: ContextMenuIcon[] = [
     },
   },
   {
-    icon: '/remove.svg',
+    icon: '/icons/remove.svg',
     label: 'Remove from Friends',
     filter: {
       every: [
@@ -44,9 +44,9 @@ export const friendsIcons: ContextMenuIcon[] = [
   },
 ]
 
-export const foesIcons: ContextMenuIcon[] = [
+const foesIcons: ContextMenuIcon[] = [
   {
-    icon: '/add.svg',
+    icon: '/icons/add.svg',
     label: 'Add to Foes',
     filter: {
       every: [
@@ -64,7 +64,7 @@ export const foesIcons: ContextMenuIcon[] = [
     },
   },
   {
-    icon: '/remove.svg',
+    icon: '/icons/remove.svg',
     label: 'Remove from Foes',
     filter: {
       every: [
@@ -79,9 +79,9 @@ export const foesIcons: ContextMenuIcon[] = [
   },
 ]
 
-export const turnIcons: ContextMenuIcon[] = [
+const turnIcons: ContextMenuIcon[] = [
   {
-    icon: '/flag_not_done.svg',
+    icon: '/icons/flag_filled.svg',
     label: 'Toggle Turn',
     filter: {
       every: [
@@ -107,7 +107,7 @@ export const turnIcons: ContextMenuIcon[] = [
     },
   },
   {
-    icon: '/flag_done.svg',
+    icon: '/icons/flag_unfilled.svg',
     label: 'Toggle Turn',
     filter: {
       every: [{ key: 'layer', value: 'CHARACTER' }],
@@ -128,30 +128,32 @@ export const turnIcons: ContextMenuIcon[] = [
   },
 ]
 
-export const setupContextMenu = () => {
-  OBR.onReady(() => {
-    OBR.contextMenu.create({
-      id: FRIENDS_TOGGLE_CONTEXT_MENU_ID,
-      icons: friendsIcons,
-      onClick: createToggleClickFunc(
-        FRIENDS_TOGGLE_METADATA_ID,
-        TURN_TOGGLE_METADATA_ID,
-      ),
-    })
+export module ContextMenu {
+  export const setupContextMenu = () => {
+    OBR.onReady(() => {
+      OBR.contextMenu.create({
+        id: FRIENDS_TOGGLE_CONTEXT_MENU_ID,
+        icons: friendsIcons,
+        onClick: createToggleClickFunc(
+          FRIENDS_TOGGLE_METADATA_ID,
+          TURN_TOGGLE_METADATA_ID,
+        ),
+      })
 
-    OBR.contextMenu.create({
-      id: FOES_TOGGLE_CONTEXT_MENU_ID,
-      icons: foesIcons,
-      onClick: createToggleClickFunc(
-        FOES_TOGGLE_METADATA_ID,
-        TURN_TOGGLE_METADATA_ID,
-      ),
-    })
+      OBR.contextMenu.create({
+        id: FOES_TOGGLE_CONTEXT_MENU_ID,
+        icons: foesIcons,
+        onClick: createToggleClickFunc(
+          FOES_TOGGLE_METADATA_ID,
+          TURN_TOGGLE_METADATA_ID,
+        ),
+      })
 
-    OBR.contextMenu.create({
-      id: TURN_TOGGLE_CONTEXT_MENU_ID,
-      icons: turnIcons,
-      onClick: createTurnToggleClickFunc(TURN_TOGGLE_METADATA_ID),
+      OBR.contextMenu.create({
+        id: TURN_TOGGLE_CONTEXT_MENU_ID,
+        icons: turnIcons,
+        onClick: createTurnToggleClickFunc(TURN_TOGGLE_METADATA_ID),
+      })
     })
-  })
+  }
 }

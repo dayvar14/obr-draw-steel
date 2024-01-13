@@ -1,0 +1,106 @@
+.sub-list-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    cursor: grab;
+    border-bottom-width: map-get($space-sizes, xxxxsmall);
+    border-bottom-style: solid;
+    border-color: rgba(map-get($colors, contrast), 0.1);
+    padding-top: map-get($space-sizes, xsmall);
+    padding-right: map-get($space-sizes, xxlarge);
+    padding-bottom: map-get($space-sizes, xsmall);
+    padding-left: map-get($space-sizes, xxlarge);
+
+    width: 100lvw;
+
+    &:hover,
+    &:active {
+        background-color: rgba(map-get($colors, contrast), 0.03);
+    }
+}
+
+.sub-list-item-token {
+    width: map-get($custom-sizes, token-image);
+    height: map-get($custom-sizes, token-image);
+
+    > img {
+        cursor: pointer;
+        border-radius: 50%;
+        width: map-get($custom-sizes, token-image);
+        height: map-get($custom-sizes, token-image);
+
+        &:hover {
+            opacity: 0.8;
+        }
+
+        &:active {
+            opacity: 0.5;
+        }
+    }
+
+    &.no-turn {
+        opacity: 0.5;
+    }
+}
+
+.sub-list-item-name {
+    word-wrap: break-word;
+    padding-right: map-get($space-sizes, normal);
+    padding-left: map-get($space-sizes, small);
+    width: map-get($custom-sizes, token-name);
+    overflow: hidden;
+    text-overflow: wrap;
+    white-space: wrap;
+
+    > div {
+        font-weight: 400;
+        font-size: map-get($font-sizes, normal);
+    }
+
+    &.no-turn {
+        opacity: 0.5;
+    }
+}
+
+.sub-list-item-icons {
+    display: flex;
+    flex-direction: row;
+    margin-left: auto;
+
+    > label {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: background-color 0.1s ease;
+        border: none;
+        border-radius: 30%;
+        background-color: transparent;
+        width: map-get($font-sizes, xlarge);
+        height: map-get($font-sizes, xlarge);
+
+        &:not(.disabled) {
+            cursor: pointer;
+            &:hover {
+                background-color: rgba(map-get($colors, contrast), 0.05);
+            }
+
+            &:active {
+                background-color: rgba(map-get($colors, contrast), 0.1);
+            }
+        }
+
+        &.no-turn {
+            opacity: 0.5;
+        }
+    }
+
+    & > *:last-child {
+        margin-left: map-get($space-sizes, xxsmall);
+    }
+
+    > button {
+        &.no-turn {
+            opacity: 0.5;
+        }
+    }
+}
