@@ -1,10 +1,11 @@
 {
   "name": "Draw Steel!",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "author": "Daniel Ayvar",
   "homepage_url": "https://github.com/dayvar14/obr-draw-steel",
   "manifest_version": 1,
   "description": "An unofficial MCDM RPG initiave tracker for Owlbear Rodeo.",
+  "icon": "/sword_clash.png",
   "action": {
     "title": "Draw Steel!",
     "icon": "/sword_clash.svg",
