@@ -1,0 +1,33 @@
+// font sizes
+$font-sizes: (
+    xxxxsmall: 1px,
+    xxxsmall: 2px,
+    xxsmall: 4px,
+    xsmall: 8px,
+    small: 12px,
+    normal: 16px,
+    large: 20px,
+    xlarge: 24px,
+    xxlarge: 28px,
+    xxxlarge: 32px
+);
+
+// margin and padding sizes
+$space-sizes: (
+    xxxxsmall: 1px,
+    xxxsmall: 2px,
+    xxsmall: 4px,
+    xsmall: 8px,
+    small: 12px,
+    normal: 16px,
+    large: 20px,
+    xlarge: 24px,
+    xxlarge: 28px,
+    xxxlarge: 32px
+);
+
+$custom-sizes: (
+    screen-width: 350px,
+    token-name: 210px,
+    token-image: 40px
+);

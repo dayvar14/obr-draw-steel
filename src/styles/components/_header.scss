@@ -1,0 +1,28 @@
+.app-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 2px 2px 20px rgba(map-get($colors, contrast), 0.1);
+    padding-top: map-get($space-sizes, large);
+    padding-right: map-get($space-sizes, large);
+    padding-bottom: map-get($space-sizes, large);
+    padding-left: map-get($space-sizes, large);
+    width: 100vw;
+
+    > hr {
+        opacity: 0.02;
+    }
+}
+
+.app-header-icons {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-left: auto;
+    padding-right: map-get($space-sizes, xsmall);
+
+    & > *:last-child {
+        margin-left: map-get($space-sizes, xxsmall);
+    }
+}

@@ -4,7 +4,7 @@ import {
   FOES_TOGGLE_METADATA_ID,
   FRIENDS_TOGGLE_METADATA_ID,
   TURN_TOGGLE_METADATA_ID,
-} from '../config.ts'
+} from '../config.js'
 
 import { generateGroupIdFromImage } from './common.ts'
 import { Token } from './tokens.ts'
@@ -13,26 +13,23 @@ interface TokenTurnMetadata {
   groupId: string
 }
 
-const clearFriends = () => {
-  clearMetadata(FRIENDS_TOGGLE_METADATA_ID, TURN_TOGGLE_METADATA_ID)
-}
+export const createTurnToggleClickFunc = (turnMetadataId: string) => {
+  const TurnToggleClickFunc: ContextMenuItem['onClick'] = context => {
+    const turnToggleEnabled = context.items.every(
+      item => item.metadata[turnMetadataId] === undefined,
+    )
 
-const clearFoes = () => {
-  clearMetadata(FOES_TOGGLE_METADATA_ID, TURN_TOGGLE_METADATA_ID)
-}
-
-const clearMetadata = (metadataId: string, turnMetadataId: string) => {
-  OBR.scene.items.updateItems(
-    item =>
-      item.metadata[metadataId] !== undefined ||
-      item.metadata[turnMetadataId] !== undefined,
-    items => {
-      for (const item of items) {
-        delete item.metadata[metadataId]
-        delete item.metadata[turnMetadataId]
-      }
-    },
-  )
+    if (turnToggleEnabled) {
+      OBR.scene.items.updateItems(context.items, items =>
+        setTokenTurnMetadata(items, turnMetadataId),
+      )
+    } else {
+      OBR.scene.items.updateItems(context.items, items =>
+        deleteTokenTurnMetadata(items, turnMetadataId),
+      )
+    }
+  }
+  return TurnToggleClickFunc
 }
 
 const setTokenTurnMetadata = (items: any[], tokenTurnMetadataId: string) => {
@@ -117,87 +114,18 @@ const deleteTokenTurnMetadataForGroup = (
   }
 }
 
-// const setTurnFromGroupId = (groupId: string, isChecked: boolean) => {
-//   OBR.scene.items.updateItems(
-//     // If token state is set, and the groupId matches, then we want to toggle it
-//     item =>
-//       item.metadata[groupId] !== undefined &&
-//       'groupId' in (item.metadata[groupId] as TokenTurnMetadata) &&
-//       (item.metadata[groupId] as TokenTurnMetadata).groupId === groupId,
-//     items => {
-//       const images = items as Image[]
-//       for (const image of images) {
-//         if (!isChecked) {
-//           image.metadata[TURN_TOGGLE_METADATA_ID] = {}
-//         } else {
-//           delete image.metadata[TURN_TOGGLE_METADATA_ID]
-//         }
-//       }
-//     },
-//   )
-// }
-
-const clearAllTurns = () => {
+const clearMetadata = (metadataId: string, turnMetadataId: string) => {
   OBR.scene.items.updateItems(
-    item => item.metadata[TURN_TOGGLE_METADATA_ID] !== undefined,
+    item =>
+      item.metadata[metadataId] !== undefined ||
+      item.metadata[turnMetadataId] !== undefined,
     items => {
       for (const item of items) {
-        delete item.metadata[TURN_TOGGLE_METADATA_ID]
+        delete item.metadata[metadataId]
+        delete item.metadata[turnMetadataId]
       }
     },
   )
-}
-
-const setTurnMetadataFromTokens = (tokens: Token[], isChecked: boolean) => {
-  // Ignore cases where there are no tokens
-  if (tokens.length === 0) {
-    return
-  }
-
-  const tokenIds = new Set<string>()
-
-  for (const token of tokens) {
-    tokenIds.add(token.id)
-  }
-
-  OBR.scene.items.updateItems(
-    item => tokenIds.has(item.id),
-    items => {
-      for (const item of items) {
-        if (isChecked) {
-          delete item.metadata[TURN_TOGGLE_METADATA_ID]
-        } else {
-          item.metadata[TURN_TOGGLE_METADATA_ID] = {}
-        }
-      }
-    },
-  )
-}
-
-export default {
-  clearFriends,
-  clearFoes,
-  clearAllTurns,
-  setTurnMetadataFromTokens,
-}
-
-export const createTurnToggleClickFunc = (turnMetadataId: string) => {
-  const TurnToggleClickFunc: ContextMenuItem['onClick'] = context => {
-    const turnToggleEnabled = context.items.every(
-      item => item.metadata[turnMetadataId] === undefined,
-    )
-
-    if (turnToggleEnabled) {
-      OBR.scene.items.updateItems(context.items, items =>
-        setTokenTurnMetadata(items, turnMetadataId),
-      )
-    } else {
-      OBR.scene.items.updateItems(context.items, items =>
-        deleteTokenTurnMetadata(items, turnMetadataId),
-      )
-    }
-  }
-  return TurnToggleClickFunc
 }
 
 export const createToggleClickFunc = (
@@ -225,4 +153,54 @@ export const createToggleClickFunc = (
     }
   }
   return ToggleClickFunc
+}
+
+export module Metadata {
+  export const clearFriends = () => {
+    clearMetadata(FRIENDS_TOGGLE_METADATA_ID, TURN_TOGGLE_METADATA_ID)
+  }
+
+  export const clearFoes = () => {
+    clearMetadata(FOES_TOGGLE_METADATA_ID, TURN_TOGGLE_METADATA_ID)
+  }
+
+  export const clearAllTurns = () => {
+    OBR.scene.items.updateItems(
+      item => item.metadata[TURN_TOGGLE_METADATA_ID] !== undefined,
+      items => {
+        for (const item of items) {
+          delete item.metadata[TURN_TOGGLE_METADATA_ID]
+        }
+      },
+    )
+  }
+
+  export const setTurnMetadataFromTokens = (
+    tokens: Token.Token[],
+    isChecked: boolean,
+  ) => {
+    // Ignore cases where there are no tokens
+    if (tokens.length === 0) {
+      return
+    }
+
+    const tokenIds = new Set<string>()
+
+    for (const token of tokens) {
+      tokenIds.add(token.id)
+    }
+
+    OBR.scene.items.updateItems(
+      item => tokenIds.has(item.id),
+      items => {
+        for (const item of items) {
+          if (isChecked) {
+            delete item.metadata[TURN_TOGGLE_METADATA_ID]
+          } else {
+            item.metadata[TURN_TOGGLE_METADATA_ID] = {}
+          }
+        }
+      },
+    )
+  }
 }
