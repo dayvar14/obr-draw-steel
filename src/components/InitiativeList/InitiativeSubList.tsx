@@ -23,11 +23,6 @@ const InitiativeSubList: React.FC<{
 
   const isGM = playerContext.playerState.role === Player.PlayerRole.GM
 
-  // useEffect(() => {
-  //   const startingCheckList = new Set(groups.keys())
-  //   setCheckedList(startingCheckList)
-  // }, [])
-
   const onCheckedChange: React.ComponentProps<
     typeof InitiativeSubListItem
   >['onCheckedChange'] = (isChecked, groupId) => {
@@ -56,7 +51,7 @@ const InitiativeSubList: React.FC<{
   // hide all tokens if all are hidden
   let allHidden = true
 
-  tokenGroups.forEach((tokens, groupId) => {
+  tokenGroups.forEach(tokens => {
     for (const token of tokens) {
       if (token.isVisible) {
         allHidden = false
