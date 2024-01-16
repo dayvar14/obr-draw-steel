@@ -109,8 +109,25 @@ export module Player {
     })
   }
 
-  export const selectTokens = async (tokens: Token.Token[]) => {
+  export const selectTokens = async (
+    tokens: Token.Token[],
+    append?: boolean,
+  ) => {
     const tokenIds = tokens.map(token => token.id)
-    await OBR.player.select(tokenIds)
+
+    let currentSelection: string[] = []
+
+    if (append) {
+      console.log('append')
+      const returnedSelection = await OBR.player.getSelection()
+      if (returnedSelection !== undefined) {
+        currentSelection = currentSelection.concat(returnedSelection)
+        console.log(currentSelection)
+      }
+    }
+
+    currentSelection = [...new Set(tokenIds.concat(currentSelection))]
+
+    await OBR.player.select(currentSelection)
   }
 }
