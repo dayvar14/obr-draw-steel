@@ -36,5 +36,15 @@ const manifest = {
   },
 }
 
+// Create dist folder if it doesn't exist
+const folderPath = './dist';
+
+// Use fs.mkdir to create the folder
+fs.mkdir(folderPath, { recursive: true }, (err) => {
+  if (err) {
+    console.error('Error creating folder:', err);
+  }
+});
+
 console.log(`Writing manifest.json to ${argument}`)
 fs.writeFileSync(argument, JSON.stringify(manifest, null, 2))
