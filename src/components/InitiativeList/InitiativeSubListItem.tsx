@@ -1,5 +1,6 @@
 import clsx from 'clsx'
 import { Metadata, Player, Token } from '@obr'
+import { PartyContext } from 'context/PartyContext'
 import { PermissionContext } from 'context/PermissionContext'
 import { PlayerContext } from 'context/PlayerContext'
 import { useContext, useEffect, useState } from 'react'
@@ -7,7 +8,7 @@ import { useContext, useEffect, useState } from 'react'
 import FlagFilledIcon from '@icons/flag_filled.svg?react'
 import FlagUnfilledIcon from '@icons/flag_unfilled.svg?react'
 import HamburgerMenuDotsIcon from '@icons/hamburger_menu_dots.svg?react'
-import { PartyContext } from 'context/PartyContext'
+import EyeClosedIcon from '@icons/eye_closed.svg?react'
 
 const InitiativeSubListItem: React.FC<{
   groupId: string
@@ -43,6 +44,16 @@ const InitiativeSubListItem: React.FC<{
   const hasModifyPermissions = isGM || !isOwnerOnly || (isOwnerOnly && isOwner)
 
   const playerOwners: Player.PlayerState[] = []
+
+  let isVisible = false
+  let visibleCount = 0
+
+  for (const token of tokens) {
+    if (token.isVisible) {
+      isVisible = true
+      visibleCount++
+    }
+  }
 
   if (
     !isOwner &&
@@ -103,7 +114,7 @@ const InitiativeSubListItem: React.FC<{
   }
 
   return (
-    <li className={clsx(['sub-list-item'], {})}>
+    <li className={clsx(['sub-list-item'], { hidden: !isVisible && !isGM })}>
       <div className={clsx(['sub-list-item-token', { 'no-turn': !hasTurn }])}>
         <img
           src={tokens[0].imageUrl}
@@ -123,9 +134,16 @@ const InitiativeSubListItem: React.FC<{
           }
         />
       </div>
-      <div className={clsx(['sub-list-item-name'], { 'no-turn': !hasTurn })}>
-        <div>{tokens[0].name}</div>
-        {tokens.length > 1 && <p>x{tokens.length}</p>}
+      <div
+        className={clsx(['sub-list-item-description'], { 'no-turn': !hasTurn })}
+      >
+        <div className={'sub-list-item-name'}>{tokens[0].name}</div>
+        {(tokens.length > 1 || !isVisible) && (
+          <div className='sub-list-item-caption'>
+            {( tokens.length > 1 && (visibleCount > 1 || isGM)) && <p>x{isGM ? tokens.length : visibleCount}</p>}
+            {!isVisible && <EyeClosedIcon className='colored medium' />}
+          </div>
+        )}
       </div>
       <div className={'sub-list-item-icons'}>
         <input

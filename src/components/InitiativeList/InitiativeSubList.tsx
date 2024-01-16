@@ -21,6 +21,8 @@ const InitiativeSubList: React.FC<{
     new Set(tokenGroups.keys()),
   )
 
+  const isGM = playerContext.playerState.role === Player.PlayerRole.GM
+
   // useEffect(() => {
   //   const startingCheckList = new Set(groups.keys())
   //   setCheckedList(startingCheckList)
@@ -51,6 +53,18 @@ const InitiativeSubList: React.FC<{
     />
   ))
 
+  // hide all tokens if all are hidden
+  let allHidden = true
+
+  tokenGroups.forEach((tokens, groupId) => {
+    for (const token of tokens) {
+      if (token.isVisible) {
+        allHidden = false
+        break
+      }
+    }
+  })
+
   return (
     <div ref={forwardRef}>
       <div className='sub-list-header'>
@@ -69,11 +83,15 @@ const InitiativeSubList: React.FC<{
       </div>
       <hr />
       <ul className='sub-list'>
-        {listItems.length > 0 ? (
+        {listItems.length > 0 && (!allHidden || isGM) ? (
           listItems
         ) : (
           <p>
-            <small>Select a character to add</small>
+            {isGM ? (
+              <small>Select a character to add</small>
+            ) : (
+              <small>Select your character to add</small>
+            )}
           </p>
         )}
       </ul>
