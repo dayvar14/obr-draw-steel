@@ -109,8 +109,8 @@ const InitiativeSubListItem: React.FC<{
     Player.centerPlayerOnTokens(tokens)
   }
 
-  async function handleClick() {
-    Player.selectTokens(tokens)
+  async function handleClick(event: React.MouseEvent<HTMLDivElement>) {
+    Player.selectTokens(tokens, event.shiftKey)
   }
 
   return (
@@ -119,7 +119,9 @@ const InitiativeSubListItem: React.FC<{
         <img
           src={tokens[0].imageUrl}
           alt={`Token image of ${tokens[0].name}`}
-          onClick={handleClick}
+          onClick={(event: React.MouseEvent<HTMLDivElement>) => {
+            handleClick(event)
+          }}
           onDoubleClick={handleDoubleClick}
           onMouseEnter={() => {
             setMouseOverToken(true)
@@ -140,7 +142,9 @@ const InitiativeSubListItem: React.FC<{
         <div className={'sub-list-item-name'}>{tokens[0].name}</div>
         {(tokens.length > 1 || !isVisible) && (
           <div className='sub-list-item-caption'>
-            {( tokens.length > 1 && (visibleCount > 1 || isGM)) && <p>x{isGM ? tokens.length : visibleCount}</p>}
+            {tokens.length > 1 && (visibleCount > 1 || isGM) && (
+              <p>x{isGM ? tokens.length : visibleCount}</p>
+            )}
             {!isVisible && <EyeClosedIcon className='colored medium' />}
           </div>
         )}
