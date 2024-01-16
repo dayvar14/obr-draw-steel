@@ -7,13 +7,18 @@ import { PlayerContext } from 'context/PlayerContext'
 export const Header: React.FC<{ isSceneReady: boolean }> = ({
   isSceneReady,
 }) => {
-  const playerContext = useContext(PlayerContext)
+  // If no player context, then assume player is not gm.
+  let playerContext = undefined
 
-  if (!playerContext) {
-    throw new Error('PlayerContext is undefined')
+  if (isSceneReady) {
+    playerContext = useContext(PlayerContext)
   }
 
-  const isGM = playerContext.playerState.role === Player.PlayerRole.GM
+  let isGM = false
+
+  if (playerContext) {
+    isGM = playerContext.playerState.role === Player.PlayerRole.GM
+  }
 
   return (
     <div className='app-header'>
