@@ -5,7 +5,7 @@ const argument = process.argv[2]
 
 const manifest = {
   name: 'Draw Steel!',
-  version: '0.3.0',
+  version: '0.4.0',
   author: 'Daniel Ayvar',
   homepage_url: 'https://github.com/dayvar14/obr-draw-steel',
   manifest_version: 1,
