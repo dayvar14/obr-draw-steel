@@ -17,6 +17,10 @@
     &:active {
         background-color: rgba(map-get($colors, contrast), 0.03);
     }
+
+    &.hidden {
+        display: none;
+    }
 }
 
 .sub-list-item-token {
@@ -43,7 +47,7 @@
     }
 }
 
-.sub-list-item-name {
+.sub-list-item-description {
     word-wrap: break-word;
     padding-right: map-get($space-sizes, normal);
     padding-left: map-get($space-sizes, small);
@@ -52,13 +56,27 @@
     text-overflow: wrap;
     white-space: wrap;
 
-    > div {
-        font-weight: 400;
-        font-size: map-get($font-sizes, normal);
-    }
-
     &.no-turn {
         opacity: 0.5;
+    }
+}
+
+.sub-list-item-name {
+    font-weight: 500;
+    font-size: map-get($font-sizes, normal);
+}
+
+.sub-list-item-caption {
+    display: flex;
+    align-items: center;
+
+    > svg {
+        width: map-get($font-sizes, normal);
+        height: map-get($font-sizes, normal);
+    }
+
+    & > *:first-child {
+        margin-right: map-get($space-sizes, xxsmall);
     }
 }
 
