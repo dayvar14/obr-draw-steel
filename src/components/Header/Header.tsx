@@ -4,29 +4,16 @@ import SettingsIcon from '@icons/settings.svg?react'
 import { useContext } from 'react'
 import { PlayerContext } from 'context/PlayerContext'
 
-export const Header: React.FC<{ isSceneReady: boolean }> = ({
-  isSceneReady,
-}) => {
-  // If no player context, then assume player is not gm.
-  let playerContext = undefined
-
-  if (isSceneReady) {
-    playerContext = useContext(PlayerContext)
-  }
-
-  let isGM = false
-
-  if (playerContext) {
-    isGM = playerContext.playerState.role === Player.PlayerRole.GM
-  }
+export const Header: React.FC<{ isReady: boolean }> = ({ isReady }) => {
+  const playerContext = useContext(PlayerContext)
 
   return (
     <div className='app-header'>
       <h1>Draw Steel!</h1>
       <div className='app-header-icons'>
-        {isGM && (
+        {playerContext?.playerState.role === Player.PlayerRole.GM && (
           <>
-            {isSceneReady && (
+            {isReady && (
               <button
                 title='Refresh all turns'
                 className='rounded-square-icon-button'
