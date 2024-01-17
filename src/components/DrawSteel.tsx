@@ -63,7 +63,7 @@ const DrawSteel = () => {
     <PluginGate>
       <ThemeWrapper className={'app-container'}>
         <PlayerProvider>
-          <Header isReady={isSceneReady} />
+          <Header />
           <hr />
           <SceneGate
             loadingChildren={

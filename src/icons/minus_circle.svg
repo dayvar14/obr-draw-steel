@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800px" height="800px" version="1.1" viewBox="0 -.5 21 21" xmlns="http://www.w3.org/2000/svg">
+    <title>minus_circle [#1426]</title>
+    <desc>Created with Sketch.</desc>
+    <g fill="none" fill-rule="evenodd">
+        <g transform="translate(-219 -600)">
+            <g transform="translate(56 160)">
+                <path fill="#000"
+                    d="m177.7 450c0 0.552-0.4704 1-1.05 1h-6.3c-0.5796 0-1.05-0.448-1.05-1s0.4704-1 1.05-1h6.3c0.5796 0 1.05 0.448 1.05 1m-4.2 8c-4.6316 0-8.4-3.589-8.4-8s3.7684-8 8.4-8 8.4 3.589 8.4 8-3.7684 8-8.4 8m0-18c-5.7992 0-10.5 4.477-10.5 10s4.7008 10 10.5 10 10.5-4.477 10.5-10-4.7008-10-10.5-10">
+                </path>
+            </g>
+        </g>
+    </g>
+</svg>

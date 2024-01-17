@@ -26,6 +26,7 @@
 .sub-list-item-token {
     width: map-get($custom-sizes, token-image);
     height: map-get($custom-sizes, token-image);
+    overflow: hidden;
 
     > img {
         cursor: pointer;

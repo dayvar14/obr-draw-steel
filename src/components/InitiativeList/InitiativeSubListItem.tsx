@@ -1,14 +1,16 @@
 import clsx from 'clsx'
-import { Metadata, Player, Token } from '@obr'
+import { Metadata, Player, Token, Popover } from '@obr'
 import { PartyContext } from 'context/PartyContext'
 import { PermissionContext } from 'context/PermissionContext'
 import { PlayerContext } from 'context/PlayerContext'
+
 import { useContext, useEffect, useState } from 'react'
 
 import FlagFilledIcon from '@icons/flag_filled.svg?react'
 import FlagUnfilledIcon from '@icons/flag_unfilled.svg?react'
 import HamburgerMenuDotsIcon from '@icons/hamburger_menu_dots.svg?react'
 import EyeClosedIcon from '@icons/eye_closed.svg?react'
+import { PLACE_HOLDER_TOKEN_IMAGE } from 'config'
 
 const InitiativeSubListItem: React.FC<{
   groupId: string
@@ -18,6 +20,7 @@ const InitiativeSubListItem: React.FC<{
   const permissionContext = useContext(PermissionContext)
   const playerContext = useContext(PlayerContext)
   const partyContext = useContext(PartyContext)
+  const [imageSrc, setImageSrc] = useState<string>(tokens[0].imageUrl)
 
   if (!playerContext || !permissionContext || !partyContext) {
     throw new Error(
@@ -65,6 +68,11 @@ const InitiativeSubListItem: React.FC<{
         playerOwners.push(playerState)
       }
     }
+  }
+
+  const handleImageError = () => {
+    // Replace with the path of your replacement image
+    setImageSrc(PLACE_HOLDER_TOKEN_IMAGE)
   }
 
   useEffect(() => {
@@ -117,8 +125,8 @@ const InitiativeSubListItem: React.FC<{
     <li className={clsx(['sub-list-item'], { hidden: !isVisible && !isGM })}>
       <div className={clsx(['sub-list-item-token', { 'no-turn': !hasTurn }])}>
         <img
-          src={tokens[0].imageUrl}
-          alt={`Token image of ${tokens[0].name}`}
+          src={imageSrc}
+          onError={handleImageError}
           onClick={(event: React.MouseEvent<HTMLDivElement>) => {
             handleClick(event)
           }}
@@ -160,7 +168,7 @@ const InitiativeSubListItem: React.FC<{
             }
           }}
           type={'checkbox'}
-          id={groupId}
+          id={groupId + '-flag'}
         />
         <label
           title={!hasTurn ? 'Reset turn' : 'Finish turn'}
@@ -168,7 +176,7 @@ const InitiativeSubListItem: React.FC<{
             disabled: !hasModifyPermissions,
             'no-turn': !hasTurn,
           })}
-          htmlFor={groupId}
+          htmlFor={groupId + '-flag'}
           role={'application'}
         >
           {hasTurn ? (
@@ -198,6 +206,7 @@ const InitiativeSubListItem: React.FC<{
         </label>
 
         <button
+          id={groupId + '-options'}
           title={'More options'}
           className={clsx([
             'rounded-square-icon-button',
@@ -205,7 +214,17 @@ const InitiativeSubListItem: React.FC<{
               'no-turn': !hasTurn,
             },
           ])}
-          onClick={() => {}}
+          onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+            const zoomRatio = Math.round(window.devicePixelRatio * 100) / 200
+            // Adjust event coordinates based on the zoom level
+            const left = event.screenX / zoomRatio
+            const top = (event.screenY - 100) / zoomRatio
+
+            Popover.openTokenOptions(groupId, {
+              top,
+              left,
+            })
+          }}
         >
           <HamburgerMenuDotsIcon className='colored filled medium' />
         </button>

@@ -1,4 +1,4 @@
-export const EXTENSION_ID = 'com.danielayvar.obr-draw-steel'
+const EXTENSION_ID = 'com.danielayvar.obr-draw-steel'
 
 export const OPTIONS_METADATA_ID = `${EXTENSION_ID}/options-metadata-id`
 
@@ -21,3 +21,11 @@ export const FOES_GROUP_ID_PREFIX = `${EXTENSION_ID}/foes-turn-metadata-id-`
 // Size of the app
 export const APP_WIDTH = 350
 export const APP_HEIGHT = 150
+
+export const TOKEN_OPTIONS_POPOVER_ID = `${EXTENSION_ID}/token-options-popover-id`
+
+// Size of token options
+export const TOKEN_OPTIONS_WIDTH = 200
+export const TOKEN_OPTIONS_HEIGHT = 335
+
+export const PLACE_HOLDER_TOKEN_IMAGE = './icons/token_placeholder.svg'

@@ -1,3 +1,33 @@
 input[type="checkbox"] {
     display: none;
 }
+
+input[type="number"] {
+    border: none;
+    border-radius: 5%;
+    background-color: transparent;
+    padding-top: map-get($space-sizes, xxsmall);
+    padding-bottom: map-get($space-sizes, xxsmall);
+    text-align: center;
+}
+
+input[type="number"]:focus {
+    background-color: rgba(map-get($colors, contrast), 0.1);
+}
+
+input:focus {
+    outline: none !important;
+    box-shadow: 0 0 10px map-get($colors, secondary);
+    border-color: map-get($colors, contrast);
+    border-radius: 5px;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}

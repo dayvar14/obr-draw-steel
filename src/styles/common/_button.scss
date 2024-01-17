@@ -1,8 +1,8 @@
 button {
     display: flex;
-    justify-content: center;
-    align-items: center;
     transition: background-color 0.1s ease;
+    border: none;
+    background-color: transparent;
 }
 
 .rounded-square-icon-button {
@@ -10,9 +10,7 @@ button {
     justify-content: center;
     align-items: center;
     margin-left: auto;
-    border: none;
     border-radius: 30%;
-    background-color: transparent;
     width: map-get($font-sizes, xlarge);
     height: map-get($font-sizes, xlarge);
 
@@ -26,6 +24,3 @@ button {
         }
     }
 }
-
-// &:not(.disabled) {
-// }

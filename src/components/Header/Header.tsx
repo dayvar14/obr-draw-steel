@@ -3,8 +3,9 @@ import RefreshIcon from '@icons/refresh.svg?react'
 import SettingsIcon from '@icons/settings.svg?react'
 import { useContext } from 'react'
 import { PlayerContext } from 'context/PlayerContext'
+import SceneGate from 'wrapper/SceneGate'
 
-export const Header: React.FC<{ isReady: boolean }> = ({ isReady }) => {
+export const Header: React.FC = () => {
   const playerContext = useContext(PlayerContext)
 
   return (
@@ -13,7 +14,7 @@ export const Header: React.FC<{ isReady: boolean }> = ({ isReady }) => {
       <div className='app-header-icons'>
         {playerContext?.playerState.role === Player.PlayerRole.GM && (
           <>
-            {isReady && (
+            <SceneGate>
               <button
                 title='Refresh all turns'
                 className='rounded-square-icon-button'
@@ -23,7 +24,7 @@ export const Header: React.FC<{ isReady: boolean }> = ({ isReady }) => {
               >
                 <RefreshIcon className='medium filled' />
               </button>
-            )}
+            </SceneGate>
             <button
               title='Refresh all turns'
               className='rounded-square-icon-button'

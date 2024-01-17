@@ -64,7 +64,7 @@ export module Token {
         continue
       }
 
-      const token = generateImageFromToken(item)
+      const token = generateTokenFromImage(item)
 
       if (!tokensMap.has(token.groupId)) {
         tokensMap.set(token.groupId, [])
@@ -106,7 +106,46 @@ export module Token {
     })
   }
 
-  const generateImageFromToken = (image: Image) => {
+  export const getTokensFromGroupId = (groupId: string): Promise<Token[]> => {
+    return new Promise(resolve => {
+      try {
+        OBR.onReady(async () => {
+          const items = await OBR.scene.items.getItems()
+
+          const tokens: Token[] = []
+
+          for (const item of items) {
+            if (!isImage(item) || item.layer !== 'CHARACTER') {
+              continue
+            }
+
+            // If the token doesn't already have metadata, skip it
+            if (
+              item.metadata[FRIENDS_TOGGLE_METADATA_ID] === undefined &&
+              item.metadata[FOES_TOGGLE_METADATA_ID] === undefined
+            ) {
+              continue
+            }
+
+            const token = generateTokenFromImage(item)
+
+            if (token.groupId !== groupId) {
+              continue
+            }
+
+            tokens.push(token)
+          }
+
+          resolve(tokens)
+        })
+      } catch (error) {
+        console.error('Error during getTokensFromGroupId:', error)
+        resolve([] as Token[])
+      }
+    })
+  }
+
+  const generateTokenFromImage = (image: Image) => {
     const isFriend = image.metadata[FRIENDS_TOGGLE_METADATA_ID] !== undefined
     const isFoe = image.metadata[FOES_TOGGLE_METADATA_ID] !== undefined
     const hasTurn = image.metadata[TURN_TOGGLE_METADATA_ID] !== undefined
