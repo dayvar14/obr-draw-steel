@@ -118,16 +118,24 @@ export module Player {
     let currentSelection: string[] = []
 
     if (append) {
-      console.log('append')
       const returnedSelection = await OBR.player.getSelection()
       if (returnedSelection !== undefined) {
         currentSelection = currentSelection.concat(returnedSelection)
-        console.log(currentSelection)
       }
     }
 
     currentSelection = [...new Set(tokenIds.concat(currentSelection))]
 
     await OBR.player.select(currentSelection)
+  }
+
+  export const deleteTokens = async (tokens: Token.Token[]) => {
+    OBR.onReady(async () => {
+      const tokenIds = new Set<string>()
+      for (const token of tokens) {
+        tokenIds.add(token.id)
+      }
+      await OBR.scene.items.deleteItems([...tokenIds])
+    })
   }
 }

@@ -4,6 +4,7 @@ import react from '@vitejs/plugin-react'
 import svgr from 'vite-plugin-svgr'
 import viteTsconfig from 'vite-tsconfig-paths'
 const tsconfigPaths = viteTsconfig
+import { resolve } from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -19,4 +20,12 @@ export default defineConfig({
     }),
     tsconfigPaths(),
   ],
+  build: {
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'index.html'),
+        home: resolve(__dirname, 'popover.html'),
+      },
+    },
+  },
 })

@@ -5,11 +5,17 @@ svg {
     overflow: hidden;
 
     &.filled {
-        fill: map-get($colors, primary);
+        fill: map-get($colors, primary-text);
+        path {
+            fill: map-get($colors, primary-text);
+        }
     }
 
     &.colored {
-        stroke: map-get($colors, primary);
+        stroke: map-get($colors, primary-text);
+        path {
+            stroke: map-get($colors, primary-text);
+        }
     }
 
     &.large {

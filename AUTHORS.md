@@ -5,24 +5,34 @@
 ./src/icons/clear_circle.svg Adapted from
 https://www.svgrepo.com/svg/502579/clear-circle
 
+./src/icons/delete.svg Adapted from https://www.svgrepo.com/svg/488148/delete
+
 ./src/icons/eye_closed.svg Adapted from
 https://www.svgrepo.com/svg/505372/eye-closed
 
-.src/icons/flag_filled.svg ./public/icons/flag_filled.svg
-.src/icons/flag_unfilled.svg ./public/icons/flag_unfilled.svg Adapted from
+./src/icons/flag_filled.svg ./public/icons/flag_filled.svg
+./src/icons/flag_unfilled.svg ./public/icons/flag_unfilled.svg Adapted from
 https://www.svgrepo.com/svg/532527/flag
 
-.src/icons/hamburger_menu_dots.svg Adapted from
+./src/icons/hamburger_menu_dots.svg Adapted from
 https://www.svgrepo.com/svg/500212/hamburger-menu-dots
 
-.src/icons/refresh.svg Adapted from https://www.svgrepo.com/svg/499635/refresh
+./src/icons/minus_circle Adapted from
+https://www.svgrepo.com/svg/512494/minus-circle-1426
+
+./src/icons/plus_circle Adapted from
+https://www.svgrepo.com/svg/512678/plus-circle-1427
+
+./src/icons/refresh.svg Adapted from https://www.svgrepo.com/svg/499635/refresh
 
 ./public/icons/remove.svg Adapted from
 https://www.svgrepo.com/svg/511114/remove-minus
 
-.src/icons/settings.svg Adapted from https://www.svgrepo.com/svg/526221/settings
+./src/icons/select.svg Adapted from https://www.svgrepo.com/svg/526221/settings
 
-.public/icons/sword_clash.svg .public/icons/sword_clash.png Adapted from
+./src/icons/settings.svg Adapted from https://www.svgrepo.com/svg/414463/select
+
+./public/icons/sword_clash.svg .public/icons/sword_clash.png Adapted from
 https://www.svgrepo.com/svg/321543/sword-clash
 
 Licensed under CC by 4.0 (https://creativecommons.org/licenses/by/4.0/)
