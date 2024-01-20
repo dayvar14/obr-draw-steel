@@ -31,3 +31,75 @@ input[type="number"]::-webkit-outer-spin-button {
 input[type="number"] {
     -moz-appearance: textfield;
 }
+
+select {
+    border-color: rgba(map-get($colors, primary), 0.4);
+    border-radius: 12px;
+    background-color: rgba(map-get($colors, background-primary), 0.3);
+    padding-top: map-get($space-sizes, xxxsmall);
+    padding-right: map-get($space-sizes, xsmall);
+    padding-bottom: map-get($space-sizes, xxxsmall);
+    padding-left: map-get($space-sizes, xsmall);
+    font-family: inherit;
+}
+
+.switch {
+    display: inline-block;
+    position: relative;
+    width: calc(map-get($space-sizes, xlarge) + map-get($space-sizes, xlarge));
+    height: map-get($space-sizes, xlarge);
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    -webkit-transition: 0.4s;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    transition: 0.4s;
+    cursor: pointer;
+    background-color: #ccc;
+}
+
+.slider:before {
+    -webkit-transition: 0.4s;
+    position: absolute;
+    bottom: map-get($space-sizes, xxxsmall);
+    left: map-get($space-sizes, xxxsmall);
+    transition: 0.4s;
+    box-shadow: 0 0 10px rgba(map-get($colors, contrast), 0.3);
+    background-color: white;
+    width: map-get($space-sizes, large);
+    height: calc(map-get($space-sizes, large));
+    content: "";
+}
+
+input:checked + .slider {
+    background-color: map-get($colors, primary);
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px map-get($colors, primary);
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(map-get($space-sizes, xlarge));
+    -ms-transform: translateX(map-get($space-sizes, xlarge));
+    transform: translateX(map-get($space-sizes, xlarge));
+}
+
+/* Rounded sliders */
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}

@@ -1,3 +1,4 @@
+a,
 button {
     display: flex;
     transition: background-color 0.1s ease;
@@ -13,6 +14,11 @@ button {
     border-radius: 30%;
     width: map-get($font-sizes, xlarge);
     height: map-get($font-sizes, xlarge);
+
+    &.large {
+        width: map-get($font-sizes, xxxlarge);
+        height: map-get($font-sizes, xxxlarge);
+    }
 
     &:not(.disabled) {
         cursor: pointer;

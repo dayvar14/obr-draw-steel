@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { APP_HEIGHT, APP_WIDTH } from './config.js'
+import { APP_HEIGHT, APP_WIDTH, APP_VERSION } from './config.js'
 
 const argument = process.argv[2]
 
@@ -21,7 +21,7 @@ switch (environment) {
 
 const manifest = {
   name: applicationName,
-  version: '0.4.0',
+  version: APP_VERSION,
   author: 'Daniel Ayvar',
   homepage_url: 'https://github.com/dayvar14/obr-draw-steel',
   manifest_version: 1,
@@ -37,14 +37,14 @@ const manifest = {
 }
 
 // Create dist folder if it doesn't exist
-const folderPath = './dist';
+const folderPath = './dist'
 
 // Use fs.mkdir to create the folder
-fs.mkdir(folderPath, { recursive: true }, (err) => {
+fs.mkdir(folderPath, { recursive: true }, err => {
   if (err) {
-    console.error('Error creating folder:', err);
+    console.error('Error creating folder:', err)
   }
-});
+})
 
 console.log(`Writing manifest.json to ${argument}`)
 fs.writeFileSync(argument, JSON.stringify(manifest, null, 2))
