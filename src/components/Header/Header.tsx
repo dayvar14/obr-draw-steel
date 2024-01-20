@@ -1,4 +1,4 @@
-import { Metadata, Player } from '@obr'
+import { Metadata, Modal, Player } from '@obr'
 import RefreshIcon from '@icons/refresh.svg?react'
 import SettingsIcon from '@icons/settings.svg?react'
 import { useContext } from 'react'
@@ -24,14 +24,16 @@ export const Header: React.FC = () => {
               >
                 <RefreshIcon className='medium filled' />
               </button>
+              <button
+                title='Refresh all turns'
+                className='rounded-square-icon-button'
+                onClick={() => {
+                  Modal.openSettings()
+                }}
+              >
+                <SettingsIcon className='medium filled' />
+              </button>
             </SceneGate>
-            <button
-              title='Refresh all turns'
-              className='rounded-square-icon-button'
-              onClick={() => {}}
-            >
-              <SettingsIcon className='medium filled' />
-            </button>
           </>
         )}
       </div>

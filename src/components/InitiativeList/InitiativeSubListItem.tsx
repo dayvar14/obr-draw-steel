@@ -181,26 +181,15 @@ const InitiativeSubListItem: React.FC<{
         >
           {hasTurn ? (
             <FlagFilledIcon
-              className='colored filled medium'
-              style={
-                isOwner
-                  ? {
-                      fill: playerContext?.playerState.color,
-                      stroke: playerContext?.playerState.color,
-                    }
-                  : {}
-              }
+              className={clsx('filled colored medium', {
+                primary: isOwner,
+              })}
             />
           ) : (
             <FlagUnfilledIcon
-              className='colored medium'
-              style={
-                isOwner
-                  ? {
-                      stroke: playerContext?.playerState.color,
-                    }
-                  : {}
-              }
+              className={clsx('colored medium', {
+                primary: isOwner,
+              })}
             />
           )}
         </label>
@@ -217,8 +206,20 @@ const InitiativeSubListItem: React.FC<{
           onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
             const zoomRatio = Math.round(window.devicePixelRatio * 100) / 200
             // Adjust event coordinates based on the zoom level
-            const left = event.screenX / zoomRatio
-            const top = (event.screenY - 100) / zoomRatio
+
+            const userAgent = navigator.userAgent
+
+            let top = 0
+            let left = 0
+
+            if (userAgent.includes('Firefox')) {
+              // Firefix screen X/Y are already adjusted for zoom
+              left = event.screenX
+              top = event.screenY - 100 / zoomRatio
+            } else {
+              left = event.screenX / zoomRatio
+              top = (event.screenY - 100) / zoomRatio
+            }
 
             Popover.openTokenOptions(groupId, {
               top,

@@ -6,6 +6,7 @@ import { Player } from './player'
 import { Popover } from './popover'
 import { Theme } from './theme'
 import { Token } from './tokens'
+import { Modal } from './modal'
 
 export {
   ContextMenu,
@@ -16,4 +17,5 @@ export {
   Theme,
   Token,
   Popover,
+  Modal
 }

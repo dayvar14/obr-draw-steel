@@ -7,12 +7,17 @@ https://www.svgrepo.com/svg/502579/clear-circle
 
 ./src/icons/delete.svg Adapted from https://www.svgrepo.com/svg/488148/delete
 
+./src/icons/discord.svg Adapted from https://www.svgrepo.com/svg/506463/discord
+
 ./src/icons/eye_closed.svg Adapted from
 https://www.svgrepo.com/svg/505372/eye-closed
 
 ./src/icons/flag_filled.svg ./public/icons/flag_filled.svg
-./src/icons/flag_unfilled.svg ./public/icons/flag_unfilled.svg Adapted from
+./public/icons/flag_unfilled.svg Adapted from
 https://www.svgrepo.com/svg/532527/flag
+
+./src/icons/github.svg Adapted from
+https://www.svgrepo.com/svg/512317/github-142
 
 ./src/icons/hamburger_menu_dots.svg Adapted from
 https://www.svgrepo.com/svg/500212/hamburger-menu-dots
