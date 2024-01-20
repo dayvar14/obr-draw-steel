@@ -106,28 +106,69 @@ export module Token {
     })
   }
 
+  export const splitTokenGroups = async (
+    groupId: string,
+    groupSize: number,
+  ) => {
+    const tokens = await getTokensFromGroupId(groupId)
+
+    if (tokens.length === 0) {
+      return
+    }
+
+    let index = 0
+
+    OBR.scene.items.updateItems(
+      item =>
+        (item.metadata[FOES_TOGGLE_METADATA_ID] !== undefined ||
+          item.metadata[FRIENDS_TOGGLE_METADATA_ID] !== undefined) &&
+        isImage(item) &&
+        groupId === generateGroupIdFromImage(item),
+      images => {
+        images.forEach((image: Image) => {
+          const name = image.text.plainText ? image.text.plainText : image.name
+          image.text.plainText = name + getTokenGroupSuffix(index, groupSize)
+          index++
+        })
+      },
+    )
+  }
+
+  // group size = 1
+  // index = 25 (26th token)
+
+  function getTokenGroupSuffix(index: number, groupSize: number) {
+    let suffix = ' '
+    let charCount = Math.floor(index / groupSize / 26)
+
+    for (let i = 0; i <= charCount; i++) {
+      const asciiA = 'A'.charCodeAt(0)
+
+      const capitalizedLetter = String.fromCharCode(
+        asciiA + ((index / groupSize) % 26),
+      )
+      suffix += capitalizedLetter
+    }
+
+    return suffix
+  }
+
   export const getTokensFromGroupId = (groupId: string): Promise<Token[]> => {
     return new Promise(resolve => {
       try {
         OBR.onReady(async () => {
-          const items = await OBR.scene.items.getItems()
+          const items = await OBR.scene.items.getItems(
+            (item: Item) =>
+              isImage(item) &&
+              item.layer === 'CHARACTER' &&
+              (item.metadata[FOES_TOGGLE_METADATA_ID] !== undefined ||
+                item.metadata[FRIENDS_TOGGLE_METADATA_ID] !== undefined),
+          )
 
           const tokens: Token[] = []
 
           for (const item of items) {
-            if (!isImage(item) || item.layer !== 'CHARACTER') {
-              continue
-            }
-
-            // If the token doesn't already have metadata, skip it
-            if (
-              item.metadata[FRIENDS_TOGGLE_METADATA_ID] === undefined &&
-              item.metadata[FOES_TOGGLE_METADATA_ID] === undefined
-            ) {
-              continue
-            }
-
-            const token = generateTokenFromImage(item)
+            const token = generateTokenFromImage(item as Image)
 
             if (token.groupId !== groupId) {
               continue
@@ -186,7 +227,13 @@ export module Token {
     return new Promise(resolve => {
       try {
         OBR.onReady(async () => {
-          const images = await OBR.scene.items.getItems()
+          const images = await OBR.scene.items.getItems(
+            (item: Item) =>
+              isImage(item) &&
+              item.layer === 'CHARACTER' &&
+              (item.metadata[FOES_TOGGLE_METADATA_ID] !== undefined ||
+                item.metadata[FRIENDS_TOGGLE_METADATA_ID] !== undefined),
+          )
           const tokenState = generateTokenStateFromSceneItems(images)
 
           resolve(tokenState)
