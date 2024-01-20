@@ -84,6 +84,13 @@
             background-color: rgba(map-get($colors, contrast), 0.1);
         }
     }
+
+    &.disabled {
+        opacity: 0.5;
+        > svg {
+            opacity: 0.5;
+        }
+    }
 }
 
 .option-button {
