@@ -62,7 +62,11 @@
         flex: 1;
         padding-right: map-get($space-sizes, small);
     }
+}
 
+.settings-body-footnote {
+    display: block;
+    padding-top: map-get($space-sizes, small);
 }
 
 .settings-footer {
@@ -70,10 +74,11 @@
     flex-direction: row;
     justify-content: flex-end;
     align-items: center;
-    padding-top: map-get($space-sizes, xlarge);
-    padding-right: map-get($space-sizes, xlarge);
+
+    padding-top: map-get($space-sizes, xxxxsmall);
+    padding-right: map-get($space-sizes, large);
     padding-bottom: map-get($space-sizes, small);
-    padding-left: map-get($space-sizes, xlarge);
+    padding-left: map-get($space-sizes, large);
 
     > button {
         justify-content: center;
