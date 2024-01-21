@@ -9,7 +9,7 @@ import {
   TURN_TOGGLE_METADATA_ID,
 } from '../config.js'
 
-import { createToggleClickFunc, createTurnToggleClickFunc } from './metadata.ts'
+import { createToggleClickFunc, createTurnToggleClickFunc } from './itemmetadata.ts'
 
 const friendsIcons: ContextMenuIcon[] = [
   {

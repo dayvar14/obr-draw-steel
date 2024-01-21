@@ -1,9 +1,38 @@
 import GithubIcon from '@icons/github.svg?react'
 import DiscordIcon from '@icons/discord.svg?react'
 import { APP_VERSION } from 'config'
-import { Modal } from '@obr'
+import { Modal, Scene } from '@obr'
+import { SceneContext } from 'context/SceneContext'
+import { useContext, useState } from 'react'
 
 const SettingsList = () => {
+  const sceneContext = useContext(SceneContext)
+
+  if (!sceneContext) {
+    return null
+  }
+
+  const [unsavedSettings, setUnsavedSettings] = useState(sceneContext.settings)
+
+  const handleInputChange = (
+    section: 'playerAccess' | 'grouping' | 'misc',
+    field: string,
+    value: boolean | string,
+  ) => {
+    setUnsavedSettings({
+      ...unsavedSettings,
+      [section]: {
+        ...unsavedSettings[section],
+        [field]: value,
+      },
+    })
+  }
+
+  const onSave = () => {
+    sceneContext.setSettings(unsavedSettings)
+    Modal.closeSettings()
+  }
+
   return (
     <>
       <div className='settings-header'>
@@ -46,7 +75,17 @@ const SettingsList = () => {
             <p>Allow players to modify any turn.</p>
             <div className='settings-item-input'>
               <label className='switch'>
-                <input type='checkbox' />
+                <input
+                  type='checkbox'
+                  checked={unsavedSettings.playerAccess.canModifyAllTurns}
+                  onChange={e =>
+                    handleInputChange(
+                      'playerAccess',
+                      'canModifyAllTurns',
+                      e.target.checked,
+                    )
+                  }
+                />
                 <span className='slider round'></span>
               </label>
             </div>
@@ -55,7 +94,17 @@ const SettingsList = () => {
             <p>Allow players to set their turns if player owned.</p>
             <div className='settings-item-input'>
               <label className='switch'>
-                <input type='checkbox' />
+                <input
+                  type='checkbox'
+                  checked={unsavedSettings.playerAccess.canSetTurnIfPlayerOwned}
+                  onChange={e =>
+                    handleInputChange(
+                      'playerAccess',
+                      'canSetTurnIfPlayerOwned',
+                      e.target.checked,
+                    )
+                  }
+                />
                 <span className='slider round'></span>
               </label>
             </div>
@@ -64,7 +113,17 @@ const SettingsList = () => {
             <p>Let players see a tokens turn count</p>
             <div className='settings-item-input'>
               <label className='switch'>
-                <input type='checkbox' />
+                <input
+                  type='checkbox'
+                  checked={unsavedSettings.playerAccess.canseeTurnCount}
+                  onChange={e =>
+                    handleInputChange(
+                      'playerAccess',
+                      'canseeTurnCount',
+                      e.target.checked,
+                    )
+                  }
+                />
                 <span className='slider round'></span>
               </label>
             </div>
@@ -77,7 +136,13 @@ const SettingsList = () => {
             <p>Enable grouping</p>
             <div className='settings-item-input'>
               <label className='switch'>
-                <input type='checkbox' />
+                <input
+                  type='checkbox'
+                  checked={unsavedSettings.grouping.isEnabled}
+                  onChange={e =>
+                    handleInputChange('grouping', 'isEnabled', e.target.checked)
+                  }
+                />
                 <span className='slider round'></span>
               </label>
             </div>
@@ -88,7 +153,22 @@ const SettingsList = () => {
             <p>Group tokens created by different users</p>
             <div className='settings-item-input'>
               <label className='switch'>
-                <input type='checkbox' />
+                <input
+                  type='checkbox'
+                  disabled={!unsavedSettings.grouping.isEnabled}
+                  checked={
+                    unsavedSettings.grouping.isEnabled
+                      ? unsavedSettings.grouping.groupTokensFromAllUsers
+                      : false
+                  }
+                  onChange={e =>
+                    handleInputChange(
+                      'grouping',
+                      'groupTokensFromAllUsers',
+                      e.target.checked,
+                    )
+                  }
+                />
                 <span className='slider round'></span>
               </label>
             </div>
@@ -98,10 +178,25 @@ const SettingsList = () => {
           <div className='settings-item'>
             <p>Grouping splitting mode</p>
             <div className='settings-item-input'>
-              <select id='dropdown'>
-                <option value='option2'>Closest</option>
-                <option value='option3'>Random</option>
-                <option value='option1'>Standard</option>
+              <select
+                id='dropdown'
+                disabled={!unsavedSettings.grouping.isEnabled}
+                value={unsavedSettings.grouping.groupSplittingMode}
+                onChange={e =>
+                  handleInputChange(
+                    'grouping',
+                    'groupSplittingMode',
+                    e.target.value,
+                  )
+                }
+              >
+                <option value={Scene.GroupSplittingMode.CLOSEST}>
+                  Closest
+                </option>
+                <option value={Scene.GroupSplittingMode.RANDOM}>Random</option>
+                <option value={Scene.GroupSplittingMode.STANDARD}>
+                  Standard
+                </option>
               </select>
             </div>
           </div>
@@ -113,21 +208,52 @@ const SettingsList = () => {
             <p>Set flags color to player owner's color</p>
             <div className='settings-item-input'>
               <label className='switch'>
-                <input type='checkbox' />
+                <input
+                  type='checkbox'
+                  checked={unsavedSettings.misc.flagColorIsPlayerOwnerColor}
+                  onChange={e =>
+                    handleInputChange(
+                      'misc',
+                      'flagColorIsPlayerOwnerColor',
+                      e.target.checked,
+                    )
+                  }
+                />
                 <span className='slider round'></span>
               </label>
             </div>
           </div>
         </div>
+        <hr />
+        <div className='settings-body-footnote'>
+          <p>
+            <small>
+              If you happen upon any bugs, or would like a new feature,{' '}
+              <a
+                className='rounded-square-icon-button large'
+                href='https://github.com/dayvar14/obr-draw-steel/issues/new/choose'
+                title='Create an Issue'
+                target='_blank'
+                rel='noopener noreferrer'
+              >
+                create an issue in Github
+              </a>{' '}
+              and/or @StankPapaya on the{' '}
+              <a
+                className='rounded-square-icon-button large'
+                href='https://discord.com/channels/795808973743194152/1082460044731371591'
+                title='Create an Issue'
+                target='_blank'
+                rel='noopener noreferrer'
+              >
+                Owlbear Rodeo Discord
+              </a>
+            </small>
+          </p>
+        </div>
       </div>
       <div className='settings-footer'>
-        <button
-          onClick={() => {
-            Modal.closeSettings()
-          }}
-        >
-          SAVE
-        </button>
+        <button onClick={onSave}>SAVE</button>
       </div>
     </>
   )

@@ -1,11 +1,10 @@
-import SceneGate from 'wrapper/SceneGate'
 import ThemeWrapper from 'wrapper/ThemeWrapper'
 import { OptionsList } from './OptionsList/OptionsList'
 import { PermissionProvider } from 'context/PermissionContext'
 import { PlayerProvider } from 'context/PlayerContext'
-import { PluginGate } from 'wrapper/PluginGate'
 import { Popover } from '@obr'
 import { TOKEN_OPTIONS_POPOVER_ID } from 'config'
+import { SceneProvider } from 'context/SceneContext'
 
 export const TokenOptions = () => {
   const group_id =
@@ -17,16 +16,14 @@ export const TokenOptions = () => {
   }
 
   return (
-    <PluginGate>
-      <SceneGate>
-        <PlayerProvider>
-          <PermissionProvider>
-            <ThemeWrapper className='options-container'>
-              <OptionsList groupId={group_id} />
-            </ThemeWrapper>
-          </PermissionProvider>
-        </PlayerProvider>
-      </SceneGate>
-    </PluginGate>
+    <SceneProvider>
+      <PlayerProvider>
+        <PermissionProvider>
+          <ThemeWrapper className='options-container'>
+            <OptionsList groupId={group_id} />
+          </ThemeWrapper>
+        </PermissionProvider>
+      </PlayerProvider>
+    </SceneProvider>
   )
 }

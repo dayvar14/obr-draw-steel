@@ -1,7 +1,7 @@
 const EXTENSION_ID = 'com.danielayvar.obr-draw-steel'
 export const APP_VERSION = '0.4.0'
 
-export const OPTIONS_METADATA_ID = `${EXTENSION_ID}/options-metadata-id`
+export const SCENE_METADATA_ID = `${EXTENSION_ID}/scene-metadata-id`
 
 // Metadata for deciding is a token is a friend
 export const FRIENDS_TOGGLE_CONTEXT_MENU_ID = `${EXTENSION_ID}/friends-toggle-id`
