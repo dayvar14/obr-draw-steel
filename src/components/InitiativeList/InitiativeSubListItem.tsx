@@ -212,21 +212,36 @@ const InitiativeSubListItem: React.FC<{
           ])}
           onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
             const zoomRatio = Math.round(window.devicePixelRatio * 100) / 200
-            // Adjust event coordinates based on the zoom level
+
+            const screenRatioX =
+              event.nativeEvent.view!.window.outerWidth /
+              event.nativeEvent.view!.screen.availWidth
+
+            const screenRatioY =
+              event.nativeEvent.view!.window.outerHeight /
+              event.nativeEvent.view!.screen.availHeight
 
             const userAgent = navigator.userAgent
 
             let top = 0
             let left = 0
-
+            console.log(screenRatioX, screenRatioY)
+            console.log(zoomRatio)
             if (userAgent.includes('Firefox')) {
-              // Firefix screen X/Y are already adjusted for zoom
-              left = event.screenX
-              top = event.screenY - 100 / zoomRatio
+              left = event.screenX * screenRatioX - 20 / zoomRatio
+              top = event.screenY * screenRatioY - 100 / zoomRatio
             } else {
-              left = event.screenX / zoomRatio
-              top = (event.screenY - 100) / zoomRatio
+              left = ((event.screenX - 20) * screenRatioX) / zoomRatio
+              top = ((event.screenY - 100) * screenRatioY) / zoomRatio
+
+              Popover.openTokenOptions(groupId, {
+                top,
+                left,
+              })
             }
+
+            console.log('top', top)
+            console.log('left', left)
 
             Popover.openTokenOptions(groupId, {
               top,
