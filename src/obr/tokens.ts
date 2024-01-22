@@ -21,8 +21,7 @@ export module Token {
     name: string
     imageUrl: string
     isVisible: boolean
-    isFriend: boolean
-    isFoe: boolean
+    tokenType?: TokenType
     hasTurn: boolean
     mapPosition: {
       x: number
@@ -32,6 +31,11 @@ export module Token {
       x: number
       y: number
     }
+  }
+
+  export enum TokenType {
+    FRIEND = 'FRIEND',
+    FOE = 'FOE',
   }
 
   type OnStageChange = (tokenState: TokenState) => void
@@ -94,11 +98,11 @@ export module Token {
       const foeGroup = tokenState.foeGroups.get(groupId) || []
 
       tokens.forEach(token => {
-        if (token.isFriend) {
+        if (token.tokenType === TokenType.FRIEND) {
           friendGroup.push(token)
           tokenState.friendGroups.set(groupId, friendGroup)
         }
-        if (token.isFoe) {
+        if (token.tokenType === TokenType.FOE) {
           foeGroup.push(token)
           tokenState.foeGroups.set(groupId, foeGroup)
         }
@@ -187,8 +191,10 @@ export module Token {
   }
 
   const generateTokenFromImage = (image: Image) => {
-    const isFriend = image.metadata[FRIENDS_TOGGLE_METADATA_ID] !== undefined
-    const isFoe = image.metadata[FOES_TOGGLE_METADATA_ID] !== undefined
+    const tokenType =
+      image.metadata[FRIENDS_TOGGLE_METADATA_ID] !== undefined
+        ? TokenType.FRIEND
+        : TokenType.FOE
     const hasTurn = image.metadata[TURN_TOGGLE_METADATA_ID] !== undefined
 
     const name = image.text.plainText ? image.text.plainText : image.name
@@ -201,8 +207,7 @@ export module Token {
       name: name,
       imageUrl: image.image.url,
       isVisible: image.visible,
-      isFriend: isFriend,
-      isFoe: isFoe,
+      tokenType: tokenType,
       hasTurn: hasTurn,
       mapPosition: {
         x: image.position.x,

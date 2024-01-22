@@ -111,11 +111,6 @@ export module Scene {
     await updateSceneMetadata(sceneMetadata)
   }
 
-  export const getListOrderMetadata = async (type: 'friends' | 'foes') => {
-    const sceneMetadata = await getSceneMetadata()
-    return sceneMetadata.listOrders[type]
-  }
-
   const updateListOrderMetadata = async (
     type: 'friends' | 'foes',
     metadata: ListOrderMetadata,
@@ -125,18 +120,10 @@ export module Scene {
     await updateSceneMetadata(sceneMetadata)
   }
 
-  export const getFriendsListOrderMetadata = async () => {
-    return getListOrderMetadata('friends')
-  }
-
   export const updateFriendsListOrderMetadata = async (
     metadata: ListOrderMetadata,
   ) => {
     return updateListOrderMetadata('friends', metadata)
-  }
-
-  export const getFoesListOrderMetadata = async () => {
-    return getListOrderMetadata('foes')
   }
 
   export const updateFoesListOrderMetadata = async (

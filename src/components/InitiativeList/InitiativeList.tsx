@@ -1,7 +1,8 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 import InitiativeSubList from './InitiativeSubList.tsx'
 import { TokenContext } from 'context/TokenContext.tsx'
-import { Metadata } from '@obr'
+import { Metadata, Scene, Token } from '@obr'
+import { SceneContext } from 'context/SceneContext.tsx'
 
 const InitiativeList: React.FC<{
   onListHeightChange?: (height: number) => void
@@ -13,9 +14,14 @@ const InitiativeList: React.FC<{
     useState<number>(defaultSubListHeight)
 
   const tokenContext = useContext(TokenContext)
+  const sceneContext = useContext(SceneContext)
 
   if (!tokenContext) {
     throw new Error('TokenContext is undefined')
+  }
+
+  if (!sceneContext) {
+    throw new Error('SceneContext is undefined')
   }
 
   /* following pattern required to set observer on ref only after it is defined */
@@ -67,17 +73,27 @@ const InitiativeList: React.FC<{
       <InitiativeSubList
         forwardRef={registerFriendListResizeObserver}
         title={'Friends'}
+        tokenType={Token.TokenType.FRIEND}
         tokenGroups={tokenContext.tokenState.friendGroups}
-        onClearButtonClick={() => {
-          Metadata.clearFriends()
+        onClearButtonClick={async () => {
+          await Metadata.clearFriends()
+          sceneContext.setFriendsListOrder({
+            type: Scene.ListOrderType.NONE,
+            indexes: [],
+          })
         }}
       />
       <InitiativeSubList
         forwardRef={registerFoeListResizeObserver}
         title={'Foes'}
+        tokenType={Token.TokenType.FOE}
         tokenGroups={tokenContext.tokenState.foeGroups}
-        onClearButtonClick={() => {
-          Metadata.clearFoes()
+        onClearButtonClick={async () => {
+          await Metadata.clearFoes()
+          sceneContext.setFoesListOrder({
+            type: Scene.ListOrderType.NONE,
+            indexes: [],
+          })
         }}
       />
     </div>

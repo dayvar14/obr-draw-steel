@@ -33,7 +33,7 @@ export const TOKEN_OPTIONS_HEIGHT = 335
 /* Settings */
 export const SETTINGS_MODAL_ID = `${EXTENSION_ID}/settings-modal-id`
 
-export const SETTINGS_WIDTH = 350
+export const SETTINGS_WIDTH = 400
 export const SETTINGS_HEIGHT = 600
 
 export const PLACE_HOLDER_TOKEN_IMAGE = './icons/token_placeholder.svg'

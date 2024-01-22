@@ -114,8 +114,8 @@ const deleteTokenTurnMetadataForGroup = (
   }
 }
 
-const clearMetadata = (metadataId: string, turnMetadataId: string) => {
-  OBR.scene.items.updateItems(
+const clearMetadata = async (metadataId: string, turnMetadataId: string) => {
+  await OBR.scene.items.updateItems(
     item =>
       item.metadata[metadataId] !== undefined ||
       item.metadata[turnMetadataId] !== undefined,
@@ -156,12 +156,12 @@ export const createToggleClickFunc = (
 }
 
 export module Metadata {
-  export const clearFriends = () => {
-    clearMetadata(FRIENDS_TOGGLE_METADATA_ID, TURN_TOGGLE_METADATA_ID)
+  export const clearFriends = async () => {
+    await clearMetadata(FRIENDS_TOGGLE_METADATA_ID, TURN_TOGGLE_METADATA_ID)
   }
 
-  export const clearFoes = () => {
-    clearMetadata(FOES_TOGGLE_METADATA_ID, TURN_TOGGLE_METADATA_ID)
+  export const clearFoes = async () => {
+    await clearMetadata(FOES_TOGGLE_METADATA_ID, TURN_TOGGLE_METADATA_ID)
   }
 
   export const clearAllTurns = () => {

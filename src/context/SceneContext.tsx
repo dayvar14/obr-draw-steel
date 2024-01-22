@@ -57,23 +57,20 @@ const SceneProvider = ({
   useEffect(() => {
     if (sceneMetadata) {
       setLocalSettings(sceneMetadata.settings)
-      setLocalFriendsListOrder(sceneMetadata.listOrders.foes)
-      setLocalFoesListOrder(sceneMetadata.listOrders.friends)
+      setLocalFriendsListOrder(sceneMetadata.listOrders.friends)
+      setLocalFoesListOrder(sceneMetadata.listOrders.foes)
     }
   }, [sceneMetadata])
 
   const setSettings = (settings: Scene.SettingsMetadata) => {
-    setLocalSettings(settings)
     Scene.updateSettingsMetadata(settings)
   }
 
   const setFriendsListOrder = (listOrder: Scene.ListOrderMetadata) => {
-    setLocalFriendsListOrder(listOrder)
     Scene.updateFriendsListOrderMetadata(listOrder)
   }
 
   const setFoesListOrder = (listOrder: Scene.ListOrderMetadata) => {
-    setLocalFoesListOrder(listOrder)
     Scene.updateFoesListOrderMetadata(listOrder)
   }
 
