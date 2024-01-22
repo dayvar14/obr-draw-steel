@@ -19,6 +19,9 @@ https://www.svgrepo.com/svg/532527/flag
 ./src/icons/github.svg Adapted from
 https://www.svgrepo.com/svg/512317/github-142
 
+.src/icons/hamburger-menu.svg Adapted from
+https://www.svgrepo.com/svg/524617/hamburger-menu
+
 ./src/icons/hamburger_menu_dots.svg Adapted from
 https://www.svgrepo.com/svg/500212/hamburger-menu-dots
 
@@ -36,6 +39,12 @@ https://www.svgrepo.com/svg/511114/remove-minus
 ./src/icons/select.svg Adapted from https://www.svgrepo.com/svg/526221/settings
 
 ./src/icons/settings.svg Adapted from https://www.svgrepo.com/svg/414463/select
+
+./src/icons/sort-from-bottom-to-top.svg Adapted from
+https://www.svgrepo.com/svg/529908/sort-from-bottom-to-top
+
+./src/icons/sort-from-top-to-bottom Adapted from
+https://www.svgrepo.com/svg/529906/sort-from-top-to-bottom
 
 ./public/icons/sword_clash.svg .public/icons/sword_clash.png Adapted from
 https://www.svgrepo.com/svg/321543/sword-clash

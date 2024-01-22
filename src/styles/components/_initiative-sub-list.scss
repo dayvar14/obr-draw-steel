@@ -16,6 +16,13 @@
     justify-content: flex-end;
     margin-left: auto;
     padding-right: map-get($space-sizes, xsmall);
+
+    > button {
+        margin-left: map-get($space-sizes, xxsmall);
+        & > *:first-child {
+            margin-left: 0;
+        }
+    }
 }
 
 .sub-list {

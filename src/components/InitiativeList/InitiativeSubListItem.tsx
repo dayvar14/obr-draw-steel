@@ -16,7 +16,9 @@ const InitiativeSubListItem: React.FC<{
   groupId: string
   tokens: Token.Token[]
   onCheckedChange: (hasTurn: boolean, groupId: string) => void
-}> = ({ groupId, tokens, onCheckedChange }) => {
+  onDragStart?: (event: React.DragEvent<HTMLLIElement>) => void
+  onDragEnd?: (event: React.DragEvent<HTMLLIElement>) => void
+}> = ({ groupId, tokens, onCheckedChange, onDragStart, onDragEnd }) => {
   const permissionContext = useContext(PermissionContext)
   const playerContext = useContext(PlayerContext)
   const partyContext = useContext(PartyContext)
@@ -122,7 +124,12 @@ const InitiativeSubListItem: React.FC<{
   }
 
   return (
-    <li className={clsx(['sub-list-item'], { hidden: !isVisible && !isGM })}>
+    <li
+      className={clsx(['sub-list-item'], { hidden: !isVisible && !isGM })}
+      draggable={true}
+      onDragStart={onDragStart}
+      onDragEnd={onDragEnd}
+    >
       <div className={clsx(['sub-list-item-token', { 'no-turn': !hasTurn }])}>
         <img
           src={imageSrc}
