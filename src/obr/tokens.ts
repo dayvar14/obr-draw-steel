@@ -1,7 +1,7 @@
 import { kmeans } from 'ml-kmeans'
 import OBR, { Image, isImage, Item } from '@owlbear-rodeo/sdk'
 import SceneItemsApi from '@owlbear-rodeo/sdk/lib/api/scene/SceneItemsApi'
-import { generateGroupIdFromImage } from './common'
+import { GroupIDGenerator } from './common'
 
 import {
   FOES_TOGGLE_METADATA_ID,
@@ -133,7 +133,7 @@ export module Token {
         (item.metadata[FOES_TOGGLE_METADATA_ID] !== undefined ||
           item.metadata[FRIENDS_TOGGLE_METADATA_ID] !== undefined) &&
         isImage(item) &&
-        groupId === generateGroupIdFromImage(item),
+        groupId === GroupIDGenerator.generateGroupIdFromImage(item),
       items => {
         const images = items as Image[]
         if (groupSplittingMode === GroupSplittingMode.CLOSEST) {
@@ -263,7 +263,7 @@ export module Token {
     const hasTurn = image.metadata[TURN_TOGGLE_METADATA_ID] !== undefined
 
     const name = image.text.plainText ? image.text.plainText : image.name
-    const groupId = generateGroupIdFromImage(image)
+    const groupId = GroupIDGenerator.generateGroupIdFromImage(image)
 
     const token: Token = {
       createdUserId: image.createdUserId,

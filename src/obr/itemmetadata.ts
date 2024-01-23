@@ -6,7 +6,7 @@ import {
   TURN_TOGGLE_METADATA_ID,
 } from '../config.js'
 
-import { generateGroupIdFromImage } from './common.ts'
+import { GroupIDGenerator } from './common.ts'
 import { Token } from './tokens.ts'
 
 interface TokenTurnMetadata {
@@ -40,9 +40,9 @@ const setTokenTurnMetadata = (items: any[], tokenTurnMetadataId: string) => {
   // We toggle the turn for all tokens in the context
   for (const item of items) {
     if (isImage(item)) {
-      const groupId = generateGroupIdFromImage(item)
+      const groupId = GroupIDGenerator.generateGroupIdFromImage(item)
       const tokenTurnMetadata: TokenTurnMetadata = {
-        groupId: generateGroupIdFromImage(item),
+        groupId: GroupIDGenerator.generateGroupIdFromImage(item),
       }
       item.metadata[tokenTurnMetadataId] = tokenTurnMetadata
 
@@ -57,7 +57,7 @@ const setTokenTurnMetadata = (items: any[], tokenTurnMetadataId: string) => {
       !itemIds.has(item.id) &&
       isImage(item) &&
       item.metadata[tokenTurnMetadataId] === undefined &&
-      groupIds.has(generateGroupIdFromImage(item)),
+      groupIds.has(GroupIDGenerator.generateGroupIdFromImage(item)),
     items => setTokenTurnMetadataForGroup(items, tokenTurnMetadataId),
   )
 }
@@ -67,7 +67,7 @@ const setTokenTurnMetadataForGroup = (
   tokenTurnMetadataId: string,
 ) => {
   for (const item of items) {
-    const groupId = generateGroupIdFromImage(item)
+    const groupId = GroupIDGenerator.generateGroupIdFromImage(item)
     const tokenTurnMetadata: TokenTurnMetadata = {
       groupId: groupId,
     }
@@ -82,7 +82,7 @@ const deleteTokenTurnMetadata = (items: any[], tokenTurnMetadataId: string) => {
   const itemIds = new Set<string>()
   for (const item of items) {
     if (isImage(item)) {
-      const groupId = generateGroupIdFromImage(item)
+      const groupId = GroupIDGenerator.generateGroupIdFromImage(item)
       groupIds.add(groupId)
       itemIds.add(item.id)
     }
