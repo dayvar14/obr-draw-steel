@@ -225,8 +225,7 @@ const InitiativeSubListItem: React.FC<{
 
             let top = 0
             let left = 0
-            console.log(screenRatioX, screenRatioY)
-            console.log(zoomRatio)
+
             if (userAgent.includes('Firefox')) {
               left = event.screenX * screenRatioX - 20 / zoomRatio
               top = event.screenY * screenRatioY - 100 / zoomRatio
@@ -239,9 +238,6 @@ const InitiativeSubListItem: React.FC<{
                 left,
               })
             }
-
-            console.log('top', top)
-            console.log('left', left)
 
             Popover.openTokenOptions(groupId, {
               top,

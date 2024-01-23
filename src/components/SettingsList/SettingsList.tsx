@@ -1,7 +1,7 @@
 import GithubIcon from '@icons/github.svg?react'
 import DiscordIcon from '@icons/discord.svg?react'
 import { APP_VERSION } from 'config'
-import { Modal, Scene } from '@obr'
+import { Modal, Token } from '@obr'
 import { SceneContext } from 'context/SceneContext'
 import { useContext, useState } from 'react'
 
@@ -190,11 +190,11 @@ const SettingsList = () => {
                   )
                 }
               >
-                <option value={Scene.GroupSplittingMode.CLOSEST}>
+                <option value={Token.GroupSplittingMode.CLOSEST}>
                   Closest
                 </option>
-                <option value={Scene.GroupSplittingMode.RANDOM}>Random</option>
-                <option value={Scene.GroupSplittingMode.STANDARD}>
+                <option value={Token.GroupSplittingMode.RANDOM}>Random</option>
+                <option value={Token.GroupSplittingMode.STANDARD}>
                   Standard
                 </option>
               </select>

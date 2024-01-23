@@ -1,5 +1,6 @@
 import OBR from '@owlbear-rodeo/sdk'
 import { APP_VERSION, SCENE_METADATA_ID } from 'config'
+import { Token } from './tokens'
 
 export module Scene {
   export interface SceneMetadata {
@@ -20,17 +21,11 @@ export module Scene {
     grouping: {
       isEnabled: boolean
       groupTokensFromAllUsers: boolean
-      groupSplittingMode: GroupSplittingMode
+      groupSplittingMode: Token.GroupSplittingMode
     }
     misc: {
       flagColorIsPlayerOwnerColor: boolean
     }
-  }
-
-  export enum GroupSplittingMode {
-    CLOSEST = 'CLOSEST',
-    RANDOM = 'RANDOM',
-    STANDARD = 'STANDARD',
   }
 
   export interface ListOrderMetadata {
@@ -56,7 +51,7 @@ export module Scene {
       grouping: {
         isEnabled: true,
         groupTokensFromAllUsers: true,
-        groupSplittingMode: GroupSplittingMode.CLOSEST,
+        groupSplittingMode: Token.GroupSplittingMode.CLOSEST,
       },
       misc: {
         flagColorIsPlayerOwnerColor: false,

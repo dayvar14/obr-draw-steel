@@ -1,12 +1,13 @@
-import OBR, { Image, Item, isImage } from '@owlbear-rodeo/sdk'
+import { kmeans } from 'ml-kmeans'
+import OBR, { Image, isImage, Item } from '@owlbear-rodeo/sdk'
 import SceneItemsApi from '@owlbear-rodeo/sdk/lib/api/scene/SceneItemsApi'
+import { generateGroupIdFromImage } from './common'
 
 import {
   FOES_TOGGLE_METADATA_ID,
   FRIENDS_TOGGLE_METADATA_ID,
   TURN_TOGGLE_METADATA_ID,
 } from '../config'
-import { generateGroupIdFromImage } from './common'
 
 export module Token {
   export interface TokenState {
@@ -110,9 +111,16 @@ export module Token {
     })
   }
 
+  export enum GroupSplittingMode {
+    CLOSEST = 'CLOSEST',
+    RANDOM = 'RANDOM',
+    STANDARD = 'STANDARD',
+  }
+
   export const splitTokenGroups = async (
     groupId: string,
     groupSize: number,
+    groupSplittingMode: GroupSplittingMode,
   ) => {
     const tokens = await getTokensFromGroupId(groupId)
 
@@ -120,28 +128,85 @@ export module Token {
       return
     }
 
-    let index = 0
-
     OBR.scene.items.updateItems(
       item =>
         (item.metadata[FOES_TOGGLE_METADATA_ID] !== undefined ||
           item.metadata[FRIENDS_TOGGLE_METADATA_ID] !== undefined) &&
         isImage(item) &&
         groupId === generateGroupIdFromImage(item),
-      images => {
-        images.forEach((image: Image) => {
-          const name = image.text.plainText ? image.text.plainText : image.name
-          image.text.plainText = name + getTokenGroupSuffix(index, groupSize)
-          index++
-        })
+      items => {
+        const images = items as Image[]
+        if (groupSplittingMode === GroupSplittingMode.CLOSEST) {
+          kMeansClusteringSplittingAlgorithm(images, groupSize)
+        } else if (groupSplittingMode === GroupSplittingMode.RANDOM) {
+          randomSplittingAlgorithm(images, groupSize)
+        } else {
+          standardSplittingAlgorithm(images, groupSize)
+        }
       },
     )
   }
 
-  // group size = 1
-  // index = 25 (26th token)
+  export function kMeansClusteringSplittingAlgorithm(
+    images: Image[],
+    groupSize: number,
+  ) {
+    const data = images.map(image => [image.position.x, image.position.y])
 
-  function getTokenGroupSuffix(index: number, groupSize: number) {
+    const { clusters } = kmeans(data, groupSize, {})
+
+    // Group images based on the clustering result
+    const imageGroups: Image[][] = Array.from({ length: groupSize }, () => [])
+
+    clusters.forEach((clusterIndex, imageIndex) => {
+      const image = images[imageIndex]
+      imageGroups[clusterIndex].push(image)
+    })
+
+    // Adjust so that all groups are as close to the same size as possible, with remaining images in the last group
+    const adjustedImageGroups: Image[][] = []
+
+    for (let i = 0; i < imageGroups.length - 1; i++) {
+      while (imageGroups[i].length > groupSize) {
+        const image = imageGroups[i].pop()
+        imageGroups[i + 1].unshift(image!)
+      }
+      adjustedImageGroups.push([...imageGroups[i]]) // Add a copy of the adjusted group
+    }
+
+    // Add the remaining images to the last group
+    adjustedImageGroups.push([...imageGroups[imageGroups.length - 1]])
+
+    const imageList = adjustedImageGroups.reduce(
+      (acc, currGroup) => [...acc, ...currGroup],
+      [],
+    )
+
+    console.log(adjustedImageGroups)
+
+    standardSplittingAlgorithm(imageList, groupSize)
+  }
+
+  function randomSplittingAlgorithm(images: Image[], groupSize: number) {
+    const shuffledImages = images
+      .map(value => ({ value, sort: Math.random() }))
+      .sort((a, b) => a.sort - b.sort)
+      .map(({ value }) => value)
+
+    standardSplittingAlgorithm(shuffledImages, groupSize)
+  }
+
+  function standardSplittingAlgorithm(images: Image[], groupSize: number) {
+    let index = 0
+
+    images.forEach((image: Image) => {
+      const name = image.text.plainText ? image.text.plainText : image.name
+      image.text.plainText = name + getGroupSuffix(index, groupSize)
+      index++
+    })
+  }
+
+  function getGroupSuffix(index: number, groupSize: number) {
     let suffix = ' '
     let charCount = Math.floor(index / groupSize / 26)
 
