@@ -5,12 +5,20 @@ import PlusIcon from '@icons/plus_circle.svg?react'
 import MinusIcon from '@icons/minus_circle.svg?react'
 import { Player, Token, Popover } from '@obr'
 import { TOKEN_OPTIONS_POPOVER_ID } from 'config'
+import { SceneContext } from '../../context/SceneContext'
 import clsx from 'clsx'
 
 export const OptionsList: React.FC<{ groupId: string }> = ({ groupId }) => {
   const [tokens, setTokens] = React.useState<Token.Token[] | undefined>([])
   const [turnCount, setTurnCount] = React.useState(1)
   const [splitCount, setSplitCount] = React.useState(5)
+  const sceneContext = React.useContext(SceneContext)
+
+  if (!sceneContext) {
+    return null
+  }
+
+  const settingsContext = sceneContext?.settings
 
   const MAX_TURN_COUNT = 3
 
@@ -181,7 +189,11 @@ export const OptionsList: React.FC<{ groupId: string }> = ({ groupId }) => {
               disabled: tokens.length == 1 || splitCount == tokens.length,
             })}
             onClick={() => {
-              Token.splitTokenGroups(groupId, splitCount)
+              Token.splitTokenGroups(
+                groupId,
+                splitCount,
+                settingsContext.grouping.groupSplittingMode,
+              )
             }}
           >
             Split
