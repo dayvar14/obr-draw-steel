@@ -1,8 +1,8 @@
 # obr-draw-steel
 
-[![version](https://img.shields.io/badge/version-0.4.0-red.svg)](https://github.com/dayvar14/obr-draw-steel/releases/tag/v0.4.0)
+[![version](https://img.shields.io/badge/version-0.5.0-red.svg)](https://github.com/dayvar14/obr-draw-steel/releases/tag/v0.5.0)
 [![GitHub Actions](https://github.com/dayvar14/obr-draw-steel/workflows/deployment/badge.svg)](https://github.com/dayvar14/obr-draw-steel/actions)
-[![commits since version](https://img.shields.io/github/commits-since/dayvar14/obr-draw-steel/v0.4.0.svg)](https://github.com/dayvar14/obr-draw-steel/compare/releases/v0.4.0...main)
+[![commits since version](https://img.shields.io/github/commits-since/dayvar14/obr-draw-steel/v0.5.0.svg)](https://github.com/dayvar14/obr-draw-steel/compare/releases/v0.5.0...main)
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org)
 [![github followers](https://img.shields.io/github/followers/dayvar14.svg?style=social&label=Follow&maxAge=2592000)](https://github.com/dayvar14?tab=followers)
@@ -13,10 +13,10 @@
 
 ## Draw Steel! - Owlbear Plugin
 
-An unoffical MCDM initiave tracker for Owlbear Rodeo.
+An unoffical Draw Steel TTRPG initiave tracker for Owlbear Rodeo.
 
-Draw Steel! is a MCDM RPG initiave tracker. Born out of a yearn for a digital
-initiative tracker for the unnamed MCDM rpg, the repo strives to provide a
+Draw Steel! is a Draw Steel TTRPG initiave tracker. Born out of a yearn for a digital
+initiative tracker for the Draw Steel TTRPG, the repo strives to provide a
 initiative tracker better suited for the rotating turns between friend and foe.
 
 ## Installing
