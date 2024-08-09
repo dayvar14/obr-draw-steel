@@ -25,7 +25,7 @@ const manifest = {
   author: 'Daniel Ayvar',
   homepage_url: 'https://github.com/dayvar14/obr-draw-steel',
   manifest_version: 1,
-  description: 'An unofficial MCDM RPG initiative tracker for Owlbear Rodeo.',
+  description: 'An unofficial Draw Steel TTRPG initiative tracker for Owlbear Rodeo.',
   icon: '/icons/sword_clash.png',
   action: {
     title: 'Draw Steel!',
