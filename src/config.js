@@ -1,5 +1,5 @@
 const EXTENSION_ID = 'com.danielayvar.obr-draw-steel'
-export const APP_VERSION = '0.5.1'
+export const APP_VERSION = '0.5.2'
 
 export const SCENE_METADATA_ID = `${EXTENSION_ID}/scene-metadata-id`
 
