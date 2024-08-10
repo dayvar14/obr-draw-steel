@@ -23,7 +23,7 @@ initiative tracker better suited for the rotating turns between friend and foe.
 
 Follow this
 [guide](https://docs.owlbear.rodeo/extensions/tutorial-hello-world/install-your-extension)
-and use this [manifest link](https://obr-draw-steal.onrender.com/manifest.json)
+and use this [manifest link](https://obr-draw-steel.onrender.com/manifest.json)
 to install then extension in Owlbear.
 
 ## Maintainers
