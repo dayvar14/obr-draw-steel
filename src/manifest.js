@@ -5,17 +5,17 @@ const argument = process.argv[2]
 
 const environment = process.env.OBR_DEPLOYMENT_ENVIRONMENT
 
-let applicationName = 'Draw Steel! (Test)'
+let applicationName = 'Draw Steel Initiative Tracker (Test)'
 
 switch (environment) {
   case 'production':
     console.log('Running in a production environment.')
-    applicationName = 'Draw Steel!'
+    applicationName = 'Draw Steel Initiative Tracker'
     break
 
   case 'development':
     console.log('Running in development environment.')
-    applicationName = 'Draw Steel! (Dev)'
+    applicationName = 'Draw Steel Initiative Tracker (Dev)'
     break
 }
 
@@ -25,10 +25,10 @@ const manifest = {
   author: 'Daniel Ayvar',
   homepage_url: 'https://github.com/dayvar14/obr-draw-steel',
   manifest_version: 1,
-  description: 'An unofficial Draw Steel RPG initiative tracker for Owlbear Rodeo.',
+  description: 'An unofficial Draw Steel TTRPG initiative tracker for Owlbear Rodeo.',
   icon: '/icons/sword_clash.png',
   action: {
-    title: 'Draw Steel!',
+    title: 'Draw Steel Initiative Tracker',
     icon: '/icons/sword_clash.svg',
     popover: '/',
     height: APP_HEIGHT,
