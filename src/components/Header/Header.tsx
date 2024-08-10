@@ -10,7 +10,9 @@ export const Header: React.FC = () => {
 
   return (
     <div className='app-header'>
-      <h1>Draw Steel!</h1>
+      <div>
+        <h1>Draw Steel!</h1>
+      </div>
       <div className='app-header-icons'>
         {playerContext?.playerState.role === Player.PlayerRole.GM && (
           <>
