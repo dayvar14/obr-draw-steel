@@ -38,11 +38,8 @@ const SettingsList = () => {
       <div className='settings-header'>
         <div>
           <h1>
-            Draw Steel <small>v{APP_VERSION}</small>
+            Draw Steel Initiative Tracker <small>v{APP_VERSION}</small>
           </h1>
-          <p>
-            <small>A MCDM RPG Initiative Tracker</small>
-          </p>
         </div>
 
         <div className='settings-header-icons'>

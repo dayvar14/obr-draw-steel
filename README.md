@@ -11,12 +11,12 @@
 > 1.0.0 along with an attempt to deploy the extension into the Owlbear Extension
 > explorer. It currently is feature complete but may contain bugs.
 
-## Draw Steel! - Owlbear Plugin
+## Draw Steel Initiative Tracker - Owlbear Plugin
 
-An unoffical MCDM Draw Steel initiave tracker for Owlbear Rodeo.
+An unoffical MCDM Draw Steel TTRPG initiave tracker for Owlbear Rodeo.
 
-Draw Steel! is a Draw Steel initiave tracker. Born out of a yearn for a digital
-initiative tracker for the Draw Steel RPG, the repo strives to provide a
+This project is a Draw Steel TTRPG initiave tracker. Born out of a yearn for a digital
+initiative tracker for the Draw Steel TTRPG, the repo strives to provide a
 initiative tracker better suited for the rotating turns between friend and foe.
 
 ## Installing
