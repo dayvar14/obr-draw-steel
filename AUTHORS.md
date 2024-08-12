@@ -49,6 +49,10 @@ https://www.svgrepo.com/svg/529906/sort-from-top-to-bottom
 ./public/icons/sword_clash.svg .public/icons/sword_clash.png Adapted from
 https://www.svgrepo.com/svg/321543/sword-clash
 
+./public/icons/reaction_filled.svg ./public/icons/reaction_unfilled.svg
+./src/icons/reaction_filled.svg ./src/icons/reaction_unfilled.svg
+https://www.svgrepo.com/svg/355330/trigger
+
 Licensed under CC by 4.0 (https://creativecommons.org/licenses/by/4.0/)
 
 # Google Fonts

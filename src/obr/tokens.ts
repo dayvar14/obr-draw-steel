@@ -6,6 +6,7 @@ import { GroupIDGenerator } from './common'
 import {
   FOES_TOGGLE_METADATA_ID,
   FRIENDS_TOGGLE_METADATA_ID,
+  REACTION_TOGGLE_METADATA_ID,
   TURN_TOGGLE_METADATA_ID,
 } from '../config'
 
@@ -24,6 +25,7 @@ export module Token {
     isVisible: boolean
     tokenType?: TokenType
     hasTurn: boolean
+    hasReaction: boolean
     mapPosition: {
       x: number
       y: number
@@ -261,6 +263,7 @@ export module Token {
         ? TokenType.FRIEND
         : TokenType.FOE
     const hasTurn = image.metadata[TURN_TOGGLE_METADATA_ID] !== undefined
+    const hasReaction = image.metadata[REACTION_TOGGLE_METADATA_ID] !== undefined
 
     const name = image.text.plainText ? image.text.plainText : image.name
     const groupId = GroupIDGenerator.generateGroupIdFromImage(image)
@@ -274,6 +277,7 @@ export module Token {
       isVisible: image.visible,
       tokenType: tokenType,
       hasTurn: hasTurn,
+      hasReaction: hasReaction,
       mapPosition: {
         x: image.position.x,
         y: image.position.y,

@@ -8,6 +8,8 @@ import { useContext, useEffect, useState } from 'react'
 
 import FlagFilledIcon from '@icons/flag_filled.svg?react'
 import FlagUnfilledIcon from '@icons/flag_unfilled.svg?react'
+import ReactionFilledIcon from '@icons/reaction_filled.svg?react'
+import ReactionUnfilledIcon from '@icons/reaction_unfilled.svg?react'
 import HamburgerMenuDotsIcon from '@icons/hamburger_menu_dots.svg?react'
 import EyeClosedIcon from '@icons/eye_closed.svg?react'
 import { PLACE_HOLDER_TOKEN_IMAGE } from 'config'
@@ -16,9 +18,10 @@ const InitiativeSubListItem: React.FC<{
   groupId: string
   tokens: Token.Token[]
   onCheckedChange: (hasTurn: boolean, groupId: string) => void
+  onReactionChange: (hasReaction: boolean, groupId: string) => void
   onDragStart?: (event: React.DragEvent<HTMLLIElement>) => void
   onDragEnd?: (event: React.DragEvent<HTMLLIElement>) => void
-}> = ({ groupId, tokens, onCheckedChange, onDragStart, onDragEnd }) => {
+}> = ({ groupId, tokens, onCheckedChange, onReactionChange, onDragStart, onDragEnd }) => {
   const permissionContext = useContext(PermissionContext)
   const playerContext = useContext(PlayerContext)
   const partyContext = useContext(PartyContext)
@@ -31,6 +34,7 @@ const InitiativeSubListItem: React.FC<{
   }
 
   const [hasTurn, setHasTurn] = useState(false)
+  const [hasReaction, setHasReaction] = useState(false)
   const [isMouseOverToken, setMouseOverToken] = useState(false)
   const [currentTokens, setCurrentTokens] = useState<Token.Token[]>(tokens)
   const isOwnerOnly = permissionContext.permissionState.permissions.includes(
@@ -98,11 +102,22 @@ const InitiativeSubListItem: React.FC<{
     }
     // If a token in the state was updated ensure that the checked state matches
     else if (currentTokens.length === tokens.length) {
-      const changedTokens = tokens.filter(token => token.hasTurn !== hasTurn)
+      // if a token is found to not have a turn in the group set the whole group
+      // to not have a turn
+      const changedTurnTokens = tokens.filter(token => token.hasTurn !== hasTurn)
 
-      if (changedTokens.length != tokens.length) {
+      if (changedTurnTokens.length != tokens.length) {
         setHasTurn(!hasTurn)
       }
+
+      // if a token is found to not have a reaction in the group set the whole
+      // group to not have a reaction
+      const changedReactionTokens = tokens.filter(token => token.hasReaction !== hasReaction)
+
+      if (changedReactionTokens.length != tokens.length) {
+        setHasReaction(!hasReaction)
+      }
+
     } else {
       setCurrentTokens(tokens)
     }
@@ -113,6 +128,13 @@ const InitiativeSubListItem: React.FC<{
     setHasTurn(checked)
     Metadata.setTurnMetadataFromTokens(currentTokens, checked)
     onCheckedChange(checked, groupId)
+  }
+
+  const handleReactionChange = () => {
+    const reaction = !hasReaction
+    setHasReaction(reaction)
+    Metadata.setReactionMetadataFromTokens(currentTokens, reaction)
+    onReactionChange(reaction, groupId)
   }
 
   async function handleDoubleClick() {
@@ -194,6 +216,42 @@ const InitiativeSubListItem: React.FC<{
             />
           ) : (
             <FlagUnfilledIcon
+              className={clsx('colored medium', {
+                primary: isOwner,
+              })}
+            />
+          )}
+        </label>
+
+        <input
+          checked={!hasReaction}
+          disabled={!hasModifyPermissions}
+          className={clsx({ disabled: !hasModifyPermissions })}
+          onChange={() => {
+            if (hasModifyPermissions) {
+                handleReactionChange()
+            }
+          }}
+          type={'checkbox'}
+          id={groupId + '-reaction'}
+        />
+        <label
+          title={!hasReaction ? 'Reset reaction' : 'Finish reaction'}
+          className={clsx({
+            disabled: !hasModifyPermissions,
+            'no-turn': !hasReaction,
+          })}
+          htmlFor={groupId + '-reaction'}
+          role={'application'}
+        >
+          {hasReaction ? (
+            <ReactionFilledIcon
+              className={clsx('filled colored medium', {
+                primary: isOwner,
+              })}
+            />
+          ) : (
+            <ReactionUnfilledIcon
               className={clsx('colored medium', {
                 primary: isOwner,
               })}
