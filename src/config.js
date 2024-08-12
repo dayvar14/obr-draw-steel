@@ -15,6 +15,10 @@ export const FOES_TOGGLE_METADATA_ID = `${EXTENSION_ID}/foes-toggle-metadata-id`
 export const TURN_TOGGLE_CONTEXT_MENU_ID = `${EXTENSION_ID}/turn-toggle`
 export const TURN_TOGGLE_METADATA_ID = `${EXTENSION_ID}/turn-toggle-metadata-id`
 
+// Metadata for deciding is a token has a reaction
+export const REACTION_TOGGLE_CONTEXT_MENU_ID = `${EXTENSION_ID}/reaction-toggle`
+export const REACTION_TOGGLE_METADATA_ID = `${EXTENSION_ID}/reaction-toggle-metadata-id`
+
 // ID prefix used to generate a group id for a token
 export const FRIENDS_GROUP_ID_PREFIX = `${EXTENSION_ID}/friends-turn-metadata-id-`
 export const FOES_GROUP_ID_PREFIX = `${EXTENSION_ID}/foes-turn-metadata-id-`

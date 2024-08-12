@@ -21,7 +21,7 @@ export const Header: React.FC = () => {
                 title='Refresh all turns'
                 className='rounded-square-icon-button'
                 onClick={() => {
-                  Metadata.clearAllTurns()
+                  Metadata.clearAllTurnsAndReactions()
                 }}
               >
                 <RefreshIcon className='medium filled' />

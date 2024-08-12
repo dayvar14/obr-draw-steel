@@ -5,11 +5,17 @@ import {
   FOES_TOGGLE_METADATA_ID,
   FRIENDS_TOGGLE_CONTEXT_MENU_ID,
   FRIENDS_TOGGLE_METADATA_ID,
+  REACTION_TOGGLE_CONTEXT_MENU_ID,
+  REACTION_TOGGLE_METADATA_ID,
   TURN_TOGGLE_CONTEXT_MENU_ID,
   TURN_TOGGLE_METADATA_ID,
 } from '../config.js'
 
-import { createToggleClickFunc, createTurnToggleClickFunc } from './itemmetadata.ts'
+import {
+  createToggleClickFunc,
+  createTurnToggleClickFunc,
+  createReactionToggleClickFunc,
+} from './itemmetadata.ts'
 
 const friendsIcons: ContextMenuIcon[] = [
   {
@@ -126,6 +132,102 @@ const turnIcons: ContextMenuIcon[] = [
       ],
     },
   },
+  {
+    icon: '/icons/flag_filled.svg',
+    label: 'Toggle Turn',
+    filter: {
+      every: [
+        { key: 'layer', value: 'CHARACTER' },
+        {
+          key: ['metadata', REACTION_TOGGLE_METADATA_ID],
+          value: undefined,
+        },
+      ],
+      some: [
+        {
+          key: ['metadata', FRIENDS_TOGGLE_METADATA_ID],
+          value: undefined,
+          operator: '!=',
+          coordinator: '||',
+        },
+        {
+          key: ['metadata', FOES_TOGGLE_METADATA_ID],
+          value: undefined,
+          operator: '!=',
+        },
+      ],
+    },
+  },
+  {
+    icon: '/icons/flag_unfilled.svg',
+    label: 'Toggle Turn',
+    filter: {
+      every: [{ key: 'layer', value: 'CHARACTER' }],
+      some: [
+        {
+          key: ['metadata', FRIENDS_TOGGLE_METADATA_ID],
+          value: undefined,
+          operator: '!=',
+          coordinator: '||',
+        },
+        {
+          key: ['metadata', FOES_TOGGLE_METADATA_ID],
+          value: undefined,
+          operator: '!=',
+        },
+      ],
+    },
+  },
+]
+
+
+const reactionIcons: ContextMenuIcon[] = [
+  {
+    icon: '/icons/reaction_filled.svg',
+    label: 'Toggle Reaction',
+    filter: {
+      every: [
+        { key: 'layer', value: 'CHARACTER' },
+        {
+          key: ['metadata', REACTION_TOGGLE_METADATA_ID],
+          value: undefined,
+        },
+      ],
+      some: [
+        {
+          key: ['metadata', FRIENDS_TOGGLE_METADATA_ID],
+          value: undefined,
+          operator: '!=',
+          coordinator: '||',
+        },
+        {
+          key: ['metadata', FOES_TOGGLE_METADATA_ID],
+          value: undefined,
+          operator: '!=',
+        },
+      ],
+    },
+  },
+  {
+    icon: '/icons/reaction_unfilled.svg',
+    label: 'Toggle Reaction',
+    filter: {
+      every: [{ key: 'layer', value: 'CHARACTER' }],
+      some: [
+        {
+          key: ['metadata', FRIENDS_TOGGLE_METADATA_ID],
+          value: undefined,
+          operator: '!=',
+          coordinator: '||',
+        },
+        {
+          key: ['metadata', FOES_TOGGLE_METADATA_ID],
+          value: undefined,
+          operator: '!=',
+        },
+      ],
+    },
+  },
 ]
 
 export module ContextMenu {
@@ -137,6 +239,7 @@ export module ContextMenu {
         onClick: createToggleClickFunc(
           FRIENDS_TOGGLE_METADATA_ID,
           TURN_TOGGLE_METADATA_ID,
+          REACTION_TOGGLE_METADATA_ID,
         ),
       })
 
@@ -146,6 +249,7 @@ export module ContextMenu {
         onClick: createToggleClickFunc(
           FOES_TOGGLE_METADATA_ID,
           TURN_TOGGLE_METADATA_ID,
+          REACTION_TOGGLE_METADATA_ID,
         ),
       })
 
@@ -153,6 +257,12 @@ export module ContextMenu {
         id: TURN_TOGGLE_CONTEXT_MENU_ID,
         icons: turnIcons,
         onClick: createTurnToggleClickFunc(TURN_TOGGLE_METADATA_ID),
+      })
+
+      OBR.contextMenu.create({
+        id: REACTION_TOGGLE_CONTEXT_MENU_ID,
+        icons: reactionIcons,
+        onClick: createReactionToggleClickFunc(REACTION_TOGGLE_METADATA_ID),
       })
     })
   }
