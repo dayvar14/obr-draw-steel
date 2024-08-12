@@ -31,6 +31,10 @@ const InitiativeSubList: React.FC<{
     new Set(tokenGroups.keys()),
   )
 
+  const [unreactedList, setUnreactedList] = useState<Set<string>>(
+    new Set(tokenGroups.keys()),
+  )
+
   const isGM = playerContext.playerState.role === Player.PlayerRole.GM
 
   const onCheckedChange: React.ComponentProps<
@@ -45,6 +49,22 @@ const InitiativeSubList: React.FC<{
         const newCheckedList = new Set<string>(checkedList)
         newCheckedList.add(groupId)
         setCheckedList(newCheckedList)
+      }
+    }
+  }
+
+  const onReactionChange: React.ComponentProps<
+    typeof InitiativeSubListItem
+  >['onReactionChange'] = (isUnreacted, groupId) => {
+    if (unreactedList) {
+      if (isUnreacted) {
+        const newUnreactedList = new Set<string>(unreactedList)
+        newUnreactedList.delete(groupId)
+        setUnreactedList(newUnreactedList)
+      } else {
+        const newUnreactedList = new Set<string>(unreactedList)
+        newUnreactedList.add(groupId)
+        setUnreactedList(newUnreactedList)
       }
     }
   }
@@ -97,6 +117,7 @@ const InitiativeSubList: React.FC<{
       groupId={groupId}
       tokens={tokenList}
       onCheckedChange={onCheckedChange}
+      onReactionChange={onReactionChange}
     />
   ))
 
