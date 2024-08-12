@@ -151,6 +151,7 @@ const InitiativeSubListItem: React.FC<{
       draggable={true}
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
+      onDoubleClick={handleDoubleClick}
     >
       <div className={clsx(['sub-list-item-token', { 'no-turn': !hasTurn }])}>
         <img
@@ -159,7 +160,6 @@ const InitiativeSubListItem: React.FC<{
           onClick={(event: React.MouseEvent<HTMLDivElement>) => {
             handleClick(event)
           }}
-          onDoubleClick={handleDoubleClick}
           onMouseEnter={() => {
             setMouseOverToken(true)
           }}
