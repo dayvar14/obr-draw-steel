@@ -2,7 +2,9 @@ $colors: (
   primary: #bb99ff,
   contrast: #ffffff,
   primary-text: #ffffff,
-  background-primary: #000000
+  background-primary: #000000,
+  disabled-text: grey,
+  disabled-primary: grey
 );
 
 @import "_theme.scss";
