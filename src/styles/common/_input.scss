@@ -50,9 +50,9 @@ select {
     height: map-get($space-sizes, xlarge);
 
     &.disabled {
-        cursor: not-allowed;
-        .slider:before {
-            background-color: map-get($colors, disabled-primary);
+        .slider {
+            opacity: 0.5; 
+            cursor: not-allowed;
         }
     }
 
