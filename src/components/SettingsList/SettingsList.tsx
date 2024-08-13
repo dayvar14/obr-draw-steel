@@ -4,6 +4,7 @@ import { APP_VERSION } from 'config'
 import { Modal, Token } from '@obr'
 import { SceneContext } from 'context/SceneContext'
 import { useContext, useState } from 'react'
+import clsx from 'clsx'
 
 const SettingsList = () => {
   const sceneContext = useContext(SceneContext)
@@ -87,13 +88,15 @@ const SettingsList = () => {
               </label>
             </div>
           </div>
-          <div className='settings-item'>
+          <div className={clsx('settings-item', {'settings-item-disabled': unsavedSettings.playerAccess.canModifyAllTurns})}
+            title="Only applies if the player permission 'Owner Only' is enabled.">
             <p>Allow players to set their turns if player owned.</p>
             <div className='settings-item-input'>
-              <label className='switch'>
+              <label className={clsx('switch', {'disabled': unsavedSettings.playerAccess.canModifyAllTurns})}>
                 <input
                   type='checkbox'
                   checked={unsavedSettings.playerAccess.canSetTurnIfPlayerOwned}
+                  disabled={unsavedSettings.playerAccess.canModifyAllTurns}
                   onChange={e =>
                     handleInputChange(
                       'playerAccess',

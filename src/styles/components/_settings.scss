@@ -66,6 +66,12 @@
         flex: 1;
         padding-right: map-get($space-sizes, small);
     }
+
+    &.settings-item-disabled {
+        p {
+            color: map-get($colors, disabled-primary);
+        }
+    }
 }
 
 .settings-body-footnote {

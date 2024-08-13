@@ -13,6 +13,7 @@ import ReactionUnfilledIcon from '@icons/reaction_unfilled.svg?react'
 import HamburgerMenuDotsIcon from '@icons/hamburger_menu_dots.svg?react'
 import EyeClosedIcon from '@icons/eye_closed.svg?react'
 import { PLACE_HOLDER_TOKEN_IMAGE } from 'config'
+import { SceneContext } from 'context/SceneContext'
 
 const InitiativeSubListItem: React.FC<{
   groupId: string
@@ -25,11 +26,12 @@ const InitiativeSubListItem: React.FC<{
   const permissionContext = useContext(PermissionContext)
   const playerContext = useContext(PlayerContext)
   const partyContext = useContext(PartyContext)
+  const sceneContext = useContext(SceneContext)
   const [imageSrc, setImageSrc] = useState<string>(tokens[0].imageUrl)
 
-  if (!playerContext || !permissionContext || !partyContext) {
+  if (!playerContext || !permissionContext || !partyContext || !sceneContext) {
     throw new Error(
-      'PlayerContext, PermissionContext, or PartyContext is undefined',
+      'PlayerContext, PermissionContext, PartyContext, or SceneContext is undefined',
     )
   }
 
@@ -50,7 +52,10 @@ const InitiativeSubListItem: React.FC<{
 
   const isOwner = ownerIds.has(playerContext.playerState.id)
 
-  const hasModifyPermissions = isGM || !isOwnerOnly || (isOwnerOnly && isOwner)
+  const canUpdateAnyTurn = sceneContext.settings.playerAccess.canModifyAllTurns
+  // if players can only update their own tokens, then check to make sure they are the owner. Otherwise the player cannot modify
+  const hasOwnerPermission = sceneContext.settings.playerAccess.canSetTurnIfPlayerOwned ? isOwnerOnly && isOwner : false
+  const hasModifyPermissions = isGM || canUpdateAnyTurn || hasOwnerPermission
 
   const playerOwners: Player.PlayerState[] = []
 
