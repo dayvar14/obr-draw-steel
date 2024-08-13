@@ -41,6 +41,11 @@ select {
     padding-bottom: map-get($space-sizes, xxxsmall);
     padding-left: map-get($space-sizes, xsmall);
     font-family: inherit;
+
+    &.disabled {
+        opacity: 0.5; 
+        cursor: not-allowed;
+    }
 }
 
 .switch {
