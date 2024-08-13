@@ -87,13 +87,15 @@ const SettingsList = () => {
               </label>
             </div>
           </div>
-          <div className='settings-item'>
+          <div className={`settings-item ${unsavedSettings.playerAccess.canModifyAllTurns ? 'settings-item-disabled' : ''}`}
+            title="Only applies if the player permission 'Owner Only' is enabled.">
             <p>Allow players to set their turns if player owned.</p>
             <div className='settings-item-input'>
-              <label className='switch'>
+              <label className={`switch ${unsavedSettings.playerAccess.canModifyAllTurns ? 'disabled' : ''}`}>
                 <input
                   type='checkbox'
                   checked={unsavedSettings.playerAccess.canSetTurnIfPlayerOwned}
+                  disabled={unsavedSettings.playerAccess.canModifyAllTurns}
                   onChange={e =>
                     handleInputChange(
                       'playerAccess',
