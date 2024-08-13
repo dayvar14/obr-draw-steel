@@ -149,18 +149,14 @@ const SettingsList = () => {
           </div>
         </div>
         <div>
-          <div className='settings-item'>
+          <div className={clsx('settings-item', {'settings-item-disabled': !unsavedSettings.grouping.isEnabled})}>
             <p>Group tokens created by different users</p>
             <div className='settings-item-input'>
-              <label className='switch'>
+              <label className={clsx('switch', {'disabled': !unsavedSettings.grouping.isEnabled})}>
                 <input
                   type='checkbox'
                   disabled={!unsavedSettings.grouping.isEnabled}
-                  checked={
-                    unsavedSettings.grouping.isEnabled
-                      ? unsavedSettings.grouping.groupTokensFromAllUsers
-                      : false
-                  }
+                  checked={unsavedSettings.grouping.groupTokensFromAllUsers}
                   onChange={e =>
                     handleInputChange(
                       'grouping',
@@ -175,11 +171,12 @@ const SettingsList = () => {
           </div>
         </div>
         <div>
-          <div className='settings-item'>
+          <div className={clsx('settings-item', {'settings-item-disabled': !unsavedSettings.grouping.isEnabled})}>
             <p>Grouping splitting mode</p>
             <div className='settings-item-input'>
               <select
                 id='dropdown'
+                className={clsx({'disabled': !unsavedSettings.grouping.isEnabled})}
                 disabled={!unsavedSettings.grouping.isEnabled}
                 value={unsavedSettings.grouping.groupSplittingMode}
                 onChange={e =>
