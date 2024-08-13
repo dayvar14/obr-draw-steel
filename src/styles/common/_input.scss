@@ -48,37 +48,54 @@ select {
     position: relative;
     width: calc(map-get($space-sizes, xlarge) + map-get($space-sizes, xlarge));
     height: map-get($space-sizes, xlarge);
-}
 
-.switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
+    &.disabled {
+        .slider {
+            opacity: 0.5; 
+            cursor: not-allowed;
+        }
+    }
 
-.slider {
-    -webkit-transition: 0.4s;
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    transition: 0.4s;
-    cursor: pointer;
-    background-color: #ccc;
-}
+    input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
 
-.slider:before {
-    -webkit-transition: 0.4s;
-    position: absolute;
-    bottom: map-get($space-sizes, xxxsmall);
-    left: map-get($space-sizes, xxxsmall);
-    transition: 0.4s;
-    box-shadow: 0 0 10px rgba(map-get($colors, contrast), 0.3);
-    background-color: white;
-    width: map-get($space-sizes, large);
-    height: calc(map-get($space-sizes, large));
-    content: "";
+    .slider {
+        -webkit-transition: 0.4s;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        transition: 0.4s;
+        cursor: pointer;
+        background-color: #ccc;
+
+        &:before {
+            -webkit-transition: 0.4s;
+            position: absolute;
+            bottom: map-get($space-sizes, xxxsmall);
+            left: map-get($space-sizes, xxxsmall);
+            transition: 0.4s;
+            box-shadow: 0 0 10px rgba(map-get($colors, contrast), 0.3);
+            background-color: white;
+            width: map-get($space-sizes, large);
+            height: calc(map-get($space-sizes, large));
+            content: "";
+        }
+
+        /* Rounded sliders */
+        &.round {
+            border-radius: 34px;
+
+            &:before {
+                border-radius: 50%;
+            }
+
+        }
+    }
 }
 
 input:checked + .slider {
@@ -93,13 +110,4 @@ input:checked + .slider:before {
     -webkit-transform: translateX(map-get($space-sizes, xlarge));
     -ms-transform: translateX(map-get($space-sizes, xlarge));
     transform: translateX(map-get($space-sizes, xlarge));
-}
-
-/* Rounded sliders */
-.slider.round {
-    border-radius: 34px;
-}
-
-.slider.round:before {
-    border-radius: 50%;
 }
