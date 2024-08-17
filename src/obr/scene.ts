@@ -9,7 +9,8 @@ export module Scene {
     listOrders: {
       friends: ListOrderMetadata
       foes: ListOrderMetadata
-    }
+    },
+    roundCount: number
   }
 
   export interface SettingsMetadata {
@@ -125,5 +126,11 @@ export module Scene {
     metadata: ListOrderMetadata,
   ) => {
     return updateListOrderMetadata('foes', metadata)
+  }
+
+  export const updateRoundCount = async (roundCount: number): Promise<void> => {
+    const sceneMetadata = await getSceneMetadata()
+    sceneMetadata.roundCount = roundCount
+    return updateSceneMetadata(sceneMetadata)
   }
 }

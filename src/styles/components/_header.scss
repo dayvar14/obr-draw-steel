@@ -13,6 +13,18 @@
     > hr {
         opacity: 0.02;
     }
+
+    &-round-count {
+        display: flex;
+        gap: map-get($space-sizes, small);
+        align-items: center;
+
+        > input {
+            @extend h1;
+            max-width: 60px;
+            border: 1px solid rgba(map-get($colors, contrast), 0.25);
+        }
+    }
 }
 
 .app-header-icons {
