@@ -60,7 +60,7 @@ export const Header: React.FC = () => {
           readOnly={!isGM}
           onChange={(e) => {updateRound(e.target.value)}}
           onKeyDown={(e) => e.key == 'Enter' && e.target.blur() }
-          onBlur={() => !headerRound.length && setRound('0')} // while the input is focused it can be blank. If blurred && blank, then default to 0
+          onBlur={() => !headerRound.length && updateRound('0')} // while the input is focused it can be blank. If blurred && blank, then default to 0
         />
       </div>
       <div className='app-header-icons'>
