@@ -273,16 +273,8 @@ const InitiativeSubListItem: React.FC<{
               'no-turn': !hasTurn,
             },
           ])}
-          onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-            const zoomRatio = Math.round(window.devicePixelRatio * 100) / 200
-
-            const screenRatioX =
-              event.nativeEvent.view!.window.outerWidth /
-              event.nativeEvent.view!.screen.availWidth
-
-            const screenRatioY =
-              event.nativeEvent.view!.window.outerHeight /
-              event.nativeEvent.view!.screen.availHeight
+          onClick={(event: any) => {
+            const zoomRatio = window.devicePixelRatio
 
             const userAgent = navigator.userAgent
 
@@ -290,16 +282,11 @@ const InitiativeSubListItem: React.FC<{
             let left = 0
 
             if (userAgent.includes('Firefox')) {
-              left = event.screenX * screenRatioX - 20 / zoomRatio
-              top = event.screenY * screenRatioY - 100 / zoomRatio
+              left = event.screenX - (20) / zoomRatio
+              top = event.screenY - (100) / zoomRatio
             } else {
-              left = ((event.screenX - 20) * screenRatioX) / zoomRatio
-              top = ((event.screenY - 100) * screenRatioY) / zoomRatio
-
-              Popover.openTokenOptions(groupId, {
-                top,
-                left,
-              })
+              left = ((event.screenX - event.view!.screenLeft - 20)) / zoomRatio
+              top = ((event.screenY - event.view!.screenTop - 100)) / zoomRatio
             }
 
             Popover.openTokenOptions(groupId, {
