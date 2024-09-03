@@ -10,6 +10,8 @@ interface SceneContextProps {
   setFriendsListOrder: (listOrder: Scene.ListOrderMetadata) => void
   foesListOrder: Scene.ListOrderMetadata
   setFoesListOrder: (listOrder: Scene.ListOrderMetadata) => void
+  roundCount: number
+  setRoundCount: (roundCount: number) => Promise<void>
 }
 
 const SceneContext = createContext<SceneContextProps | undefined>(undefined)
@@ -28,6 +30,7 @@ const SceneProvider = ({
     useState<Scene.ListOrderMetadata>()
   const [foesListOrder, setLocalFoesListOrder] =
     useState<Scene.ListOrderMetadata>()
+  const [roundCount, setLocalRoundCount] = useState<number>(0);
 
   useEffect(() => {
     OBR.scene.isReady().then(ready => {
@@ -59,6 +62,7 @@ const SceneProvider = ({
       setLocalSettings(sceneMetadata.settings)
       setLocalFriendsListOrder(sceneMetadata.listOrders.friends)
       setLocalFoesListOrder(sceneMetadata.listOrders.foes)
+      setLocalRoundCount(sceneMetadata.roundCount)
     }
   }, [sceneMetadata])
 
@@ -74,6 +78,10 @@ const SceneProvider = ({
     Scene.updateFoesListOrderMetadata(listOrder)
   }
 
+  const setRoundCount = async (roundCount: number) => {
+    await Scene.updateRoundCount(roundCount)
+  }
+
   if (sceneMetadata) {
     const contextValue: SceneContextProps = {
       sceneMetadata,
@@ -83,6 +91,8 @@ const SceneProvider = ({
       setFriendsListOrder,
       foesListOrder: foesListOrder as Scene.ListOrderMetadata,
       setFoesListOrder,
+      roundCount,
+      setRoundCount 
     }
     return (
       <SceneContext.Provider value={contextValue}>

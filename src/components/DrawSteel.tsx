@@ -40,8 +40,6 @@ const DrawSteel = () => {
   return (
     <ThemeWrapper className={'app-container'}>
       <PlayerProvider>
-        <Header />
-        <hr />
         <SceneProvider
           loadingChildren={
             <div className={'no-scene'}>
@@ -49,6 +47,8 @@ const DrawSteel = () => {
             </div>
           }
         >
+        <Header />
+        <hr />
           <PartyProvider>
             <PermissionProvider>
               <TokenProvider>
