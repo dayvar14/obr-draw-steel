@@ -32,7 +32,7 @@ export const TOKEN_OPTIONS_POPOVER_ID = `${EXTENSION_ID}/token-options-popover-i
 
 // Size of token options
 export const TOKEN_OPTIONS_WIDTH = 200
-export const TOKEN_OPTIONS_HEIGHT = 335
+export const TOKEN_OPTIONS_HEIGHT = 364
 
 /* Settings */
 export const SETTINGS_MODAL_ID = `${EXTENSION_ID}/settings-modal-id`

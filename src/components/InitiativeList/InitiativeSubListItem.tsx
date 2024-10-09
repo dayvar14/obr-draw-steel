@@ -12,6 +12,7 @@ import ReactionFilledIcon from '@icons/reaction_filled.svg?react'
 import ReactionUnfilledIcon from '@icons/reaction_unfilled.svg?react'
 import HamburgerMenuDotsIcon from '@icons/hamburger_menu_dots.svg?react'
 import EyeClosedIcon from '@icons/eye_closed.svg?react'
+import SwordIcon from '@icons/sword.svg?react'
 import { PLACE_HOLDER_TOKEN_IMAGE } from 'config'
 import { SceneContext } from 'context/SceneContext'
 
@@ -22,7 +23,14 @@ const InitiativeSubListItem: React.FC<{
   onReactionChange: (hasReaction: boolean, groupId: string) => void
   onDragStart?: (event: React.DragEvent<HTMLLIElement>) => void
   onDragEnd?: (event: React.DragEvent<HTMLLIElement>) => void
-}> = ({ groupId, tokens, onCheckedChange, onReactionChange, onDragStart, onDragEnd }) => {
+}> = ({
+  groupId,
+  tokens,
+  onCheckedChange,
+  onReactionChange,
+  onDragStart,
+  onDragEnd,
+}) => {
   const permissionContext = useContext(PermissionContext)
   const playerContext = useContext(PlayerContext)
   const partyContext = useContext(PartyContext)
@@ -54,7 +62,10 @@ const InitiativeSubListItem: React.FC<{
 
   const canUpdateAnyTurn = sceneContext.settings.playerAccess.canModifyAllTurns
   // if players can only update their own tokens, then check to make sure they are the owner. Otherwise the player cannot modify
-  const hasOwnerPermission = sceneContext.settings.playerAccess.canSetTurnIfPlayerOwned ? isOwnerOnly && isOwner : false
+  const hasOwnerPermission = sceneContext.settings.playerAccess
+    .canSetTurnIfPlayerOwned
+    ? isOwnerOnly && isOwner
+    : false
   const hasModifyPermissions = isGM || canUpdateAnyTurn || hasOwnerPermission
 
   const playerOwners: Player.PlayerState[] = []
@@ -109,7 +120,9 @@ const InitiativeSubListItem: React.FC<{
     else if (currentTokens.length === tokens.length) {
       // if a token is found to not have a turn in the group set the whole group
       // to not have a turn
-      const changedTurnTokens = tokens.filter(token => token.hasTurn !== hasTurn)
+      const changedTurnTokens = tokens.filter(
+        token => token.hasTurn !== hasTurn,
+      )
 
       if (changedTurnTokens.length != tokens.length) {
         setHasTurn(!hasTurn)
@@ -117,12 +130,13 @@ const InitiativeSubListItem: React.FC<{
 
       // if a token is found to not have a reaction in the group set the whole
       // group to not have a reaction
-      const changedReactionTokens = tokens.filter(token => token.hasReaction !== hasReaction)
+      const changedReactionTokens = tokens.filter(
+        token => token.hasReaction !== hasReaction,
+      )
 
       if (changedReactionTokens.length != tokens.length) {
         setHasReaction(!hasReaction)
       }
-
     } else {
       setCurrentTokens(tokens)
     }
@@ -152,7 +166,9 @@ const InitiativeSubListItem: React.FC<{
 
   return (
     <li
-      className={clsx(['sub-list-item'], { hidden: !isVisible && !isGM })}
+      className={clsx(['sub-list-item'], {
+        hidden: !isVisible && !isGM,
+      })}
       draggable={true}
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
@@ -234,7 +250,7 @@ const InitiativeSubListItem: React.FC<{
           className={clsx({ disabled: !hasModifyPermissions })}
           onChange={() => {
             if (hasModifyPermissions) {
-                handleReactionChange()
+              handleReactionChange()
             }
           }}
           type={'checkbox'}

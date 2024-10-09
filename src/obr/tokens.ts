@@ -26,6 +26,7 @@ export module Token {
     tokenType?: TokenType
     hasTurn: boolean
     hasReaction: boolean
+    isReady: boolean
     mapPosition: {
       x: number
       y: number
@@ -278,6 +279,7 @@ export module Token {
       tokenType: tokenType,
       hasTurn: hasTurn,
       hasReaction: hasReaction,
+      isReady: false,
       mapPosition: {
         x: image.position.x,
         y: image.position.y,

@@ -6,9 +6,9 @@
     border-bottom-width: map-get($space-sizes, xxxxsmall);
     border-bottom-style: solid;
     border-color: rgba(map-get($colors, contrast), 0.1);
-    padding-top: map-get($space-sizes, xsmall);
+    padding-top: map-get($space-sizes, xxsmall);
     padding-right: map-get($space-sizes, xxlarge);
-    padding-bottom: map-get($space-sizes, xsmall);
+    padding-bottom: map-get($space-sizes, xxsmall);
     padding-left: map-get($space-sizes, xxlarge);
 
     width: 100lvw;
@@ -21,6 +21,8 @@
     &.hidden {
         display: none;
     }
+
+
 }
 
 .sub-list-item-token {

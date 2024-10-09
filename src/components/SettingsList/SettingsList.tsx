@@ -235,7 +235,7 @@ const SettingsList = () => {
               >
                 create an issue in Github
               </a>{' '}
-              and/or @StankyPapaya on the{' '}
+              and/or @StinkyPapaya on the{' '}
               <a
                 className='rounded-square-icon-button large'
                 href='https://discord.com/channels/795808973743194152/1082460044731371591'

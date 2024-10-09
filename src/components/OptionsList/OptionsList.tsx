@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import SelectIcon from '@icons/select.svg?react'
+import ReadyIcon from '@icons/sword.svg?react'
 import DeleteIcon from '@icons/delete.svg?react'
 import PlusIcon from '@icons/plus_circle.svg?react'
 import MinusIcon from '@icons/minus_circle.svg?react'
@@ -64,6 +65,11 @@ export const OptionsList: React.FC<{ groupId: string }> = ({ groupId }) => {
     return handleNumberChange
   }
 
+  const onClickReady = async () => {
+    tokens.forEach(token => { token.isReady
+    Popover.closeTokenOptions(TOKEN_OPTIONS_POPOVER_ID)
+  }
+
   const onClickDelete = async () => {
     Player.deleteTokens(tokens)
     Popover.closeTokenOptions(TOKEN_OPTIONS_POPOVER_ID)
@@ -77,6 +83,12 @@ export const OptionsList: React.FC<{ groupId: string }> = ({ groupId }) => {
   return (
     <>
       <p className='options-header'>Actions</p>
+      <button className='option option-button' onClick={onClickSelect}>
+        <div className='option-button-icon-container'>
+          <ReadyIcon className='large filled' />
+        </div>
+        <p>Set Ready</p>
+      </button>
       <button className='option option-button' onClick={onClickSelect}>
         <div className='option-button-icon-container'>
           <SelectIcon className='large filled' />
