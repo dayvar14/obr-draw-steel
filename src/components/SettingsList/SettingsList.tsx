@@ -66,7 +66,7 @@ const SettingsList = () => {
       </div>
       <hr />
       <div className='settings-body'>
-        <h3>Player Access</h3>
+        <h2>Player Access</h2>
         <hr />
         <div>
           <div className='settings-item'>
@@ -129,7 +129,7 @@ const SettingsList = () => {
             </div>
           </div>
         </div>
-        <h3>Grouping</h3>
+        <h2>Grouping</h2>
         <hr />
         <div>
           <div className='settings-item'>
@@ -198,7 +198,7 @@ const SettingsList = () => {
             </div>
           </div>
         </div>
-        <h3>Misc.</h3>
+        <h2>Misc.</h2>
         <hr />
         <div>
           <div className='settings-item'>
