@@ -6,9 +6,11 @@ import { useEffect, useState } from 'react'
 const ThemeWrapper = ({
   className,
   children,
+  style,
 }: {
   className?: string
   children?: React.ReactNode
+  style?: React.CSSProperties
 }) => {
   const [theme, setTheme] = useState('light')
   useEffect(() => {
@@ -29,7 +31,7 @@ const ThemeWrapper = ({
     })
   }, [])
 
-  return <div className={clsx(theme, className)}>{children}</div>
+  return <div className={clsx(theme, className)} style={style}>{children}</div>
 }
 
 export default ThemeWrapper

@@ -1,25 +1,25 @@
 // load variables firsts
-@import "utilities/_variables.scss";
+@import 'utilities/_variables.scss';
 
-@import "_global.scss";
+@import '_global.scss';
 
 :root {
-    // load theme variables first
-    @import "themes/_theme-light.scss";
+  // load theme variables first
+  @import 'themes/_theme-light.scss';
 
-    @import "_base.scss";
+  @import '_base.scss';
 }
 
 .light {
-    // load theme variables first
-    @import "themes/_theme-light.scss";
+  // load theme variables first
+  @import 'themes/_theme-light.scss';
 
-    @import "_base.scss";
+  @import '_base.scss';
 }
 
 .dark {
-    // load theme variables first
-    @import "themes/_theme-dark.scss";
+  // load theme variables first
+  @import 'themes/_theme-dark.scss';
 
-    @import "_base.scss";
+  @import '_base.scss';
 }

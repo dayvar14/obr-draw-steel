@@ -1,0 +1,314 @@
+import { kmeans } from 'ml-kmeans'
+import OBR, { Image, isImage, Item } from '@owlbear-rodeo/sdk'
+import SceneItemsApi from '@owlbear-rodeo/sdk/lib/api/scene/SceneItemsApi'
+import { TokenMetadata } from './itemmetadata'
+import { TOKEN_METADATA_ID } from '../config'
+import { GroupIDGenerator } from './common'
+
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace Token {
+  export type TokenState = {
+    [tokenType in TokenType]: { [groupId: string]: Token[] }
+  }
+
+  export interface Token {
+    tokenMetadata: TokenMetadata
+    createdUserId: string
+    id: string
+    name: string
+    imageUrl: string
+    isVisible: boolean
+    mapPosition: {
+      x: number
+      y: number
+    }
+    scale: {
+      x: number
+      y: number
+    }
+  }
+
+  export enum TokenType {
+    FRIEND = 'FRIEND',
+    FOE = 'FOE',
+  }
+
+  type OnStageChange = (tokenState: TokenState) => void
+
+  const createOnTokenStateChangeFunc = (onStateChange: OnStageChange) => {
+    const onStateChangeFunc: Parameters<
+      SceneItemsApi['onChange']
+    >[0] = items => {
+      const tokenState = generateTokenStateFromSceneItems(items)
+      onStateChange(tokenState)
+    }
+    return onStateChangeFunc
+  }
+
+  const generateTokenStateFromSceneItems = (items: Item[]) => {
+    // Uses the group id as a key and Token as a value
+    const tokensByGroupId: { [groupId: string]: Token[] } = {}
+
+    for (const item of items) {
+      if (!obrItemIsValidToken(item)) {
+        continue
+      }
+
+      const token = generateTokenFromValidItem(item)
+
+      if (!tokensByGroupId[token.tokenMetadata.groupId]) {
+        tokensByGroupId[token.tokenMetadata.groupId] = []
+      }
+
+      const tokenList: Token[] = tokensByGroupId[token.tokenMetadata.groupId]
+      tokenList.push(token)
+      tokensByGroupId[token.tokenMetadata.groupId] = tokenList
+    }
+
+    const tokenState = {} as TokenState
+
+    updateTokenGroups(tokenState, tokensByGroupId)
+
+    return tokenState
+  }
+
+  export function updateTokenGroups(
+    tokenState: TokenState,
+    tokensByGroupId: { [groupId: string]: Token[] },
+  ) {
+    Object.entries(tokensByGroupId).forEach(
+      ([groupId, tokens]: [string, Token[]]) => {
+        tokens.forEach((token: Token) => {
+          if (!token.tokenMetadata.tokenType) return
+
+          if (!tokenState[token.tokenMetadata.tokenType])
+            tokenState[token.tokenMetadata.tokenType] = {} as {
+              [groupId: string]: Token[]
+            }
+
+          if (!tokenState[token.tokenMetadata.tokenType][groupId])
+            tokenState[token.tokenMetadata.tokenType][groupId] = []
+
+          tokenState[token.tokenMetadata.tokenType][groupId].push(token)
+        })
+      },
+    )
+  }
+
+  export enum GroupSplittingMode {
+    CLOSEST = 'CLOSEST',
+    RANDOM = 'RANDOM',
+    STANDARD = 'STANDARD',
+  }
+
+  export const splitTokenGroups = async (
+    groupId: string,
+    groupSize: number,
+    groupSplittingMode: GroupSplittingMode,
+  ) => {
+    const tokens = await getTokensFromGroupId(groupId)
+
+    if (tokens.length === 0) {
+      return
+    }
+
+    OBR.scene.items.updateItems(
+      item =>
+        obrItemIsValidToken(item) &&
+        groupId === generateTokenFromValidItem(item).tokenMetadata.groupId,
+      items => {
+        const images = items as Image[]
+
+        if (groupSplittingMode === GroupSplittingMode.CLOSEST) {
+          kMeansClusteringSplittingAlgorithm(images, groupSize)
+        } else if (groupSplittingMode === GroupSplittingMode.RANDOM) {
+          randomSplittingAlgorithm(images, groupSize)
+        } else {
+          standardSplittingAlgorithm(images, groupSize)
+        }
+      },
+    )
+  }
+
+  export const getTokensFromGroupId = (groupId: string): Promise<Token[]> => {
+    return new Promise(resolve => {
+      try {
+        OBR.onReady(async () => {
+          const items = await OBR.scene.items.getItems((item: Item) =>
+            obrItemIsValidToken(item),
+          )
+
+          const tokens: Token[] = []
+
+          for (const item of items) {
+            const token = generateTokenFromValidItem(item)
+
+            if (token.tokenMetadata.groupId !== groupId) {
+              continue
+            }
+
+            tokens.push(token)
+          }
+
+          resolve(tokens)
+        })
+      } catch (error) {
+        console.error('Error during getTokensFromGroupId:', error)
+        resolve([] as Token[])
+      }
+    })
+  }
+
+  export const setTokenStateListener = (onStateChange: OnStageChange) => {
+    OBR.onReady(() => {
+      OBR.scene.items.onChange(createOnTokenStateChangeFunc(onStateChange))
+    })
+  }
+
+  export const getTokenState = (): Promise<TokenState> => {
+    return new Promise(resolve => {
+      try {
+        OBR.onReady(async () => {
+          const images = await OBR.scene.items.getItems((item: Item) =>
+            obrItemIsValidToken(item),
+          )
+          const tokenState = generateTokenStateFromSceneItems(images)
+
+          resolve(tokenState)
+        })
+      } catch (error) {
+        console.error('Error during getTokenState:', error)
+
+        resolve(getDefaultTokenState())
+      }
+    })
+  }
+
+  const getDefaultTokenState = (): TokenState => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const newTokenState: any = {}
+    Object.values(TokenType).forEach(tokenType => {
+      newTokenState[tokenType] = []
+    })
+    const tokenState = newTokenState
+    return tokenState
+  }
+}
+
+function kMeansClusteringSplittingAlgorithm(
+  images: Image[],
+  groupSize: number,
+) {
+  const data = images.map(image => [image.position.x, image.position.y])
+
+  const { clusters } = kmeans(data, groupSize, {})
+
+  // Group images based on the clustering result
+  const imageGroups: Image[][] = Array.from({ length: groupSize }, () => [])
+
+  clusters.forEach((clusterIndex, imageIndex) => {
+    const image = images[imageIndex]
+    imageGroups[clusterIndex].push(image)
+  })
+
+  // Adjust so that all groups are as close to the same size as possible, with remaining images in the last group
+  const adjustedImageGroups: Image[][] = []
+
+  for (let i = 0; i < imageGroups.length - 1; i++) {
+    while (imageGroups[i].length > groupSize) {
+      const image = imageGroups[i].pop()
+      imageGroups[i + 1].unshift(image!)
+    }
+    adjustedImageGroups.push([...imageGroups[i]]) // Add a copy of the adjusted group
+  }
+
+  // Add the remaining images to the last group
+  adjustedImageGroups.push([...imageGroups[imageGroups.length - 1]])
+
+  const imageList = adjustedImageGroups.reduce(
+    (acc, currGroup) => [...acc, ...currGroup],
+    [],
+  )
+
+  standardSplittingAlgorithm(imageList, groupSize)
+}
+
+function randomSplittingAlgorithm(images: Image[], groupSize: number) {
+  const shuffledImages = images
+    .map(value => ({ value, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ value }) => value)
+
+  standardSplittingAlgorithm(shuffledImages, groupSize)
+}
+
+function standardSplittingAlgorithm(images: Image[], groupSize: number) {
+  let index = 0
+
+  images.forEach((image: Image) => {
+    const name = image.text.plainText ? image.text.plainText : image.name
+    image.text.plainText = name + getGroupSuffix(index, groupSize)
+    const token = generateTokenFromValidItem(image)
+    image.metadata[TOKEN_METADATA_ID] =
+      GroupIDGenerator.generateGroupIdFromImage(
+        token.tokenMetadata.tokenType,
+        image,
+      )
+    index++
+  })
+}
+
+function getGroupSuffix(index: number, groupSize: number) {
+  let suffix = ' '
+  const charCount = Math.floor(index / groupSize / 26)
+
+  for (let i = 0; i <= charCount; i++) {
+    const asciiA = 'A'.charCodeAt(0)
+
+    const capitalizedLetter = String.fromCharCode(
+      asciiA + ((index / groupSize) % 26),
+    )
+    suffix += capitalizedLetter
+  }
+
+  return suffix
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const generateTokenFromValidItem = (item: any) => {
+  if (!obrItemIsValidToken(item))
+    throw Error('Cannot parse item. Is invalid token')
+
+  const image = item as Image
+  const tokenMetadata = image.metadata[TOKEN_METADATA_ID] as TokenMetadata
+
+  const name = image.text.plainText ? image.text.plainText : image.name
+
+  const token = {
+    tokenMetadata: tokenMetadata,
+    createdUserId: image.createdUserId,
+    id: image.id,
+    name: name,
+    imageUrl: image.image.url,
+    isVisible: image.visible,
+    mapPosition: {
+      x: image.position.x,
+      y: image.position.y,
+    },
+    scale: {
+      x: image.scale.x,
+      y: image.scale.y,
+    },
+  }
+
+  return token
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const obrItemIsValidToken = (item: any) => {
+  return (
+    isImage(item) &&
+    item.layer === 'CHARACTER' &&
+    item.metadata[TOKEN_METADATA_ID] !== undefined
+  )
+}

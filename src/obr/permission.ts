@@ -1,7 +1,8 @@
 import RoomApi from '@owlbear-rodeo/sdk/lib/api/RoomApi'
 import OBR, { Permission as OBRPermission } from '@owlbear-rodeo/sdk'
 
-export module Permission {
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace Permission {
   /* Need to decouple this a bit more */
   export interface PermissionState {
     permissions: OBRPermission[]
@@ -29,7 +30,7 @@ export module Permission {
   }
 
   export const getPermissionState = (): Promise<PermissionState> => {
-    return new Promise(async resolve => {
+    return new Promise(resolve => {
       try {
         OBR.onReady(async () => {
           const permissions = await OBR.room.getPermissions()

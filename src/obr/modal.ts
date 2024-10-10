@@ -1,7 +1,8 @@
 import OBR from '@owlbear-rodeo/sdk'
 import { SETTINGS_HEIGHT, SETTINGS_MODAL_ID, SETTINGS_WIDTH } from 'config'
 
-export module Modal {
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace Modal {
   export const openSettings = () => {
     OBR.onReady(() => {
       OBR.modal.open({

@@ -24,8 +24,8 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
-        home: resolve(__dirname, 'popover.html'),
-        settings: resolve(__dirname, 'settings.html')
+        popover: resolve(__dirname, 'popover.html'),
+        settings: resolve(__dirname, 'settings.html'),
       },
     },
   },

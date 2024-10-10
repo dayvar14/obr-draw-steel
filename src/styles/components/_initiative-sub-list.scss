@@ -1,42 +1,43 @@
 .sub-list-header {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: map-get($space-sizes, small);
-    padding-right: map-get($space-sizes, large);
-    padding-bottom: map-get($space-sizes, small);
-    padding-left: map-get($space-sizes, large);
-    width: 100lvw;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: map-get($space-sizes, small);
+  padding-right: map-get($space-sizes, large);
+  padding-bottom: map-get($space-sizes, small);
+  padding-left: map-get($space-sizes, large);
+  width: 100lvw;
+  user-select: none;
 }
 
 .sub-list-header-icons {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    margin-left: auto;
-    padding-right: map-get($space-sizes, xsmall);
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  margin-left: auto;
+  padding-right: map-get($space-sizes, xsmall);
 
-    > button {
-        margin-left: map-get($space-sizes, xxsmall);
-        & > *:first-child {
-            margin-left: 0;
-        }
+  > button {
+    margin-left: map-get($space-sizes, xxsmall);
+    & > *:first-child {
+      margin-left: 0;
     }
+  }
 }
 
 .sub-list {
-    display: flex;
-    flex-direction: column;
-    list-style-type: none;
+  display: flex;
+  flex-direction: column;
+  list-style-type: none;
 
-    > p {
-        padding: map-get($space-sizes, normal);
-        text-align: center;
+  > p {
+    padding: map-get($space-sizes, normal);
+    text-align: center;
 
-        > small {
-            opacity: 0.6;
-            margin: auto;
-        }
+    > small {
+      opacity: 0.6;
+      margin: auto;
     }
+  }
 }

@@ -3,49 +3,49 @@ import SelectIcon from '@icons/select.svg?react'
 import DeleteIcon from '@icons/delete.svg?react'
 import PlusIcon from '@icons/plus_circle.svg?react'
 import MinusIcon from '@icons/minus_circle.svg?react'
-import { Player, Token, Popover } from '@obr'
-import { TOKEN_OPTIONS_POPOVER_ID } from 'config'
-import { SceneContext } from '../../context/SceneContext'
+import { Player, Group } from '@obr'
+import { SceneContext } from 'context/SceneContext'
+import { GroupContext } from 'context/GroupContext'
 import clsx from 'clsx'
 
-export const OptionsList: React.FC<{ groupId: string }> = ({ groupId }) => {
-  const [tokens, setTokens] = React.useState<Token.Token[] | undefined>([])
-  const [turnCount, setTurnCount] = React.useState(1)
-  const [splitCount, setSplitCount] = React.useState(5)
+export const GroupOptionsList: React.FC<{
+  subGroupId: string
+  groupType: Group.GroupType
+  onClickButton: () => void
+}> = ({ subGroupId, groupType, onClickButton }) => {
+  const [splitCount, setSplitCount] = React.useState<number>(0)
   const sceneContext = React.useContext(SceneContext)
+  const groupContext = React.useContext(GroupContext)
+  const [maxTurnCount, setMaxTurnCount] = React.useState(1)
 
-  if (!sceneContext) {
+  if (!sceneContext || !groupContext) {
     return null
   }
 
-  const settingsContext = sceneContext?.settings
-
-  const MAX_TURN_COUNT = 3
+  const subGroup =
+    groupContext.groupMetadata.groupsByType[groupType].subGroupsById[subGroupId]
 
   useEffect(() => {
-    const getTokens = async () => {
-      const tokens = await Token.getTokensFromGroupId(groupId)
-      setTokens(tokens)
-
-      // Chosen as wanting to split by 5 under 10 tokens is unlikely
-      let defaultSplitCount = 0
-      if (tokens.length <= 9) {
-        defaultSplitCount = 1
-      } else {
-        defaultSplitCount = 5
-      }
-
-      setSplitCount(defaultSplitCount)
-    }
-
-    getTokens()
+    setMaxTurnCount(subGroup?.maxTurns ?? 1)
   }, [])
 
-  if (!tokens || tokens.length === 0) {
-    return null
+  if (!subGroup) {
+    return <></>
   }
 
-  const crateHandleNumberChangeFun = (
+  const tokens = Object.values(subGroup?.tokensById)
+
+  if (!tokens) {
+    return <></>
+  }
+
+  const MAX_TURN_COUNT = 5
+
+  useEffect(() => {
+    setSplitCount(tokens.length >= 5 ? 5 : 1)
+  }, [subGroup])
+
+  const handleNumberChange = (
     setFunction: (value: number) => void,
     min: number,
     max: number,
@@ -66,17 +66,16 @@ export const OptionsList: React.FC<{ groupId: string }> = ({ groupId }) => {
 
   const onClickDelete = async () => {
     Player.deleteTokens(tokens)
-    Popover.closeTokenOptions(TOKEN_OPTIONS_POPOVER_ID)
+    onClickButton()
   }
 
   const onClickSelect = async () => {
     Player.centerPlayerOnTokens(tokens)
-    Popover.closeTokenOptions(TOKEN_OPTIONS_POPOVER_ID)
+    onClickButton()
   }
 
   return (
-    <>
-      <p className='options-header'>Actions</p>
+    <div className={'options-container group'}>
       <button className='option option-button' onClick={onClickSelect}>
         <div className='option-button-icon-container'>
           <SelectIcon className='large filled' />
@@ -89,18 +88,17 @@ export const OptionsList: React.FC<{ groupId: string }> = ({ groupId }) => {
         </div>
         <p>Delete {tokens.length > 1 ? 'Group' : 'Character'}</p>
       </button>
-      <p className='options-header'>Token Options</p>
       <div className={'options'}>
         <div className='option'>Set Turns</div>
         <div className='sub-option'>
           <button
             className={clsx('sub-option-icon-button', {
-              disabled: turnCount == 1,
+              disabled: maxTurnCount == 1,
             })}
-            disabled={turnCount == 1}
+            disabled={maxTurnCount == 1}
             onClick={() => {
-              const newTurnCount = Math.max(turnCount - 1, 1)
-              setTurnCount(newTurnCount)
+              const newTurnCount = Math.max(maxTurnCount - 1, 1)
+              setMaxTurnCount(newTurnCount)
             }}
           >
             <MinusIcon className='medium filled' />
@@ -110,29 +108,43 @@ export const OptionsList: React.FC<{ groupId: string }> = ({ groupId }) => {
             type='number'
             min='1'
             max='999'
-            value={turnCount}
-            onChange={crateHandleNumberChangeFun(
-              setTurnCount,
-              1,
-              MAX_TURN_COUNT,
-            )}
+            value={maxTurnCount}
+            onChange={() => {
+              handleNumberChange(setMaxTurnCount, 1, MAX_TURN_COUNT)
+            }}
           />
           <button
             className={clsx([
               'sub-option-icon-button',
               {
-                disabled: turnCount == MAX_TURN_COUNT,
+                disabled: maxTurnCount == MAX_TURN_COUNT,
               },
             ])}
-            disabled={turnCount == MAX_TURN_COUNT}
+            disabled={maxTurnCount == MAX_TURN_COUNT}
             onClick={() => {
-              const newTurnCount = Math.min(turnCount + 1, MAX_TURN_COUNT)
-              setTurnCount(newTurnCount)
+              const newTurnCount = Math.min(maxTurnCount + 1, MAX_TURN_COUNT)
+              setMaxTurnCount(newTurnCount)
             }}
           >
             <PlusIcon className='medium filled' />
           </button>
-          <button className='sub-option-button'>Set</button>
+          <button
+            className='sub-option-button'
+            onClick={() => {
+              const groupMetadata = groupContext.groupMetadata
+              groupMetadata.groupsByType[groupType].subGroupsById[
+                subGroup.subGroupId
+              ].maxTurns = maxTurnCount
+              groupMetadata.groupsByType[groupType].subGroupsById[
+                subGroup.subGroupId
+              ].currentTurn = 0
+
+              Group.updateGroupMetadata(groupMetadata)
+              onClickButton()
+            }}
+          >
+            Set
+          </button>
         </div>
         <div className='option'>Group Splitting</div>
         <div className='sub-option'>
@@ -161,21 +173,17 @@ export const OptionsList: React.FC<{ groupId: string }> = ({ groupId }) => {
             min='1'
             max='999'
             value={splitCount}
-            onChange={crateHandleNumberChangeFun(
-              setSplitCount,
-              1,
-              tokens.length,
-            )}
+            onChange={handleNumberChange(setSplitCount, 1, tokens.length)}
           />
 
           <button
             className={clsx([
               'sub-option-icon-button',
               {
-                disabled: splitCount == tokens.length,
+                disabled: splitCount >= tokens.length,
               },
             ])}
-            disabled={splitCount == tokens.length}
+            disabled={splitCount >= tokens.length}
             onClick={() => {
               const newSplitCount = Math.min(splitCount + 1, tokens.length)
               setSplitCount(newSplitCount)
@@ -184,22 +192,23 @@ export const OptionsList: React.FC<{ groupId: string }> = ({ groupId }) => {
             <PlusIcon className='medium filled' />
           </button>
           <button
-            disabled={tokens.length == 1 || splitCount == tokens.length}
+            disabled={tokens.length == 1 || splitCount >= tokens.length}
             className={clsx(['sub-option-button'], {
-              disabled: tokens.length == 1 || splitCount == tokens.length,
+              disabled: tokens.length == 1 || splitCount >= tokens.length,
             })}
             onClick={() => {
-              Token.splitTokenGroups(
-                groupId,
+              Group.splitSubgroup(
+                subGroup,
                 splitCount,
-                settingsContext.grouping.groupSplittingMode,
+                sceneContext.sceneMetadata.settings.grouping.groupSplittingMode,
               )
+              onClickButton()
             }}
           >
             Split
           </button>
         </div>
       </div>
-    </>
+    </div>
   )
 }
