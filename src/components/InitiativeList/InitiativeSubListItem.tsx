@@ -153,7 +153,6 @@ const InitiativeSubListItem: React.FC<{
   return (
     <li
       className={clsx(['sub-list-item'], { hidden: !isVisible && !isGM })}
-      draggable={true}
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
       onDoubleClick={handleDoubleClick}
