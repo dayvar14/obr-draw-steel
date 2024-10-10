@@ -27,7 +27,7 @@ export const Header: React.FC = () => {
                 <RefreshIcon className='medium filled' />
               </button>
               <button
-                title='Refresh all turns'
+                title='Open Settings'
                 className='rounded-square-icon-button'
                 onClick={() => {
                   Modal.openSettings()
