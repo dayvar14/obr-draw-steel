@@ -48,11 +48,14 @@
     overflow: scroll;
 
     h2 {
-        font-weight: 500;
+        font-size: map-get($font-sizes, large);
+        font-weight: 800;
     }
 
     hr {
         border-width: map-get($space-sizes, xxxxsmall);
+        margin-bottom: map-get($space-sizes, xxsmall);
+
     }
 }
 
