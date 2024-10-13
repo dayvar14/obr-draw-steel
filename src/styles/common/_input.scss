@@ -9,10 +9,15 @@ input[type="number"] {
     padding-top: map-get($space-sizes, xxsmall);
     padding-bottom: map-get($space-sizes, xxsmall);
     text-align: center;
-}
 
-input[type="number"]:focus {
-    background-color: rgba(map-get($colors, contrast), 0.1);
+    &:read-only {
+        user-select: none;
+        cursor: default;
+    }
+
+    &:focus {
+        background-color: rgba(map-get($colors, contrast), 0.1);
+    }
 }
 
 input:focus {
