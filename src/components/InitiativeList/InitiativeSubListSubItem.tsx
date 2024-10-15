@@ -25,7 +25,7 @@ const InitiativeSubListSubItem: React.FC<{
     isVisble?: boolean
   }
 }> = ({ token, subGroup, isLastItem, popover, hasTurn }) => {
-  const [mouseOverToken, setMouseOverToken] = useState(false)
+  const [, setMouseOverToken] = useState(false)
   const [imageSrc, setImageSrc] = useState<string>(token.imageUrl)
   const sceneContext = useContext(SceneContext)
   const groupContext = useContext(GroupContext)

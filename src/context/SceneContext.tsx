@@ -1,4 +1,4 @@
-import { Scene, Token } from '@obr'
+import { Scene } from '@obr'
 import OBR from '@owlbear-rodeo/sdk'
 import React, { createContext, useEffect, useState } from 'react'
 

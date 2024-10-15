@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { Group, Player, Scene, Token } from '@obr'
+import { Group, Player, Token } from '@obr'
 import { PartyContext } from 'context/PartyContext'
 import { PermissionContext } from 'context/PermissionContext'
 import { PlayerContext } from 'context/PlayerContext'
@@ -19,7 +19,7 @@ import { SceneContext } from 'context/SceneContext'
 import InitiativeSubListSubItem from './InitiativeSubListSubItem'
 import { PopoverOptions } from '@components/Popovers/Popover'
 import { GroupOptionsList } from '@components/OptionsList/GroupOptionsList'
-import { GroupContext, GroupProvider } from 'context/GroupContext'
+import { GroupContext } from 'context/GroupContext'
 
 const InitiativeSubListItem: React.FC<{
   subGroup: Group.SubGroup
