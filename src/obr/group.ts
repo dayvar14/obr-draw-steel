@@ -18,9 +18,9 @@ export module Group {
   export const getNameFromGroupType = (groupType: GroupType) => {
     switch (groupType) {
       case GroupType.FRIEND:
-        return 'Friends'
+        return 'Allies'
       case GroupType.FOE:
-        return 'Foes'
+        return 'Enemies'
     }
   }
 
