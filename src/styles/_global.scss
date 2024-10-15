@@ -1,23 +1,23 @@
 @font-face {
   font-weight: 1 999;
-  src: url("/fonts/Raleway-VariableFont_wght.ttf") format("truetype");
-  font-family: "Raleway";
+  src: url('/fonts/Raleway-VariableFont_wght.ttf') format('truetype');
+  font-family: 'Raleway';
 }
 
 @font-face {
   font-style: italic;
   font-weight: 1 999;
-  src: url("/fonts/Raleway-VariableFont_wght.ttf") format("truetype");
-  font-family: "Raleway-Italic";
+  src: url('/fonts/Raleway-VariableFont_wght.ttf') format('truetype');
+  font-family: 'Raleway-Italic';
 }
 
 * {
-  -moz-font-feature-settings: "lnum" 1;
-  -moz-font-feature-settings: "lnum=1";
-  -ms-font-feature-settings: "lnum" 1;
-  -o-font-feature-settings: "lnum" 1;
-  -webkit-font-feature-settings: "lnum" 1;
-  font-feature-settings: "lnum" 1;
+  -moz-font-feature-settings: 'lnum' 1;
+  -moz-font-feature-settings: 'lnum=1';
+  -ms-font-feature-settings: 'lnum' 1;
+  -o-font-feature-settings: 'lnum' 1;
+  -webkit-font-feature-settings: 'lnum' 1;
+  font-feature-settings: 'lnum' 1;
   box-sizing: border-box;
   margin: 0%;
   padding: 0%;
@@ -45,7 +45,7 @@ body {
   display: flex;
   width: 100dvw;
   height: 100dvh;
-  font-family: "Raleway", Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Raleway', Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 }
