@@ -86,6 +86,8 @@ const updateGroupMetadataFromTokens = (
   const groupMetadataCopy = lodash.cloneDeep(groupMetadata)
   const groupsByType = groupMetadataCopy.groupsByType
 
+  const subgroupNames = Group.getSetOfSubGroupNames(groupMetadataCopy)
+
   Object.keys(tokensById).forEach(tokenId => {
     const token = tokensById[tokenId]
     const group = groupsByType[token.tokenMetadata.groupType]
@@ -97,10 +99,14 @@ const updateGroupMetadataFromTokens = (
       group.subGroupsById[token.tokenMetadata.subGroupId]
     // If the token doesn't already exist in a subGroup, create a new subGroup
 
+    const subGroupName = Group.getSubGroupName(subgroupNames)
+
+    subgroupNames.add(subGroupName)
+
     if (!subGroup) {
       subGroup = {
         maxTurns: 1,
-        subGroupName: token.plainTextName ? token.plainTextName : token.name,
+        subGroupName: subGroupName,
         currentTurn: 0,
         maxReactions: 1,
         currentReaction: 0,
@@ -111,6 +117,7 @@ const updateGroupMetadataFromTokens = (
         groupType: group.groupType,
       }
       group.subGroupsById[token.tokenMetadata.subGroupId] = subGroup
+      subgroupNames.add(subGroupName)
     }
 
     subGroup.tokensById[token.id] = token
@@ -140,5 +147,6 @@ const updateGroupMetadataFromTokens = (
 
   return groupMetadataCopy
 }
+
 
 export { GroupProvider, GroupContext }
