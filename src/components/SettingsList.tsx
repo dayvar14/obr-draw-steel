@@ -2,18 +2,20 @@ import GithubIcon from '@icons/github.svg?react'
 import DiscordIcon from '@icons/discord.svg?react'
 import { APP_VERSION } from 'config'
 import { Group, Modal } from '@obr'
-import { SceneContext } from 'context/SceneContext'
+import { SettingsContext } from 'context/SettingsContext'
 import { useContext, useState } from 'react'
 import clsx from 'clsx'
 
 const SettingsList = () => {
-  const sceneContext = useContext(SceneContext)
+  const settingsContext = useContext(SettingsContext)
 
-  if (!sceneContext) {
+  if (!settingsContext) {
     return null
   }
 
-  const [unsavedSettings, setUnsavedSettings] = useState(sceneContext.settings)
+  const [unsavedSettings, setUnsavedSettings] = useState(
+    settingsContext.settings,
+  )
 
   const handleInputChange = (
     section: 'main' | 'playerAccess' | 'grouping' | 'misc',
@@ -30,7 +32,7 @@ const SettingsList = () => {
   }
 
   const onSave = () => {
-    sceneContext.setSettings(unsavedSettings)
+    settingsContext.setSettings(unsavedSettings)
     Modal.closeSettings()
   }
 

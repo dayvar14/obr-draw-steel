@@ -1,7 +1,7 @@
 const EXTENSION_ID = 'com.danielayvar.obr-draw-steel'
 export const APP_VERSION = '0.7.0'
 
-export const SCENE_METADATA_ID = `${EXTENSION_ID}/scene-metadata-id`
+export const SETTINGS_METADATA_ID = `${EXTENSION_ID}/settings-metadata-id`
 export const GROUP_METADATA_ID = `${EXTENSION_ID}/group-metadata-id`
 
 // Metadata for deciding the group and group id of a token
