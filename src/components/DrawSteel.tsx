@@ -7,7 +7,7 @@ import { PlayerProvider } from '../context/PlayerContext.tsx'
 import { useEffect, useRef, useState } from 'react'
 import { APP_HEIGHT } from 'config.js'
 import { Action } from 'obr/action.ts'
-import { SceneProvider } from 'context/SceneContext.tsx'
+import { SettingsProvider } from 'context/SettingsContext.tsx'
 import { GroupProvider } from 'context/GroupContext.tsx'
 import { Popover, PopoverOptions } from './Popovers/Popover.tsx'
 import { Footer } from './Footer.tsx'
@@ -63,7 +63,7 @@ const DrawSteel = () => {
           <Header />
           <hr />
 
-          <SceneProvider
+          <SettingsProvider
             loadingChildren={
               <div className={'no-scene'}>
                 <p>Select a scene to start combat.</p>
@@ -91,7 +91,7 @@ const DrawSteel = () => {
                 </GroupProvider>
               </PermissionProvider>
             </PartyProvider>
-          </SceneProvider>
+          </SettingsProvider>
           <hr />
           <Footer />
         </PlayerProvider>

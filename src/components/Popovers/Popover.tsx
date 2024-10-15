@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, RefObject } from 'react'
-import { SceneProvider } from 'context/SceneContext'
+import { SettingsProvider } from 'context/SettingsContext'
 import { PlayerProvider } from 'context/PlayerContext'
 import { PermissionProvider } from 'context/PermissionContext'
 import ThemeWrapper from 'wrapper/ThemeWrapper'
@@ -106,11 +106,11 @@ export const Popover = React.forwardRef<HTMLElement, PopoverProps>(
         }}
       >
         <ThemeWrapper>
-          <SceneProvider>
+          <SettingsProvider>
             <PlayerProvider>
               <PermissionProvider>{children}</PermissionProvider>
             </PlayerProvider>
-          </SceneProvider>
+          </SettingsProvider>
         </ThemeWrapper>
       </div>
     )

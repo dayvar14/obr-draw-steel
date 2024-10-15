@@ -10,7 +10,7 @@ import HamburgerMenuDotsIcon from '@icons/hamburger_menu_dots.svg?react'
 import EyeClosedIcon from '@icons/eye_closed.svg?react'
 import { PopoverOptions } from '@components/Popovers/Popover'
 import { TokenOptionsList } from '@components/OptionsList/TokenOptionsList'
-import { SceneContext } from 'context/SceneContext'
+import { SettingsContext } from 'context/SettingsContext'
 import { GroupContext } from 'context/GroupContext'
 import { PlayerContext } from 'context/PlayerContext'
 import { PermissionContext } from 'context/PermissionContext'
@@ -33,12 +33,17 @@ const InitiativeSubListSubItem: React.FC<{
   const [newName, setNewName] = useState(
     token.plainTextName ? token.plainTextName : token.name,
   )
-  const sceneContext = useContext(SceneContext)
+  const settingsContext = useContext(SettingsContext)
   const groupContext = useContext(GroupContext)
   const playerContext = useContext(PlayerContext)
   const permissionContext = useContext(PermissionContext)
 
-  if (!sceneContext || !groupContext || !playerContext || !permissionContext) {
+  if (
+    !settingsContext ||
+    !groupContext ||
+    !playerContext ||
+    !permissionContext
+  ) {
     throw new Error('Context is undefined')
   }
   const isOwnerOnly = permissionContext.permissionState.permissions.includes(
@@ -49,9 +54,10 @@ const InitiativeSubListSubItem: React.FC<{
 
   const isOwner = token.createdUserId === playerContext.playerState.id
 
-  const canOpenAllOptions = sceneContext.settings.playerAccess.canOpenAllOptions
+  const canOpenAllOptions =
+    settingsContext.settings.playerAccess.canOpenAllOptions
   const canOpenOptionsIfPlayerOwned =
-    sceneContext.settings.playerAccess.canOpenOptionsIfPlayerOwned
+    settingsContext.settings.playerAccess.canOpenOptionsIfPlayerOwned
 
   const canOpenOptions =
     isGM ||
@@ -164,7 +170,7 @@ const InitiativeSubListSubItem: React.FC<{
                     ) as HTMLElement,
                   },
                   content: (
-                    <SceneContext.Provider value={sceneContext}>
+                    <SettingsContext.Provider value={settingsContext}>
                       <GroupContext.Provider value={groupContext}>
                         <TokenOptionsList
                           tokenId={token.id}
@@ -177,7 +183,7 @@ const InitiativeSubListSubItem: React.FC<{
                           }
                         />
                       </GroupContext.Provider>
-                    </SceneContext.Provider>
+                    </SettingsContext.Provider>
                   ),
                   width: 200,
                   height: 100,

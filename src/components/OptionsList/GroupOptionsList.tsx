@@ -4,7 +4,7 @@ import DeleteIcon from '@icons/delete.svg?react'
 import PlusIcon from '@icons/plus_circle.svg?react'
 import MinusIcon from '@icons/minus_circle.svg?react'
 import { Player, Group } from '@obr'
-import { SceneContext } from 'context/SceneContext'
+import { SettingsContext } from 'context/SettingsContext'
 import { GroupContext } from 'context/GroupContext'
 import clsx from 'clsx'
 
@@ -14,11 +14,11 @@ export const GroupOptionsList: React.FC<{
   onClickButton: () => void
 }> = ({ subGroupId, groupType, onClickButton }) => {
   const [splitCount, setSplitCount] = React.useState<number>(0)
-  const sceneContext = React.useContext(SceneContext)
+  const settingsContext = React.useContext(SettingsContext)
   const groupContext = React.useContext(GroupContext)
   const [maxTurnCount, setMaxTurnCount] = React.useState(1)
 
-  if (!sceneContext || !groupContext) {
+  if (!settingsContext || !groupContext) {
     return null
   }
 
@@ -200,7 +200,7 @@ export const GroupOptionsList: React.FC<{
               Group.splitSubgroup(
                 subGroup,
                 splitCount,
-                sceneContext.sceneMetadata.settings.grouping.groupSplittingMode,
+                settingsContext.settings.grouping.groupSplittingMode,
               )
               onClickButton()
             }}

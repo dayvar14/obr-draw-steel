@@ -1,7 +1,7 @@
 import { Token, Group } from '@obr'
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import lodash from 'lodash'
-import { SceneContext } from 'context/SceneContext'
+import { SettingsContext } from 'context/SettingsContext'
 
 interface GroupContextProps {
   groupMetadata: Group.GroupMetadata
@@ -13,9 +13,9 @@ const GroupContext = createContext<GroupContextProps | undefined>(undefined)
 const GroupProvider = ({ children }: { children?: React.ReactNode }) => {
   const [groupMetadata, setGroupMetadata] = useState<Group.GroupMetadata>()
   const [tokens, setTokens] = useState<Token.Token[]>([])
-  const sceneContext = useContext(SceneContext)
+  const settingsContext = useContext(SettingsContext)
 
-  if (!sceneContext) {
+  if (!settingsContext) {
     return null
   }
   useEffect(() => {
@@ -147,6 +147,5 @@ const updateGroupMetadataFromTokens = (
 
   return groupMetadataCopy
 }
-
 
 export { GroupProvider, GroupContext }

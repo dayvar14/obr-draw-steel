@@ -5,7 +5,7 @@ import { Player } from './player'
 import { Theme } from './theme'
 import { Token } from './tokens'
 import { Modal } from './modal'
-import { Scene } from './scene'
+import { Settings } from './settings'
 import { Group } from './group'
 
 export {
@@ -16,6 +16,6 @@ export {
   Theme,
   Token,
   Modal,
-  Scene,
+  Settings,
   Group,
 }

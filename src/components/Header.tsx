@@ -3,7 +3,7 @@ import RefreshIcon from '@icons/refresh.svg?react'
 import SettingsIcon from '@icons/settings.svg?react'
 import { useContext } from 'react'
 import { PlayerContext } from 'context/PlayerContext'
-import { SceneProvider } from 'context/SceneContext'
+import { SettingsProvider } from 'context/SettingsContext'
 
 export const Header: React.FC = () => {
   const playerContext = useContext(PlayerContext)
@@ -16,7 +16,7 @@ export const Header: React.FC = () => {
       <div className='app-header-icons'>
         {playerContext?.playerState.role === Player.PlayerRole.GM && (
           <>
-            <SceneProvider>
+            <SettingsProvider>
               <button
                 title='Refresh all turns'
                 className='rounded-square-icon-button'
@@ -33,7 +33,7 @@ export const Header: React.FC = () => {
               >
                 <SettingsIcon className='medium filled' />
               </button>
-            </SceneProvider>
+            </SettingsProvider>
           </>
         )}
       </div>

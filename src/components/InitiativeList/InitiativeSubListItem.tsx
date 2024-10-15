@@ -15,7 +15,7 @@ import EyeClosedIcon from '@icons/eye_closed.svg?react'
 import ChevronRightIcon from '@icons/chevron_right.svg?react'
 import DownLineIcon from '@icons/down_line.svg?react'
 import { PLACE_HOLDER_TOKEN_IMAGE } from 'config'
-import { SceneContext } from 'context/SceneContext'
+import { SettingsContext } from 'context/SettingsContext'
 import InitiativeSubListSubItem from './InitiativeSubListSubItem'
 import { PopoverOptions } from '@components/Popovers/Popover'
 import { GroupOptionsList } from '@components/OptionsList/GroupOptionsList'
@@ -44,7 +44,7 @@ const InitiativeSubListItem: React.FC<{
   const permissionContext = useContext(PermissionContext)
   const playerContext = useContext(PlayerContext)
   const partyContext = useContext(PartyContext)
-  const sceneContext = useContext(SceneContext)
+  const settingsContext = useContext(SettingsContext)
   const groupContext = useContext(GroupContext)
   const tokens = Object.values(subGroup.tokensById)
   const [isMouseOverToken, setMouseOverToken] = useState(false)
@@ -57,11 +57,11 @@ const InitiativeSubListItem: React.FC<{
     !playerContext ||
     !permissionContext ||
     !partyContext ||
-    !sceneContext ||
+    !settingsContext ||
     !groupContext
   ) {
     throw new Error(
-      'PlayerContext, PermissionContext, PartyContext, or SceneContext is undefined',
+      'PlayerContext, PermissionContext, PartyContext, or SettingsContext is undefined',
     )
   }
 
@@ -81,9 +81,10 @@ const InitiativeSubListItem: React.FC<{
   const isOwner =
     ownerIds.has(playerContext.playerState.id) && ownerIds.size === 1
 
-  const canOpenAllOptions = sceneContext.settings.playerAccess.canOpenAllOptions
+  const canOpenAllOptions =
+    settingsContext.settings.playerAccess.canOpenAllOptions
   const canOpenOptionsIfPlayerOwned =
-    sceneContext.settings.playerAccess.canOpenOptionsIfPlayerOwned
+    settingsContext.settings.playerAccess.canOpenOptionsIfPlayerOwned
   // if players can only update their own tokens, then check to make sure they are the owner. Otherwise the player cannot modify
 
   const canAdjustFlags = isGM || (isOwner && isOwnerOnly) || canOpenAllOptions
@@ -240,7 +241,7 @@ const InitiativeSubListItem: React.FC<{
             htmlFor={subGroup.subGroupId + '-flag'}
             role={'application'}
           >
-            {(sceneContext.settings.playerAccess.canSeeTurnCount || isGM) &&
+            {(settingsContext.settings.playerAccess.canSeeTurnCount || isGM) &&
               subGroup.maxTurns > 1 && (
                 <span>{subGroup.maxTurns - subGroup.currentTurn}</span>
               )}
@@ -253,7 +254,7 @@ const InitiativeSubListItem: React.FC<{
               <FlagUnfilledIcon className={clsx('colored medium primary')} />
             )}
           </label>
-          {sceneContext.sceneMetadata.settings.main?.reactionsEnabled && (
+          {settingsContext.settings.main?.reactionsEnabled && (
             <>
               <input
                 checked={!hasReaction}
@@ -310,7 +311,7 @@ const InitiativeSubListItem: React.FC<{
                     ) as HTMLElement,
                   },
                   content: (
-                    <SceneContext.Provider value={sceneContext}>
+                    <SettingsContext.Provider value={settingsContext}>
                       <GroupContext.Provider value={groupContext}>
                         <GroupOptionsList
                           subGroupId={subGroup.subGroupId}
@@ -322,7 +323,7 @@ const InitiativeSubListItem: React.FC<{
                           }
                         />
                       </GroupContext.Provider>
-                    </SceneContext.Provider>
+                    </SettingsContext.Provider>
                   ),
                   width: 200,
                   height: 262,
