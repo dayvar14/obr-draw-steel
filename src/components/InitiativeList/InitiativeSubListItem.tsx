@@ -205,17 +205,11 @@ const InitiativeSubListItem: React.FC<{
               )}
             {hasTurn && (
               <FlagFilledIcon
-                className={clsx('filled colored medium', {
-                  primary: isOwner,
-                })}
+                className={clsx('filled colored medium primary')}
               />
             )}
             {!hasTurn && (
-              <FlagUnfilledIcon
-                className={clsx('colored medium', {
-                  primary: isOwner,
-                })}
-              />
+              <FlagUnfilledIcon className={clsx('colored medium primary')} />
             )}
           </label>
           {sceneContext.sceneMetadata.settings.main?.reactionsEnabled && (
@@ -241,15 +235,11 @@ const InitiativeSubListItem: React.FC<{
               >
                 {hasReaction ? (
                   <ReactionFilledIcon
-                    className={clsx('filled colored medium', {
-                      primary: isOwner,
-                    })}
+                    className={clsx('colored medium primary')}
                   />
                 ) : (
                   <ReactionUnfilledIcon
-                    className={clsx('colored medium', {
-                      primary: isOwner,
-                    })}
+                    className={clsx('colored medium primary')}
                   />
                 )}
               </label>
