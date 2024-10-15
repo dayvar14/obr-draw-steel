@@ -100,7 +100,7 @@ const updateGroupMetadataFromTokens = (
     if (!subGroup) {
       subGroup = {
         maxTurns: 1,
-        subGroupName: token.name,
+        subGroupName: token.plainTextName ? token.plainTextName : token.name,
         currentTurn: 0,
         maxReactions: 1,
         currentReaction: 0,
