@@ -14,6 +14,8 @@ import { SceneContext } from 'context/SceneContext'
 import { GroupContext } from 'context/GroupContext'
 import { PlayerContext } from 'context/PlayerContext'
 import { PermissionContext } from 'context/PermissionContext'
+import lodash from 'lodash'
+
 const InitiativeSubListSubItem: React.FC<{
   token: Token.Token
   subGroup: Group.SubGroup
@@ -27,6 +29,10 @@ const InitiativeSubListSubItem: React.FC<{
 }> = ({ token, subGroup, isLastItem, popover, hasTurn }) => {
   const [, setMouseOverToken] = useState(false)
   const [imageSrc, setImageSrc] = useState<string>(token.imageUrl)
+  const [isEditingName, setIsEditingName] = useState(false)
+  const [newName, setNewName] = useState(
+    token.plainTextName ? token.plainTextName : token.name,
+  )
   const sceneContext = useContext(SceneContext)
   const groupContext = useContext(GroupContext)
   const playerContext = useContext(PlayerContext)
@@ -47,12 +53,23 @@ const InitiativeSubListSubItem: React.FC<{
   const canOpenOptionsIfPlayerOwned =
     sceneContext.settings.playerAccess.canOpenOptionsIfPlayerOwned
 
-  // if players can only update their own tokens, then check to make sure they are the owner. Otherwise the player cannot modify
-
   const canOpenOptions =
     isGM ||
     (isOwner && isOwnerOnly && canOpenOptionsIfPlayerOwned) ||
     canOpenAllOptions
+
+  const handleNameChange = () => {
+    const tokenCopy = lodash.cloneDeep(token)
+    let newNameCopy = newName
+
+    if (newNameCopy !== tokenCopy.name) {
+      if (!newNameCopy) newNameCopy = token.name
+      tokenCopy.plainTextName = newNameCopy
+      Token.updateToken(tokenCopy)
+      setNewName(newNameCopy)
+    }
+    setIsEditingName(false)
+  }
 
   return (
     <>
@@ -91,7 +108,34 @@ const InitiativeSubListSubItem: React.FC<{
             'no-turn': !hasTurn,
           })}
         >
-          <div className={'sub-list-sub-item-name'}>{token.name}</div>
+          <div className={'sub-list-sub-item-name'}>
+            {isEditingName && canOpenOptions ? (
+              <input
+                type='text'
+                className='align-left'
+                value={newName}
+                onChange={e => setNewName(e.target.value)}
+                onBlur={handleNameChange}
+                onKeyDown={e => {
+                  if (e.key === 'Enter') {
+                    handleNameChange()
+                  }
+                }}
+                autoFocus
+              />
+            ) : (
+              <span
+                className={clsx({ editable: canOpenOptions })}
+                onClick={() => {
+                  if (canOpenOptions) {
+                    setIsEditingName(true)
+                  }
+                }}
+              >
+                {newName}
+              </span>
+            )}
+          </div>
           <div className='sub-list-sub-item-caption'>
             {!token.isVisible && <EyeClosedIcon className='colored medium' />}
           </div>

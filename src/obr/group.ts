@@ -450,7 +450,7 @@ function randomSplittingAlgorithm(subGroup: Group.SubGroup, groupSize: number) {
     if (!subGroupById[subGroupId]) {
       newSubGroup = {
         maxTurns: 1,
-        subGroupName: token.name,
+        subGroupName: token.plainTextName,
         currentTurn: 0,
         maxReactions: 1,
         currentReaction: 0,

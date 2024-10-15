@@ -103,6 +103,16 @@
   font-weight: 500;
   font-size: map-get($font-sizes, normal);
   user-select: none;
+
+  > input[type="text"] {
+    box-shadow: none;
+    font-family: inherit;
+    text-align: left;
+  }
+
+  > .editable {
+    cursor: text;
+  }
 }
 
 .sub-list-sub-item-caption {

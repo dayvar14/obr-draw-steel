@@ -20,6 +20,7 @@ import InitiativeSubListSubItem from './InitiativeSubListSubItem'
 import { PopoverOptions } from '@components/Popovers/Popover'
 import { GroupOptionsList } from '@components/OptionsList/GroupOptionsList'
 import { GroupContext } from 'context/GroupContext'
+import lodash from 'lodash'
 
 const InitiativeSubListItem: React.FC<{
   subGroup: Group.SubGroup
@@ -49,6 +50,8 @@ const InitiativeSubListItem: React.FC<{
   const [isMouseOverToken, setMouseOverToken] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
   const [imageSrc, setImageSrc] = useState<string>(tokens[0].imageUrl)
+  const [isEditingName, setIsEditingName] = useState(false)
+  const [newName, setNewName] = useState(subGroup.subGroupName)
 
   if (
     !playerContext ||
@@ -107,6 +110,19 @@ const InitiativeSubListItem: React.FC<{
   useEffect(() => {
     if (tokens.length === 1) setIsExpanded(false)
   }, [tokens])
+
+  const handleNameChange = async () => {
+    let newNameCopy = newName
+    const subGroupCopy = lodash.cloneDeep(subGroup)
+
+    if (newNameCopy !== subGroup.subGroupName) {
+      if (!newNameCopy) newNameCopy = tokens[0].name
+      subGroupCopy.subGroupName = newNameCopy
+      await Group.updateSubgroupByGroupType(subGroup.groupType, subGroupCopy)
+      setNewName(newNameCopy)
+    }
+    setIsEditingName(false)
+  }
 
   return (
     <>
@@ -167,7 +183,32 @@ const InitiativeSubListItem: React.FC<{
             'no-turn': !hasTurn,
           })}
         >
-          <div className={'sub-list-item-name'}>{tokens[0].name}</div>
+          <div className={'sub-list-item-name'}>
+            {isEditingName ? (
+              <input
+                type='text'
+                className='align-left'
+                value={newName}
+                onChange={e => setNewName(e.target.value)}
+                onBlur={handleNameChange}
+                onKeyDown={e => {
+                  if (e.key === 'Enter') {
+                    handleNameChange()
+                  }
+                }}
+                autoFocus
+              />
+            ) : (
+              <span
+                className={clsx({ editable: canOpenOptions })}
+                onClick={() => {
+                  if (canOpenOptions) setIsEditingName(true)
+                }}
+              >
+                {subGroup.subGroupName}
+              </span>
+            )}
+          </div>
           {(tokens.length > 1 || !subGroup.isVisible) && (
             <div className='sub-list-item-caption'>
               {tokens.length > 1 && (visibleTokensCount > 1 || isGM) && (

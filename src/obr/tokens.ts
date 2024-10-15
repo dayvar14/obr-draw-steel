@@ -11,6 +11,7 @@ export namespace Token {
     createdUserId: string
     id: string
     name: string
+    plainTextName: string
     imageUrl: string
     isVisible: boolean
     mapPosition: {
@@ -85,6 +86,13 @@ export namespace Token {
     })
   }
 
+  export const updateToken = (token: Token): void => {
+    OBR.scene.items.updateItems([token.id], items => {
+      if (items.length === 0) return
+      ;(items[0] as Image).text.plainText = token.plainTextName
+    })
+  }
+
   export const createToggleClickFunc = (groupType: Group.GroupType) => {
     const ToggleClickFunc: ContextMenuItem['onClick'] = context => {
       const toggleEnabled = context.items.every(
@@ -130,20 +138,18 @@ const obrItemIsValidToken = (item: any) => {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const generateTokenFromValidItem = (item: any) => {
+const generateTokenFromValidItem = (item: any): Token.Token => {
   if (!obrItemIsValidToken(item))
     throw Error('Cannot parse item. Is invalid token')
 
   const image = item as Image
   const tokenMetadata = image.metadata[TOKEN_METADATA_ID] as TokenMetadata
-
-  const name = image.text.plainText ? image.text.plainText : image.name
-
   const token = {
     tokenMetadata: tokenMetadata,
     createdUserId: image.createdUserId,
     id: image.id,
-    name: name,
+    name: image.name,
+    plainTextName: image.text.plainText,
     imageUrl: image.image.url,
     isVisible: image.visible,
     mapPosition: {
