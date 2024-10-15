@@ -31,7 +31,11 @@ const ThemeWrapper = ({
     })
   }, [])
 
-  return <div className={clsx(theme, className)} style={style}>{children}</div>
+  return (
+    <div className={clsx(theme, className)} style={style}>
+      {children}
+    </div>
+  )
 }
 
 export default ThemeWrapper

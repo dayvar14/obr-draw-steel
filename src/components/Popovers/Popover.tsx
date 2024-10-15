@@ -94,7 +94,10 @@ export const Popover = React.forwardRef<HTMLElement, PopoverProps>(
     return (
       <div
         ref={popoverRef}
-        className={clsx(['popover-container', { visible: isVisible, hidden: !isVisible }])}
+        className={clsx([
+          'popover-container',
+          { visible: isVisible, hidden: !isVisible },
+        ])}
         style={{
           top: position.top,
           left: position.left,
