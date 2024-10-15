@@ -1,32 +1,32 @@
 h1 {
-    min-width: 0;
-    font-weight: 800;
-    font-size: map-get($font-sizes, xlarge);
-    letter-spacing: 0rem;
+  min-width: 0;
+  font-weight: 800;
+  font-size: map-get($font-sizes, xlarge);
+  letter-spacing: 0rem;
 }
 
 h2 {
-    min-width: 0;
-    font-weight: 700;
-    font-size: map-get($font-sizes, large);
-    letter-spacing: 0rem;
+  min-width: 0;
+  font-weight: 700;
+  font-size: map-get($font-sizes, large);
+  letter-spacing: 0rem;
 }
 
 h3 {
-    min-width: 0;
-    font-weight: 600;
-    font-size: map-get($font-sizes, normal);
-    letter-spacing: 0rem;
+  min-width: 0;
+  font-weight: 600;
+  font-size: map-get($font-sizes, normal);
+  letter-spacing: 0rem;
 }
 
 p {
-    min-width: 0;
-    font-weight: 400;
-    font-size: map-get($font-sizes, normal);
-    letter-spacing: 0rem;
+  min-width: 0;
+  font-weight: 400;
+  font-size: map-get($font-sizes, normal);
+  letter-spacing: 0rem;
 }
 
 small {
-    font-weight: 300;
-    font-size: map-get($font-sizes, small);
+  font-weight: 300;
+  font-size: map-get($font-sizes, small);
 }

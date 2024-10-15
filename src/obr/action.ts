@@ -1,7 +1,8 @@
 import OBR from '@owlbear-rodeo/sdk'
 import { APP_HEIGHT } from 'config'
 
-export module Action {
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace Action {
   export const getHeight = async (): Promise<number> => {
     return new Promise(resolve => {
       try {

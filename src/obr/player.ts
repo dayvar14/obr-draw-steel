@@ -2,7 +2,8 @@ import OBR, { Math2, Player as OBRPLayer, Vector2 } from '@owlbear-rodeo/sdk'
 import PlayerApi from '@owlbear-rodeo/sdk/lib/api/PlayerApi'
 import { Token } from './tokens'
 
-export module Player {
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace Player {
   export enum PlayerRole {
     GM = 'GM',
     PLAYER = 'PLAYER',
@@ -42,7 +43,7 @@ export module Player {
   }
 
   export const getPlayerState = (): Promise<PlayerState> => {
-    return new Promise(async resolve => {
+    return new Promise(resolve => {
       try {
         OBR.onReady(async () => {
           const id = OBR.player.id

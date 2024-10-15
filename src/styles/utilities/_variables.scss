@@ -1,33 +1,40 @@
 // font sizes
 $font-sizes: (
-    xxxxsmall: 1px,
-    xxxsmall: 2px,
-    xxsmall: 4px,
-    xsmall: 8px,
-    small: 12px,
-    normal: 16px,
-    large: 20px,
-    xlarge: 24px,
-    xxlarge: 28px,
-    xxxlarge: 32px
+  xxxxsmall: 1px,
+  xxxsmall: 2px,
+  xxsmall: 4px,
+  xsmall: 8px,
+  ssmall: 10px,
+  small: 12px,
+  snormal: 14px,
+  normal: 16px,
+  xnormal: 18px,
+  large: 20px,
+  xlarge: 24px,
+  xxlarge: 28px,
+  xxxlarge: 32px
 );
 
 // margin and padding sizes
 $space-sizes: (
-    xxxxsmall: 1px,
-    xxxsmall: 2px,
-    xxsmall: 4px,
-    xsmall: 8px,
-    small: 12px,
-    normal: 16px,
-    large: 20px,
-    xlarge: 24px,
-    xxlarge: 28px,
-    xxxlarge: 32px
+  xxxxsmall: 1px,
+  xxxsmall: 2px,
+  xxsmall: 4px,
+  xssmall: 6px,
+  xsmall: 8px,
+  ssmall: 10px,
+  small: 12px,
+  snormal: 14px,
+  normal: 16px,
+  xnormal: 18px,
+  large: 20px,
+  xlarge: 24px,
+  xxlarge: 28px,
+  xxxlarge: 32px
 );
 
 $custom-sizes: (
-    screen-width: 350px,
-    token-name: 170px,
-    token-image: 40px
+  screen-width: 350px,
+  token-name: 170px,
+  token-image: 40px
 );

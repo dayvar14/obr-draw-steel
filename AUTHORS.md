@@ -5,6 +5,9 @@
 ./src/icons/clear_circle.svg Adapted from
 https://www.svgrepo.com/svg/502579/clear-circle
 
+./src/icons/chevron-right.svg Adapted from
+https://www.svgrepo.com/svg/533661/chevron-right
+
 ./src/icons/delete.svg Adapted from https://www.svgrepo.com/svg/488148/delete
 
 ./src/icons/discord.svg Adapted from https://www.svgrepo.com/svg/506463/discord

@@ -1,28 +1,24 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 import InitiativeSubList from './InitiativeSubList.tsx'
-import { TokenContext } from 'context/TokenContext.tsx'
-import { Metadata, Scene, Token } from '@obr'
-import { SceneContext } from 'context/SceneContext.tsx'
+import { GroupContext } from 'context/GroupContext.tsx'
+import { Group, Token } from '@obr'
+import { PopoverOptions } from '@components/Popovers/Popover.tsx'
 
 const InitiativeList: React.FC<{
   onListHeightChange?: (height: number) => void
-}> = ({ onListHeightChange }) => {
+  popover?: {
+    openPopover?: (options: PopoverOptions) => void
+    closePopover?: () => void
+    isVisible?: boolean
+  }
+}> = ({ onListHeightChange, popover }) => {
   const defaultSubListHeight = 100
   const [foeListHeight, setFoeListHeight] =
     useState<number>(defaultSubListHeight)
   const [friendListHeight, setFriendListHeight] =
     useState<number>(defaultSubListHeight)
 
-  const tokenContext = useContext(TokenContext)
-  const sceneContext = useContext(SceneContext)
-
-  if (!tokenContext) {
-    throw new Error('TokenContext is undefined')
-  }
-
-  if (!sceneContext) {
-    throw new Error('SceneContext is undefined')
-  }
+  const groupContext = useContext(GroupContext)
 
   /* following pattern required to set observer on ref only after it is defined */
   /* found here: https://flareapp.io/blog/you-might-not-need-useref-for-that */
@@ -68,35 +64,58 @@ const InitiativeList: React.FC<{
     onListHeightChange(totalListHeight)
   }, [foeListHeight, friendListHeight])
 
+  if (!groupContext) {
+    throw new Error('TokenContext is undefined')
+  }
+
   return (
     <div className={'list-container'}>
       <InitiativeSubList
         forwardRef={registerFriendListResizeObserver}
-        title={'Friends'}
-        tokenType={Token.TokenType.FRIEND}
-        tokenGroups={tokenContext.tokenState.friendGroups}
-        onClearButtonClick={async () => {
-          await Metadata.clearFriends()
-          sceneContext.setFriendsListOrder({
-            type: Scene.ListOrderType.NONE,
-            indexes: [],
-          })
-        }}
+        group={groupContext.groupMetadata.groupsByType[Group.GroupType.FRIEND]}
+        onSortButtonClick={onSortButtonClick(
+          groupContext.groupMetadata.groupsByType[Group.GroupType.FRIEND],
+        )}
+        onClearButtonClick={onClearButtonClick(
+          groupContext.groupMetadata.groupsByType[Group.GroupType.FRIEND],
+        )}
+        popover={popover}
       />
       <InitiativeSubList
         forwardRef={registerFoeListResizeObserver}
-        title={'Foes'}
-        tokenType={Token.TokenType.FOE}
-        tokenGroups={tokenContext.tokenState.foeGroups}
-        onClearButtonClick={async () => {
-          await Metadata.clearFoes()
-          sceneContext.setFoesListOrder({
-            type: Scene.ListOrderType.NONE,
-            indexes: [],
-          })
-        }}
+        group={groupContext.groupMetadata.groupsByType[Group.GroupType.FOE]}
+        onSortButtonClick={onSortButtonClick(
+          groupContext.groupMetadata.groupsByType[Group.GroupType.FOE],
+        )}
+        onClearButtonClick={onClearButtonClick(
+          groupContext.groupMetadata.groupsByType[Group.GroupType.FOE],
+        )}
+        popover={popover}
       />
     </div>
   )
 }
 export default InitiativeList
+
+const onSortButtonClick = (group: Group.Group) => () => {
+  let newListOrder: Group.ListOrderType
+
+  if (group.listOrder === Group.ListOrderType.ALPHA_DESC) {
+    newListOrder = Group.ListOrderType.ALPHA_ASC
+  } else {
+    newListOrder = Group.ListOrderType.ALPHA_DESC
+  }
+
+  Group.getGroupMetadata().then(groupMetadata => {
+    groupMetadata.groupsByType[group.groupType].listOrder = newListOrder
+    Group.updateGroupMetadata(groupMetadata)
+  })
+}
+
+const onClearButtonClick = (group: Group.Group) => () => {
+  const tokens = Object.values(group.subGroupsById)
+    .map(subGroup => Object.values(subGroup.tokensById))
+    .flat()
+
+  Token.clearTokens(tokens)
+}

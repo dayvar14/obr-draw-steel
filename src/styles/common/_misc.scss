@@ -1,9 +1,9 @@
 hr {
-    display: flex;
-    flex-shrink: 0;
-    margin: 0;
-    border-width: 0px 0px thin;
-    border-style: solid;
-    border-color: rgba(map-get($colors, contrast), 0.08);
-    width: 100%;
+  display: flex;
+  flex-shrink: 0;
+  margin: 0;
+  border-width: 0px 0px thin;
+  border-style: solid;
+  border-color: rgba(map-get($colors, contrast), 0.08);
+  width: 100%;
 }

@@ -1,0 +1,45 @@
+@keyframes popoverAppear {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes popoverDisappear {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+}
+
+.popover-container {
+  position: absolute;
+  z-index: 100;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+  overflow: hidden;
+  pointer-events: none;
+
+  &.visible {
+    animation: popoverAppear 0.3s ease forwards;
+    * {
+      pointer-events: all;
+    }
+  }
+
+  &.hidden {
+    animation: popoverDisappear 0.15s ease forwards;
+    * {
+      pointer-events: none;
+    }
+  }
+}

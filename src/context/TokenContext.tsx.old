@@ -10,6 +10,7 @@ import {
   useState,
 } from 'react'
 import { SceneContext } from './SceneContext'
+import { GroupContext } from './GroupContext'
 import { GroupIDGenerator } from 'obr/common'
 
 interface TokenContextProps {
@@ -23,8 +24,9 @@ const TokenProvider = ({ children }: { children?: ReactNode }) => {
   const [tokenState, setTokenState] = useState<Token.TokenState | undefined>()
 
   const sceneMetadata = useContext(SceneContext)
+  const groupMetadata = useContext(GroupContext)
 
-  if (!sceneMetadata) {
+  if (!sceneMetadata || !groupMetadata) {
     return null
   }
 
@@ -50,7 +52,7 @@ const TokenProvider = ({ children }: { children?: ReactNode }) => {
       }
     }
     if (!tokenState) fetchTokenState()
-  }, [,])
+  })
 
   useEffect(() => {
     const fetchTokenState = async () => {

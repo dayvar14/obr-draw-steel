@@ -15,9 +15,10 @@
 
 An unoffical MCDM Draw Steel TTRPG initiave tracker for Owlbear Rodeo.
 
-This project is a Draw Steel TTRPG initiave tracker. Born out of a yearn for a digital
-initiative tracker for the Draw Steel TTRPG, the repo strives to provide a
-initiative tracker better suited for the rotating turns between friend and foe.
+This project is a Draw Steel TTRPG initiave tracker. Born out of a yearn for a
+digital initiative tracker for the Draw Steel TTRPG, the repo strives to provide
+a initiative tracker better suited for the rotating turns between friend and
+foe.
 
 ## Installing
 

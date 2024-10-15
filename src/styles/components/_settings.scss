@@ -1,117 +1,115 @@
 .settings-container {
-    display: flex;
-    flex-direction: column;
-    background-color: rgba(map-get($colors, background-primary), 0.01);
-    width: 100dvw;
+  display: flex;
+  flex-direction: column;
+  background-color: rgba(map-get($colors, background-primary), 0.01);
+  width: 100dvw;
 }
 
 .settings-header {
-    display: flex;
-    flex-direction: row;
-    box-shadow: 2px 2px 20px rgba(map-get($colors, contrast), 0.1);
+  display: flex;
+  flex-direction: row;
+  box-shadow: 2px 2px 20px rgba(map-get($colors, contrast), 0.1);
 
-    padding-top: map-get($space-sizes, xlarge);
-    padding-right: map-get($space-sizes, xlarge);
-    padding-bottom: map-get($space-sizes, small);
-    padding-left: map-get($space-sizes, xlarge);
+  padding-top: map-get($space-sizes, xlarge);
+  padding-right: map-get($space-sizes, xlarge);
+  padding-bottom: map-get($space-sizes, small);
+  padding-left: map-get($space-sizes, xlarge);
 
-    h1 {
-        font-size: map-get($font-sizes, normal)
-    }
+  h1 {
+    font-size: map-get($font-sizes, normal);
+  }
 }
 
 .settings-header-icons {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    align-items: center;
-    margin-left: auto;
-    padding-right: map-get($space-sizes, xsmall);
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  margin-left: auto;
+  padding-right: map-get($space-sizes, xsmall);
 
-    a {
-        width: 32px;
-        height: 32px;
-    }
+  a {
+    width: 32px;
+    height: 32px;
+  }
 
-    & > *:last-child {
-        margin-left: map-get($space-sizes, small);
-    }
+  & > *:last-child {
+    margin-left: map-get($space-sizes, small);
+  }
 }
 
 .settings-body {
-    flex-grow: 1;
-    border-radius: 1%;
-    padding: map-get($space-sizes, small);
-    padding-right: map-get($space-sizes, xlarge);
-    padding-bottom: map-get($space-sizes, small);
-    padding-left: map-get($space-sizes, xlarge);
-    overflow: scroll;
+  flex-grow: 1;
+  padding: map-get($space-sizes, small);
+  padding-right: map-get($space-sizes, xlarge);
+  padding-bottom: map-get($space-sizes, small);
+  padding-left: map-get($space-sizes, xlarge);
+  overflow-y: hidden;
 
-    h2 {
-        font-size: map-get($font-sizes, large);
-        font-weight: 800;
-    }
+  h2 {
+    font-size: map-get($font-sizes, large);
+    font-weight: 800;
+  }
 
-    hr {
-        border-width: map-get($space-sizes, xxxxsmall);
-        margin-bottom: map-get($space-sizes, xxsmall);
-
-    }
+  hr {
+    border-width: map-get($space-sizes, xxxxsmall);
+    margin-bottom: map-get($space-sizes, xxsmall);
+  }
 }
 
 .settings-item {
-    display: flex;
-    flex-direction: row;
-    padding-top: map-get($space-sizes, small);
-    padding-bottom: map-get($space-sizes, small);
+  display: flex;
+  flex-direction: row;
+  padding-top: map-get($space-sizes, small);
+  padding-bottom: map-get($space-sizes, small);
 
+  p {
+    flex: 1;
+    padding-right: map-get($space-sizes, small);
+  }
+
+  &.settings-item-disabled {
     p {
-        flex: 1;
-        padding-right: map-get($space-sizes, small);
+      color: map-get($colors, disabled-primary);
     }
-
-    &.settings-item-disabled {
-        p {
-            color: map-get($colors, disabled-primary);
-        }
-    }
+  }
 }
 
 .settings-body-footnote {
-    display: block;
-    padding-top: map-get($space-sizes, small);
+  display: block;
+  padding-top: map-get($space-sizes, small);
 }
 
 .settings-footer {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
 
-    padding-top: map-get($space-sizes, xxxxsmall);
-    padding-right: map-get($space-sizes, large);
+  padding-top: map-get($space-sizes, xxxxsmall);
+  padding-right: map-get($space-sizes, large);
+  padding-bottom: map-get($space-sizes, small);
+  padding-left: map-get($space-sizes, large);
+
+  > button {
+    justify-content: center;
+    border-width: map-get($space-sizes, xxxsmall);
+    border-style: solid;
+    border-color: rgba(map-get($colors, primary), 0.4);
+    border-radius: 12px;
+    padding-top: map-get($space-sizes, small);
     padding-bottom: map-get($space-sizes, small);
-    padding-left: map-get($space-sizes, large);
+    width: 100%;
+    color: map-get($colors, primary);
 
-    > button {
-        justify-content: center;
-        border-width: map-get($space-sizes, xxxsmall);
-        border-style: solid;
-        border-color: rgba(map-get($colors, primary), 0.4);
-        border-radius: 12px;
-        padding-top: map-get($space-sizes, small);
-        padding-bottom: map-get($space-sizes, small);
-        width: 100%;
-        color: map-get($colors, primary);
-
-        &:not(.disabled) {
-            cursor: pointer;
-            &:hover {
-                background-color: rgba(map-get($colors, contrast), 0.05);
-            }
-            &:active {
-                background-color: rgba(map-get($colors, contrast), 0.1);
-            }
-        }
+    &:not(.disabled) {
+      cursor: pointer;
+      &:hover {
+        background-color: rgba(map-get($colors, contrast), 0.05);
+      }
+      &:active {
+        background-color: rgba(map-get($colors, contrast), 0.1);
+      }
     }
+  }
 }
