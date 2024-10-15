@@ -15,10 +15,8 @@
     "@owlbear-rodeo/sdk": "^3.0.0",
     "clsx": "^2.1.1",
     "lodash": "^4.17.21",
-    "ml-kmeans": "^6.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-tiny-popover": "^8.1.2",
     "styled-components": "^6.1.13",
     "uuid": "^10.0.0",
     "vite-tsconfig-paths": "^5.0.1"

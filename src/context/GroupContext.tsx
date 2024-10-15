@@ -1,7 +1,6 @@
 import { Token, Group } from '@obr'
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import lodash from 'lodash'
-import { v5 as uuidv5 } from 'uuid'
 import { SceneContext } from 'context/SceneContext'
 
 interface GroupContextProps {
