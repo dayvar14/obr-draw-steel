@@ -1,7 +1,6 @@
 .list-container {
-    flex-grow: 1;
-    padding-bottom: map-get($space-sizes, xlarge);
-    width: 100lvw;
-    overflow-x: hidden;
-    overflow-y: auto;
+  flex-grow: 1;
+  width: 100lvw;
+  overflow-x: hidden;
+  overflow-y: auto;
 }

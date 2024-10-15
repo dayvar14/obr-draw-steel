@@ -8,4 +8,6 @@ import { PluginGate } from 'wrapper/PluginGate'
 ContextMenu.setupContextMenu()
 
 const root = ReactDOM.createRoot(<HTMLElement>document.querySelector('#root'))
-root.render(React.createElement(PluginGate, null, React.createElement(DrawSteel)))
+root.render(
+  React.createElement(PluginGate, null, React.createElement(DrawSteel)),
+)

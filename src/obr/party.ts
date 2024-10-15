@@ -2,7 +2,8 @@ import { Player } from './player'
 import PartyApi from '@owlbear-rodeo/sdk/lib/api/PartyApi'
 import OBR, { Player as OBRPlayer } from '@owlbear-rodeo/sdk'
 
-export module Party {
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace Party {
   export interface PartyState {
     playerStates: Player.PlayerState[]
   }
@@ -38,7 +39,7 @@ export module Party {
   }
 
   export const getPartyState = (): Promise<PartyState> => {
-    return new Promise(async resolve => {
+    return new Promise(resolve => {
       try {
         OBR.onReady(async () => {
           const players = await OBR.party.getPlayers()

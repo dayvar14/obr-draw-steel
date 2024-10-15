@@ -1,31 +1,40 @@
 button {
-    display: flex;
-    transition: background-color 0.1s ease;
-    border: none;
-    background-color: transparent;
+  display: flex;
+  transition: background-color 0.1s ease;
+  border: none;
+  background-color: transparent;
 }
 
 .rounded-square-icon-button {
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    margin-left: auto;
-    border-radius: 30%;
-    width: map-get($font-sizes, xlarge);
-    height: map-get($font-sizes, xlarge);
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
+  border-radius: 30%;
+  width: map-get($font-sizes, xlarge);
+  height: map-get($font-sizes, xlarge);
 
-    &.large {
-        width: map-get($font-sizes, xxxlarge);
-        height: map-get($font-sizes, xxxlarge);
-    }
+  &.small {
+    width: map-get($font-sizes, large);
+    height: map-get($font-sizes, large);
+  }
 
-    &:not(.disabled) {
-        cursor: pointer;
-        &:hover {
-            background-color: rgba(map-get($colors, contrast), 0.05);
-        }
-        &:active {
-            background-color: rgba(map-get($colors, contrast), 0.1);
-        }
+  &.large {
+    width: map-get($font-sizes, xxxlarge);
+    height: map-get($font-sizes, xxxlarge);
+  }
+
+  &:not(.disabled) {
+    cursor: pointer;
+    &:hover {
+      background-color: rgba(map-get($colors, contrast), 0.05);
     }
+    &:active {
+      background-color: rgba(map-get($colors, contrast), 0.1);
+    }
+  }
+
+  &.hidden {
+    visibility: hidden;
+  }
 }

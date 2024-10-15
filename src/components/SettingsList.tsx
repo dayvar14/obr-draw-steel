@@ -1,7 +1,7 @@
 import GithubIcon from '@icons/github.svg?react'
 import DiscordIcon from '@icons/discord.svg?react'
 import { APP_VERSION } from 'config'
-import { Modal, Token } from '@obr'
+import { Group, Modal } from '@obr'
 import { SceneContext } from 'context/SceneContext'
 import { useContext, useState } from 'react'
 import clsx from 'clsx'
@@ -16,7 +16,7 @@ const SettingsList = () => {
   const [unsavedSettings, setUnsavedSettings] = useState(sceneContext.settings)
 
   const handleInputChange = (
-    section: 'playerAccess' | 'grouping' | 'misc',
+    section: 'main' | 'playerAccess' | 'grouping' | 'misc',
     field: string,
     value: boolean | string,
   ) => {
@@ -66,20 +66,20 @@ const SettingsList = () => {
       </div>
       <hr />
       <div className='settings-body'>
-        <h2>Player Access</h2>
+        <h2>Main</h2>
         <hr />
         <div>
           <div className='settings-item'>
-            <p>Allow players to modify any turn.</p>
+            <p>Enable Reactions</p>
             <div className='settings-item-input'>
               <label className='switch'>
                 <input
                   type='checkbox'
-                  checked={unsavedSettings.playerAccess.canModifyAllTurns}
+                  checked={unsavedSettings.main.reactionsEnabled}
                   onChange={e =>
                     handleInputChange(
-                      'playerAccess',
-                      'canModifyAllTurns',
+                      'main',
+                      'reactionsEnabled',
                       e.target.checked,
                     )
                   }
@@ -88,19 +88,53 @@ const SettingsList = () => {
               </label>
             </div>
           </div>
-          <div className={clsx('settings-item', {'settings-item-disabled': unsavedSettings.playerAccess.canModifyAllTurns})}
-            title="Only applies if the player permission 'Owner Only' is enabled.">
-            <p>Allow players to set their turns if player owned.</p>
+        </div>
+        <h2>Player Access</h2>
+        <hr />
+        <div>
+          <div className='settings-item'>
+            <p>Allow players to open options.</p>
             <div className='settings-item-input'>
-              <label className={clsx('switch', {'disabled': unsavedSettings.playerAccess.canModifyAllTurns})}>
+              <label className='switch'>
                 <input
                   type='checkbox'
-                  checked={unsavedSettings.playerAccess.canSetTurnIfPlayerOwned}
-                  disabled={unsavedSettings.playerAccess.canModifyAllTurns}
+                  checked={unsavedSettings.playerAccess.canOpenAllOptions}
                   onChange={e =>
                     handleInputChange(
                       'playerAccess',
-                      'canSetTurnIfPlayerOwned',
+                      'canOpenAllOptions',
+                      e.target.checked,
+                    )
+                  }
+                />
+                <span className='slider round'></span>
+              </label>
+            </div>
+          </div>
+          <div
+            className={clsx('settings-item', {
+              'settings-item-disabled':
+                unsavedSettings.playerAccess.canOpenAllOptions,
+            })}
+            title="Only applies if the player permission 'Owner Only' is enabled."
+          >
+            <p>Allow players open options if player owned.</p>
+            <div className='settings-item-input'>
+              <label
+                className={clsx('switch', {
+                  disabled: unsavedSettings.playerAccess.canOpenAllOptions,
+                })}
+              >
+                <input
+                  type='checkbox'
+                  checked={
+                    unsavedSettings.playerAccess.canOpenOptionsIfPlayerOwned
+                  }
+                  disabled={unsavedSettings.playerAccess.canOpenAllOptions}
+                  onChange={e =>
+                    handleInputChange(
+                      'playerAccess',
+                      'canOpenOptionsIfPlayerOwned',
                       e.target.checked,
                     )
                   }
@@ -115,11 +149,11 @@ const SettingsList = () => {
               <label className='switch'>
                 <input
                   type='checkbox'
-                  checked={unsavedSettings.playerAccess.canseeTurnCount}
+                  checked={unsavedSettings?.playerAccess?.canSeeTurnCount}
                   onChange={e =>
                     handleInputChange(
                       'playerAccess',
-                      'canseeTurnCount',
+                      'canSeeTurnCount',
                       e.target.checked,
                     )
                   }
@@ -149,34 +183,18 @@ const SettingsList = () => {
           </div>
         </div>
         <div>
-          <div className={clsx('settings-item', {'settings-item-disabled': !unsavedSettings.grouping.isEnabled})}>
-            <p>Group tokens created by different users</p>
-            <div className='settings-item-input'>
-              <label className={clsx('switch', {'disabled': !unsavedSettings.grouping.isEnabled})}>
-                <input
-                  type='checkbox'
-                  disabled={!unsavedSettings.grouping.isEnabled}
-                  checked={unsavedSettings.grouping.groupTokensFromAllUsers}
-                  onChange={e =>
-                    handleInputChange(
-                      'grouping',
-                      'groupTokensFromAllUsers',
-                      e.target.checked,
-                    )
-                  }
-                />
-                <span className='slider round'></span>
-              </label>
-            </div>
-          </div>
-        </div>
-        <div>
-          <div className={clsx('settings-item', {'settings-item-disabled': !unsavedSettings.grouping.isEnabled})}>
+          <div
+            className={clsx('settings-item', {
+              'settings-item-disabled': !unsavedSettings.grouping.isEnabled,
+            })}
+          >
             <p>Grouping splitting mode</p>
             <div className='settings-item-input'>
               <select
                 id='dropdown'
-                className={clsx({'disabled': !unsavedSettings.grouping.isEnabled})}
+                className={clsx({
+                  disabled: !unsavedSettings.grouping.isEnabled,
+                })}
                 disabled={!unsavedSettings.grouping.isEnabled}
                 value={unsavedSettings.grouping.groupSplittingMode}
                 onChange={e =>
@@ -187,18 +205,27 @@ const SettingsList = () => {
                   )
                 }
               >
-                <option value={Token.GroupSplittingMode.CLOSEST}>
-                  Closest
-                </option>
-                <option value={Token.GroupSplittingMode.RANDOM}>Random</option>
-                <option value={Token.GroupSplittingMode.STANDARD}>
-                  Standard
-                </option>
+                {Object.keys(Group.GroupSplittingMode).map(key => (
+                  <option
+                    key={key}
+                    value={
+                      Group.GroupSplittingMode[
+                        key as keyof typeof Group.GroupSplittingMode
+                      ]
+                    }
+                  >
+                    {Group.getGroupSplittingName(
+                      Group.GroupSplittingMode[
+                        key as keyof typeof Group.GroupSplittingMode
+                      ],
+                    )}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
         </div>
-        <h2>Misc.</h2>
+        {/* <h2>Misc.</h2>
         <hr />
         <div>
           <div className='settings-item'>
@@ -220,7 +247,7 @@ const SettingsList = () => {
               </label>
             </div>
           </div>
-        </div>
+        </div> */}
         <hr />
         <div className='settings-body-footnote'>
           <p>
@@ -235,7 +262,7 @@ const SettingsList = () => {
               >
                 create an issue in Github
               </a>{' '}
-              and/or @StankyPapaya on the{' '}
+              and/or @StinkyPaps on the{' '}
               <a
                 className='rounded-square-icon-button large'
                 href='https://discord.com/channels/795808973743194152/1082460044731371591'

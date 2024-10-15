@@ -1,0 +1,118 @@
+.options-container {
+  border-radius: 5%;
+  background-color: rgba(map-get($colors, background-secondary), 1);;
+  padding-top: map-get($space-sizes, small);
+  padding-bottom: map-get($space-sizes, small);
+
+  &.token {
+    width: 200px;
+    height: 100px;
+  }
+
+  &.group {
+    width: 200px;
+    height: 262px;
+  }
+}
+
+.options-header {
+  background-color: rgba(map-get($colors, contrast), 0.1);
+  padding-top: map-get($space-sizes, small);
+  padding-right: map-get($space-sizes, normal);
+  padding-bottom: map-get($space-sizes, small);
+  padding-left: map-get($space-sizes, normal);
+  font-weight: 600;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+}
+
+.option {
+  flex-direction: row;
+  align-items: center;
+  border-bottom: 1px solid rgba(map-get($colors, contrast), 0.1);
+  padding-top: map-get($space-sizes, xsmall);
+  padding-right: map-get($space-sizes, normal);
+  padding-bottom: map-get($space-sizes, xsmall);
+  padding-left: map-get($space-sizes, normal);
+  width: 100%;
+  font-weight: 300;
+  font-size: map-get($space-sizes, normal);
+}
+
+.sub-option {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: rgba(map-get($colors, contrast), 0.05);
+  padding-right: map-get($space-sizes, normal);
+  padding-left: map-get($space-sizes, normal);
+  width: 100%;
+}
+
+.sub-option-input {
+  margin-top: map-get($space-sizes, xsmall);
+  margin-right: map-get($space-sizes, xxsmall);
+  margin-bottom: map-get($space-sizes, xsmall);
+  margin-left: map-get($space-sizes, xxsmall);
+  width: map-get($space-sizes, xxxlarge);
+  font-size: map-get($font-sizes, large);
+}
+
+.sub-option-icon-button {
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  width: map-get($space-sizes, xlarge);
+  height: map-get($space-sizes, xlarge);
+}
+
+.sub-option-button {
+  flex-grow: 1;
+  justify-content: center;
+  margin-left: map-get($space-sizes, normal);
+  border-width: map-get($font-sizes, xxxxsmall);
+  border-style: solid;
+  border-color: rgba(map-get($colors, contrast), 0.05);
+  border-radius: 10%;
+  padding-top: map-get($space-sizes, xxsmall);
+  padding-right: map-get($space-sizes, normal);
+  padding-bottom: map-get($space-sizes, xxsmall);
+  padding-left: map-get($space-sizes, normal);
+  font-weight: 200;
+  font-size: map-get($font-sizes, normal);
+}
+
+.sub-option-icon-button,
+.sub-option-button,
+.option-button {
+  &:not(.disabled) {
+    cursor: pointer;
+    &:hover {
+      background-color: rgba(map-get($colors, contrast), 0.05);
+    }
+    &:active {
+      background-color: rgba(map-get($colors, contrast), 0.1);
+    }
+  }
+
+  &.disabled {
+    opacity: 0.5;
+    > svg {
+      opacity: 0.5;
+    }
+  }
+}
+
+.option-button {
+  > p {
+    padding-left: map-get($space-sizes, small);
+  }
+}
+
+.option-button-icon-container {
+  width: map-get($space-sizes, large);
+  height: map-get($space-sizes, large);
+}

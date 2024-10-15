@@ -1,9 +1,8 @@
-.app-header {
+.app-footer {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 2px 2px 20px rgba(map-get($colors, contrast), 0.1);
   padding-top: map-get($space-sizes, large);
   padding-right: map-get($space-sizes, large);
   padding-bottom: map-get($space-sizes, large);
@@ -16,7 +15,7 @@
   }
 }
 
-.app-header-icons {
+.app-footer-icons {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;

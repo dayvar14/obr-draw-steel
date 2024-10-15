@@ -35,7 +35,7 @@ const PermissionProvider = ({ children }: { children?: ReactNode }) => {
     }
 
     if (!permissionState) fetchPermissionState()
-  }, [])
+  })
 
   if (permissionState) {
     const contextValue: PermissionContextProps = {

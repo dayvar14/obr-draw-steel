@@ -1,18 +1,37 @@
-.sub-list-item {
+.sub-list-sub-item {
   display: flex;
   position: relative;
   flex-direction: row;
   align-items: center;
+  opacity: 1;
+
+  animation: fadeIn 0.18s ease;
   border-bottom-width: map-get($space-sizes, xxxxsmall);
   border-bottom-style: solid;
   border-color: rgba(map-get($colors, contrast), 0.1);
   padding-top: map-get($space-sizes, xsmall);
+
   padding-right: map-get($space-sizes, xxlarge);
   padding-bottom: map-get($space-sizes, xsmall);
-  padding-left: map-get($space-sizes, xxsmall);
-
+  padding-left: 72px;
   width: 100lvw;
-  height: 60px;
+  max-height: 60px;
+  overflow: hidden;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      max-height: 0;
+    }
+    to {
+      opacity: 1;
+      padding-top: map-get($space-sizes, xsmall);
+      padding-bottom: map-get($space-sizes, xsmall);
+      max-height: 60px;
+    }
+  }
 
   &:hover,
   &:active {
@@ -24,20 +43,9 @@
   }
 }
 
-.sub-list-item-expand {
-  transition-duration: 0.15s;
-  transition-property: transform;
-  overflow: hidden;
-
-  &.open {
-    -webkit-transform: rotate(90deg);
-    transform: rotate(90deg);
-  }
-}
-
-.sub-list-item-down-line {
+.sub-list-sub-item-arrow {
   position: absolute;
-  top: -2px;
+  top: -8px;
   left: 28px;
 
   width: auto; /* Ensure it doesn't affect the parent's height */
@@ -45,8 +53,9 @@
   pointer-events: none; /* Ensure it doesn't interfere with other elements */
 }
 
-.sub-list-item-token {
+.sub-list-sub-item-token {
   margin-left: map-get($space-sizes, xxsmall);
+
   width: map-get($custom-sizes, token-image);
   height: map-get($custom-sizes, token-image);
   overflow: hidden;
@@ -72,18 +81,22 @@
   }
 }
 
-.sub-list-item-description {
+.sub-list-sub-item-description {
+  word-wrap: break-word;
   padding-right: map-get($space-sizes, normal);
   padding-left: map-get($space-sizes, small);
   width: map-get($custom-sizes, token-name);
+  overflow: hidden;
   user-select: none;
+  text-overflow: wrap;
+  white-space: wrap;
 
   &.no-turn {
     opacity: 0.5;
   }
 }
 
-.sub-list-item-name {
+.sub-list-sub-item-name {
   word-wrap: break-word;
   max-height: 34px;
   overflow: hidden;
@@ -92,7 +105,7 @@
   user-select: none;
 }
 
-.sub-list-item-caption {
+.sub-list-sub-item-caption {
   display: flex;
   align-items: center;
 
@@ -106,52 +119,10 @@
   }
 }
 
-.sub-list-item-icons {
+.sub-list-sub-item-icons {
   display: flex;
   flex-direction: row;
   margin-left: auto;
-
-  > label {
-    display: flex;
-    position: relative;
-    justify-content: center;
-    align-items: center;
-    transition: background-color 0.1s ease;
-    border: none;
-    border-radius: 30%;
-    background-color: transparent;
-    width: map-get($font-sizes, xlarge);
-    height: map-get($font-sizes, xlarge);
-
-    > span {
-      display: flex;
-      position: absolute;
-      top: 75%;
-      left: 75%;
-      align-items: center;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-      font-weight: 500;
-      font-size: map-get($font-sizes, normal);
-      user-select: none;
-      text-shadow: 0 0 5px rgba(map-get($colors, contrast), 0.3);
-    }
-
-    &:not(.disabled) {
-      cursor: pointer;
-      &:hover {
-        background-color: rgba(map-get($colors, contrast), 0.05);
-      }
-
-      &:active {
-        background-color: rgba(map-get($colors, contrast), 0.1);
-      }
-    }
-
-    &.no-turn {
-      opacity: 0.5;
-    }
-  }
 
   & > * {
     margin-left: map-get($space-sizes, xxsmall);

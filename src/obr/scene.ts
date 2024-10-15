@@ -1,77 +1,58 @@
+import { Group } from '@obr'
 import OBR from '@owlbear-rodeo/sdk'
 import { APP_VERSION, SCENE_METADATA_ID } from 'config'
-import { Token } from './tokens'
 
-export module Scene {
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace Scene {
   export interface SceneMetadata {
     appVersion: string
     settings: SettingsMetadata
-    listOrders: {
-      friends: ListOrderMetadata
-      foes: ListOrderMetadata
-    }
   }
 
   export interface SettingsMetadata {
+    main: {
+      reactionsEnabled: boolean
+    }
     playerAccess: {
-      canModifyAllTurns: boolean
-      canSetTurnIfPlayerOwned: boolean
-      canseeTurnCount: boolean
+      canOpenAllOptions: boolean
+      canSeeTurnCount: boolean
+      canOpenOptionsIfPlayerOwned: boolean
     }
     grouping: {
       isEnabled: boolean
-      groupTokensFromAllUsers: boolean
-      groupSplittingMode: Token.GroupSplittingMode
+      groupSplittingMode: Group.GroupSplittingMode
     }
     misc: {
       flagColorIsPlayerOwnerColor: boolean
     }
   }
 
-  export interface ListOrderMetadata {
-    type: ListOrderType
-    indexes: string[]
-  }
-
-  export enum ListOrderType {
-    ALPHA_ASC = 'ALPHA_ASC',
-    ALPHA_DESC = 'ALPHA_DESC',
-    INDEX = 'INDEX',
-    NONE = 'NONE',
-  }
-
   const DEFAULT_SCENE_METADATA: SceneMetadata = {
     appVersion: APP_VERSION,
     settings: {
+      main: {
+        reactionsEnabled: false,
+      },
       playerAccess: {
-        canModifyAllTurns: false,
-        canSetTurnIfPlayerOwned: false,
-        canseeTurnCount: false,
+        canOpenAllOptions: false,
+        canOpenOptionsIfPlayerOwned: false,
+        canSeeTurnCount: true,
       },
       grouping: {
         isEnabled: true,
-        groupTokensFromAllUsers: true,
-        groupSplittingMode: Token.GroupSplittingMode.CLOSEST,
+        groupSplittingMode: Group.GroupSplittingMode.CLOSEST,
       },
       misc: {
         flagColorIsPlayerOwnerColor: false,
-      },
-    },
-    listOrders: {
-      friends: {
-        type: ListOrderType.NONE,
-        indexes: [],
-      },
-      foes: {
-        type: ListOrderType.NONE,
-        indexes: [],
       },
     },
   }
 
   export const getSceneMetadata = async () => {
     const metadata = await OBR.scene.getMetadata()
+
     let sceneMetadata: SceneMetadata = DEFAULT_SCENE_METADATA
+
     if (metadata[SCENE_METADATA_ID]) {
       sceneMetadata = metadata[SCENE_METADATA_ID] as SceneMetadata
     }
@@ -104,26 +85,5 @@ export module Scene {
     const sceneMetadata = await getSceneMetadata()
     sceneMetadata.settings = metadata
     await updateSceneMetadata(sceneMetadata)
-  }
-
-  const updateListOrderMetadata = async (
-    type: 'friends' | 'foes',
-    metadata: ListOrderMetadata,
-  ) => {
-    const sceneMetadata = await getSceneMetadata()
-    sceneMetadata.listOrders[type] = metadata
-    await updateSceneMetadata(sceneMetadata)
-  }
-
-  export const updateFriendsListOrderMetadata = async (
-    metadata: ListOrderMetadata,
-  ) => {
-    return updateListOrderMetadata('friends', metadata)
-  }
-
-  export const updateFoesListOrderMetadata = async (
-    metadata: ListOrderMetadata,
-  ) => {
-    return updateListOrderMetadata('foes', metadata)
   }
 }

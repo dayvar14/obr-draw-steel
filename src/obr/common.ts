@@ -1,10 +1,6 @@
 import { Image } from '@owlbear-rodeo/sdk'
 import { v5 as uuidv5 } from 'uuid'
-import {
-  FOES_GROUP_ID_PREFIX,
-  FRIENDS_GROUP_ID_PREFIX,
-  FRIENDS_TOGGLE_METADATA_ID,
-} from '../config'
+import { Group } from '@obr'
 
 export class GroupIDGenerator {
   private static instance: GroupIDGenerator | null = null
@@ -21,18 +17,20 @@ export class GroupIDGenerator {
     return GroupIDGenerator.instance
   }
 
-  static generateGroupIdFromImage = (image: Image) => {
-    const isFriend = image.metadata[FRIENDS_TOGGLE_METADATA_ID] !== undefined
-    const name = image.text.plainText ? image.text.plainText : image.name
-    const prefix = isFriend ? FRIENDS_GROUP_ID_PREFIX : FOES_GROUP_ID_PREFIX
+  public static generateGroupIdFromImage = (
+    groupType: Group.GroupType,
+    image: Image,
+  ) => {
+    const name = image?.text?.plainText ? image?.text?.plainText : image?.name
+    const prefix = groupType.toLowerCase()
 
     if (!this.isGroupingEnabled) {
-      return uuidv5(prefix + image.id, uuidv5.DNS)
+      return uuidv5(`${prefix}/${image.id}`, uuidv5.DNS)
     }
 
     if (this.isGroupingEnabled && !this.groupTokensFromAllUsers) {
       return uuidv5(
-        prefix + image.createdUserId + image.image.url + name,
+        `${prefix}/${image.createdUserId}-${image.image.url}-${name}`,
         uuidv5.DNS,
       )
     }

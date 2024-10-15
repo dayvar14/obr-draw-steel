@@ -1,4 +1,4 @@
-import { Metadata, Modal, Player } from '@obr'
+import { Group, Modal, Player } from '@obr'
 import RefreshIcon from '@icons/refresh.svg?react'
 import SettingsIcon from '@icons/settings.svg?react'
 import { useContext } from 'react'
@@ -20,9 +20,7 @@ export const Header: React.FC = () => {
               <button
                 title='Refresh all turns'
                 className='rounded-square-icon-button'
-                onClick={() => {
-                  Metadata.clearAllTurnsAndReactions()
-                }}
+                onClick={refreshTurnsAndReactions}
               >
                 <RefreshIcon className='medium filled' />
               </button>
@@ -41,4 +39,17 @@ export const Header: React.FC = () => {
       </div>
     </div>
   )
+}
+
+const refreshTurnsAndReactions = async () => {
+  const groupMetadata = await Group.getGroupMetadata()
+  Object.keys(groupMetadata.groupsByType).forEach(groupType => {
+    const group = groupMetadata.groupsByType[groupType as Group.GroupType]
+    Object.keys(group.subGroupsById).forEach(subGroupId => {
+      const subGroup = group.subGroupsById[subGroupId]
+      subGroup.currentReaction = 0
+      subGroup.currentTurn = 0
+    })
+  })
+  Group.updateGroupMetadata(groupMetadata)
 }

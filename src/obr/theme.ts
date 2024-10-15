@@ -1,7 +1,8 @@
 import OBR, { Theme as OBRTheme } from '@owlbear-rodeo/sdk'
 import ThemeApi from '@owlbear-rodeo/sdk/lib/api/ThemeApi'
 
-export module Theme {
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace Theme {
   /* Need to decouple this a bit more */
   export interface ThemeState {
     isDarkMode: boolean
@@ -24,7 +25,7 @@ export module Theme {
   }
 
   export const getThemeState = (): Promise<ThemeState> => {
-    return new Promise(async resolve => {
+    return new Promise(resolve => {
       try {
         OBR.onReady(async () => {
           const theme = await OBR.theme.getTheme()
