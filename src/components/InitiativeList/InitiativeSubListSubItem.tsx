@@ -86,7 +86,11 @@ const InitiativeSubListSubItem: React.FC<{
             }}
           />
         </div>
-        <div className={clsx(['sub-list-item-token', { 'no-turn': !hasTurn }])}>
+        <div
+          className={clsx(['sub-list-item-description'], {
+            'no-turn': !hasTurn,
+          })}
+        >
           <div className={'sub-list-sub-item-name'}>{token.name}</div>
           <div className='sub-list-sub-item-caption'>
             {!token.isVisible && <EyeClosedIcon className='colored medium' />}

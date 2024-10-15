@@ -4,7 +4,7 @@ import { PartyContext } from 'context/PartyContext'
 import { PermissionContext } from 'context/PermissionContext'
 import { PlayerContext } from 'context/PlayerContext'
 
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import FlagFilledIcon from '@icons/flag_filled.svg?react'
 import FlagUnfilledIcon from '@icons/flag_unfilled.svg?react'
@@ -103,6 +103,10 @@ const InitiativeSubListItem: React.FC<{
       }
     }
   }
+
+  useEffect(() => {
+    if (tokens.length === 1) setIsExpanded(false)
+  }, [tokens])
 
   return (
     <>
