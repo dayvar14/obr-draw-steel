@@ -277,7 +277,7 @@ const InitiativeSubListItem: React.FC<{
               >
                 {hasReaction ? (
                   <ReactionFilledIcon
-                    className={clsx('colored medium primary')}
+                    className={clsx('filled colored medium primary')}
                   />
                 ) : (
                   <ReactionUnfilledIcon
