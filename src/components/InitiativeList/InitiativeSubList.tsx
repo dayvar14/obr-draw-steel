@@ -35,9 +35,6 @@ const InitiativeSubList: React.FC<{
   }
 
   const isGM = playerContext.playerState.role === Player.PlayerRole.GM
-  const isOwnerOnly = permissionContext.permissionState.permissions.includes(
-    'CHARACTER_OWNER_ONLY',
-  )
 
   // hide all tokens if all are hidden
   let allHidden = true

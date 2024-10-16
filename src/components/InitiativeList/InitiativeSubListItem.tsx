@@ -47,7 +47,7 @@ const InitiativeSubListItem: React.FC<{
   const settingsContext = useContext(SettingsContext)
   const groupContext = useContext(GroupContext)
   const tokens = Object.values(subGroup.tokensById)
-  const [isMouseOverToken, setMouseOverToken] = useState(false)
+  const [, setMouseOverToken] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
   const [imageSrc, setImageSrc] = useState<string>(tokens[0].imageUrl)
   const [isEditingName, setIsEditingName] = useState(false)
