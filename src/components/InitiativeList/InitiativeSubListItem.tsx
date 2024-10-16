@@ -360,7 +360,17 @@ const InitiativeSubListItem: React.FC<{
           </button>
         </div>
       </li>
-      {isExpanded && getSubItems(subGroup, tokens, popover)}
+      {isExpanded && (
+        <>
+          {isGM
+            ? getSubItems(subGroup, tokens, popover)
+            : getSubItems(
+                subGroup,
+                tokens.filter(value => value.isVisible),
+                popover,
+              )}
+        </>
+      )}
     </>
   )
 }
@@ -385,6 +395,7 @@ const getSubItems = (
   },
 ) => {
   let elements: JSX.Element[] = []
+
   for (let i = 0; i < tokens.length; i++) {
     elements.push(
       <InitiativeSubListSubItem

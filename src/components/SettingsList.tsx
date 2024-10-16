@@ -120,7 +120,9 @@ const SettingsList = () => {
             })}
             title="Only applies if the player permission 'Owner Only' is enabled."
           >
-            <p>Allow players to adjust flags and open options if player owned.</p>
+            <p>
+              Allow players to adjust flags and open options if player owned.
+            </p>
             <div className='settings-item-input'>
               <label
                 className={clsx('switch', {
