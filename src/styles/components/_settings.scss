@@ -26,6 +26,7 @@
   justify-content: flex-end;
   align-items: center;
   margin-left: auto;
+
   padding-right: map-get($space-sizes, xsmall);
 
   a {
@@ -42,9 +43,9 @@
   flex-grow: 1;
   padding: map-get($space-sizes, small);
   padding-right: map-get($space-sizes, xlarge);
-  padding-bottom: map-get($space-sizes, small);
+  padding-bottom: map-get($space-sizes, xlarge);
   padding-left: map-get($space-sizes, xlarge);
-  overflow-y: hidden;
+  overflow-y: scroll;
 
   h2 {
     font-size: map-get($font-sizes, large);
