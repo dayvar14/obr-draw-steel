@@ -43,6 +43,14 @@ svg {
       }
     }
 
+    &.contrast {
+      stroke: map-get($colors, contrast);
+
+      path {
+        stroke: map-get($colors, contrast);
+      }
+    }
+
     &.disabled {
       stroke: map-get($colors, disabled-primary);
 

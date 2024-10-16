@@ -247,11 +247,19 @@ const InitiativeSubListItem: React.FC<{
               )}
             {hasTurn && (
               <FlagFilledIcon
-                className={clsx('filled colored medium primary')}
+                className={clsx([
+                  'colored medium filled',
+                  { contrast: !canAdjustFlags, primary: canAdjustFlags },
+                ])}
               />
             )}
             {!hasTurn && (
-              <FlagUnfilledIcon className={clsx('colored medium primary')} />
+              <FlagUnfilledIcon
+                className={clsx([
+                  'colored medium',
+                  { contrast: !canAdjustFlags, primary: canAdjustFlags },
+                ])}
+              />
             )}
           </label>
           {settingsContext.settings.main?.reactionsEnabled && (
@@ -277,11 +285,17 @@ const InitiativeSubListItem: React.FC<{
               >
                 {hasReaction ? (
                   <ReactionFilledIcon
-                    className={clsx('filled colored medium primary')}
+                    className={clsx([
+                      'filled colored medium',
+                      { contrast: !canAdjustFlags, primary: canAdjustFlags },
+                    ])}
                   />
                 ) : (
                   <ReactionUnfilledIcon
-                    className={clsx('colored medium primary')}
+                    className={clsx([
+                      'colored medium',
+                      { contrast: !canAdjustFlags, primary: canAdjustFlags },
+                    ])}
                   />
                 )}
               </label>
