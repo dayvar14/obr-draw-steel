@@ -86,7 +86,27 @@ export namespace Token {
     })
   }
 
-  export const updateToken = (token: Token): void => {
+  export const updateTokens = (token: Token[]): void => {
+    const tokenMap = new Map<string, Token>()
+    for (const t of token) {
+      tokenMap.set(t.id, t)
+    }
+
+    OBR.scene.items.updateItems(
+      token.map(token => token.id),
+      items => {
+        if (items.length === 0) return
+        for (const item of items) {
+          const token = tokenMap.get(item.id)
+          if (!token) return
+          ;(item as Image).text.plainText = token.plainTextName
+          ;(item as Image).metadata[TOKEN_METADATA_ID] = token.tokenMetadata
+        }
+      },
+    )
+  }
+
+  export const updateTokenMetadata = (token: Token): void => {
     OBR.scene.items.updateItems([token.id], items => {
       if (items.length === 0) return
       ;(items[0] as Image).text.plainText = token.plainTextName

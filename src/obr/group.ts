@@ -217,7 +217,9 @@ export module Group {
       groupMetadata.groupsByType[subGroup.groupType].subGroupsById[subGroupId] =
         splitSubgroupsById[subGroupId]
     })
+
     await updateGroupMetadata(groupMetadata)
+    await Token.updateTokens(Object.values(subGroup.tokensById))
   }
 }
 
@@ -319,6 +321,7 @@ function proximityBasedSplittingAlgorithm(
       }
 
       group.forEach(token => {
+        token.tokenMetadata.subGroupId = subGroupId
         newSubGroup.tokensById[token.id] = token
       })
 
@@ -484,6 +487,7 @@ function hierarchicalClusteringSplittingAlgorithm(
     }
 
     cluster.tokens.forEach(token => {
+      token.tokenMetadata.subGroupId = subGroupId
       newSubGroup.tokensById[token.id] = token
     })
 
@@ -545,6 +549,7 @@ function randomSplittingAlgorithm(
       }
 
       group.forEach(token => {
+        token.tokenMetadata.subGroupId = subGroupId
         newSubGroup.tokensById[token.id] = token
       })
 
