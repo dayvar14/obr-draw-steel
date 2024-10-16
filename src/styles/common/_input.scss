@@ -1,9 +1,24 @@
-input[type='checkbox'] {
+input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+input,label {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  &.no-input {
+    cursor: not-allowed;
+  }
+}
+
+input[type="checkbox"] {
   display: none;
 }
 
-input[type='number'],
-input[type='text'] {
+input[type="number"],
+input[type="text"] {
   border: none;
   border-radius: 5%;
   background-color: transparent;
@@ -12,8 +27,8 @@ input[type='text'] {
   text-align: center;
 }
 
-input[type='number']:focus,
-input[type='text']:focus {
+input[type="number"]:focus,
+input[type="text"]:focus {
   background-color: rgba(map-get($colors, contrast), 0.05);
 }
 
@@ -24,13 +39,13 @@ input:focus {
   border-radius: 5px;
 }
 
-input[type='number']::-webkit-inner-spin-button,
-input[type='number']::-webkit-outer-spin-button {
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-input[type='number'] {
+input[type="number"] {
   -moz-appearance: textfield;
   appearance: textfield;
 }
@@ -45,11 +60,6 @@ select {
   padding-bottom: map-get($space-sizes, xxxsmall);
   padding-left: map-get($space-sizes, xsmall);
   font-family: inherit;
-
-  &.disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
 }
 
 .switch {
@@ -63,12 +73,6 @@ select {
       opacity: 0.5;
       cursor: not-allowed;
     }
-  }
-
-  input {
-    opacity: 0;
-    width: 0;
-    height: 0;
   }
 
   .slider {
@@ -92,7 +96,7 @@ select {
       background-color: white;
       width: map-get($space-sizes, large);
       height: calc(map-get($space-sizes, large));
-      content: '';
+      content: "";
     }
 
     /* Rounded sliders */
