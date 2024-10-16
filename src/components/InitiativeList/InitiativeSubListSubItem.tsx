@@ -71,7 +71,7 @@ const InitiativeSubListSubItem: React.FC<{
     if (newNameCopy !== tokenCopy.name) {
       if (!newNameCopy) newNameCopy = token.name
       tokenCopy.plainTextName = newNameCopy
-      Token.updateToken(tokenCopy)
+      Token.updateTokens([tokenCopy])
       setNewName(newNameCopy)
     }
     setIsEditingName(false)

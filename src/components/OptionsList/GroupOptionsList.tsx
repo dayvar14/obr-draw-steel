@@ -42,7 +42,7 @@ export const GroupOptionsList: React.FC<{
   const MAX_TURN_COUNT = 5
 
   useEffect(() => {
-    setSplitCount(tokens.length >= 5 ? 5 : 1)
+    setSplitCount(tokens.length > 5 ? 5 : 1)
   }, [subGroup])
 
   const handleNumberChange = (
