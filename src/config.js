@@ -10,7 +10,7 @@ export const TOKEN_METADATA_ID = `${EXTENSION_ID}/token-toggle-metadata-id`
 
 // Size of the app
 export const APP_WIDTH = 350
-export const APP_HEIGHT = 150
+export const APP_HEIGHT = 190
 
 // Group options id for popover
 export const GROUP_OPTIONS_POPOVER_ID = `${EXTENSION_ID}/group-options-popover-id`
