@@ -95,7 +95,7 @@ const SettingsList = () => {
         <hr />
         <div>
           <div className='settings-item'>
-            <p>Allow players to open options.</p>
+            <p>Allow players to adjust flags and open options.</p>
             <div className='settings-item-input'>
               <label className='switch'>
                 <input
@@ -120,7 +120,7 @@ const SettingsList = () => {
             })}
             title="Only applies if the player permission 'Owner Only' is enabled."
           >
-            <p>Allow players open options if player owned.</p>
+            <p>Allow players to adjust flags and open options if player owned.</p>
             <div className='settings-item-input'>
               <label
                 className={clsx('switch', {
