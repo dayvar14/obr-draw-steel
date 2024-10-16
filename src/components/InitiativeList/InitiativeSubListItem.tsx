@@ -165,11 +165,6 @@ const InitiativeSubListItem: React.FC<{
             onMouseLeave={() => {
               setMouseOverToken(false)
             }}
-            style={
-              isMouseOverToken && playerOwners[0]?.color
-                ? { boxShadow: `0px 0px 10px ${playerOwners[0].color}` }
-                : {}
-            }
           />
         </div>
         {isExpanded && (
