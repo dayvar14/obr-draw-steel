@@ -1,5 +1,5 @@
 const EXTENSION_ID = 'com.danielayvar.obr-draw-steel'
-export const APP_VERSION = '0.7.0'
+export const APP_VERSION = '0.6.0'
 
 export const SETTINGS_METADATA_ID = `${EXTENSION_ID}/settings-metadata-id`
 export const GROUP_METADATA_ID = `${EXTENSION_ID}/group-metadata-id`
