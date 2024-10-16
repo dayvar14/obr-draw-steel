@@ -8,6 +8,7 @@ import SortFromBottomToTopIcon from '@icons/sort_from_bottom_to_top.svg?react'
 import SortFromTopToBottomIcon from '@icons/sort_from_top_to_bottom.svg?react'
 import HamburgerMenuIcon from '@icons/hamburger_menu.svg?react'
 import { PopoverOptions } from '@components/Popovers/Popover.tsx'
+import { PermissionContext } from 'context/PermissionContext.tsx'
 
 const InitiativeSubList: React.FC<{
   forwardRef: React.Ref<HTMLDivElement>
@@ -27,12 +28,16 @@ const InitiativeSubList: React.FC<{
   popover,
 }) => {
   const playerContext = useContext(PlayerContext)
+  const permissionContext = useContext(PermissionContext)
 
-  if (!playerContext) {
+  if (!playerContext || !permissionContext) {
     throw new Error('PlayerContext is undefined')
   }
 
   const isGM = playerContext.playerState.role === Player.PlayerRole.GM
+  const isOwnerOnly = permissionContext.permissionState.permissions.includes(
+    'CHARACTER_OWNER_ONLY',
+  )
 
   // hide all tokens if all are hidden
   let allHidden = true
@@ -91,7 +96,7 @@ const InitiativeSubList: React.FC<{
             {isGM ? (
               <small>Select a character to add</small>
             ) : (
-              <small>Select your character to add</small>
+              <small>Waiting on director...</small>
             )}
           </p>
         )}
