@@ -155,6 +155,7 @@ const InitiativeSubListSubItem: React.FC<{
               {
                 disabled: !canOpenOptions,
                 'no-turn': !canOpenOptions,
+                'no-input': !canOpenAllOptions,
               },
             ])}
             disabled={!canOpenOptions}

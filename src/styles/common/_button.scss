@@ -24,6 +24,10 @@ button {
     height: map-get($font-sizes, xxxlarge);
   }
 
+  &.no-input {
+    cursor: not-allowed;
+  }
+
   &:not(.disabled) {
     cursor: pointer;
     &:hover {

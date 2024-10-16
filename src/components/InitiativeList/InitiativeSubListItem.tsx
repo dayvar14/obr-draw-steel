@@ -225,7 +225,11 @@ const InitiativeSubListItem: React.FC<{
           <input
             checked={!hasTurn}
             disabled={!canAdjustFlags}
-            className={clsx({ disabled: !canAdjustFlags })}
+            className={clsx({
+              disabled: !canAdjustFlags,
+              'no-turn': !hasTurn,
+              'no-input': !canOpenAllOptions,
+            })}
             onChange={() => {
               if (canAdjustFlags && onTurnChange) onTurnChange()
             }}
@@ -237,6 +241,7 @@ const InitiativeSubListItem: React.FC<{
             className={clsx({
               disabled: !canAdjustFlags,
               'no-turn': !hasTurn,
+              'no-input': !canOpenAllOptions,
             })}
             htmlFor={subGroup.subGroupId + '-flag'}
             role={'application'}
@@ -267,7 +272,11 @@ const InitiativeSubListItem: React.FC<{
               <input
                 checked={!hasReaction}
                 disabled={!canAdjustFlags}
-                className={clsx({ disabled: !canAdjustFlags })}
+                className={clsx({
+                  disabled: !canAdjustFlags,
+                  'no-turn': !hasReaction,
+                  'no-input': !canOpenAllOptions,
+                })}
                 onChange={() => {
                   if (canAdjustFlags && onReactionChange) onReactionChange()
                 }}
@@ -279,6 +288,7 @@ const InitiativeSubListItem: React.FC<{
                 className={clsx({
                   disabled: !canAdjustFlags,
                   'no-turn': !hasReaction,
+                  'no-input': !canOpenAllOptions,
                 })}
                 htmlFor={subGroup.subGroupId + '-reaction'}
                 role={'application'}
@@ -310,6 +320,7 @@ const InitiativeSubListItem: React.FC<{
               {
                 disabled: !canOpenOptions,
                 'no-turn': !canOpenOptions,
+                'no-input': !canOpenAllOptions,
               },
             ])}
             disabled={!canOpenOptions}
