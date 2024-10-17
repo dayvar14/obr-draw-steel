@@ -48,6 +48,7 @@ specification.
 ### Contributors
 
 This project exists thanks to all the people who contribute.
+
 [![Contributors](https://contributors-img.web.app/image?repo=dayvar14/obr-draw-steel)](https://github.com/dayvar14/obr-draw-stee/graphs/contributors)
 
 ## License
