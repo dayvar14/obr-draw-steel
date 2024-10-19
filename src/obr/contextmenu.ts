@@ -1,16 +1,15 @@
+import { GroupType } from '@data'
+import { Group } from './group.ts'
 import OBR, { ContextMenuIcon } from '@owlbear-rodeo/sdk'
 
-import { TOKEN_METADATA_ID, TOKEN_CONTEXT_MENU_ID } from '../config.js'
-
+import { TOKEN_CONTEXT_MENU_ID, TOKEN_METADATA_ID } from '../config.js'
 import { Token } from './tokens.ts'
 
-import { Group } from './group.ts'
-
 const iconListsByGroupType = {} as {
-  [groupType in Group.GroupType]: ContextMenuIcon[]
+  [groupType in GroupType]: ContextMenuIcon[]
 }
 
-for (const groupType of Object.values(Group.GroupType)) {
+for (const groupType of Object.values(GroupType)) {
   iconListsByGroupType[groupType] = [
     {
       icon: '/icons/add.svg',
@@ -47,7 +46,7 @@ for (const groupType of Object.values(Group.GroupType)) {
 export namespace ContextMenu {
   export const setupContextMenu = () => {
     OBR.onReady(() => {
-      for (const groupType of Object.values(Group.GroupType)) {
+      for (const groupType of Object.values(GroupType)) {
         const icons = iconListsByGroupType[groupType]
         OBR.contextMenu.create({
           id: `${TOKEN_CONTEXT_MENU_ID}/${groupType.toLowerCase()}`,

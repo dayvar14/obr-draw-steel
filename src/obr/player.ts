@@ -1,6 +1,6 @@
+import { Token } from './tokens'
 import OBR, { Math2, Player as OBRPLayer, Vector2 } from '@owlbear-rodeo/sdk'
 import PlayerApi from '@owlbear-rodeo/sdk/lib/api/PlayerApi'
-import { Token } from './tokens'
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Player {

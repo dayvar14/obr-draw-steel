@@ -1,18 +1,21 @@
-import InitiativeSubListItem from './InitiativeSubListItem.tsx'
-import React, { useContext } from 'react'
-import { Group, Player } from '@obr'
-import { PlayerContext } from 'context/PlayerContext.tsx'
-
+import { PopoverOptions } from '@components/Popovers/Popover.tsx'
+import { Group as GroupData, ListOrderType, SubGroup } from '@data'
 import CircleIcon from '@icons/clear_circle.svg?react'
+import HamburgerMenuIcon from '@icons/hamburger_menu.svg?react'
 import SortFromBottomToTopIcon from '@icons/sort_from_bottom_to_top.svg?react'
 import SortFromTopToBottomIcon from '@icons/sort_from_top_to_bottom.svg?react'
-import HamburgerMenuIcon from '@icons/hamburger_menu.svg?react'
-import { PopoverOptions } from '@components/Popovers/Popover.tsx'
+import { Group, Player } from '@obr'
+import React, { useContext } from 'react'
+
 import { PermissionContext } from 'context/PermissionContext.tsx'
+import { PlayerContext } from 'context/PlayerContext.tsx'
+
+import InitiativeSubListItem from './InitiativeSubListItem.tsx'
+import { GroupContext } from 'context/GroupContext.tsx'
 
 const InitiativeSubList: React.FC<{
   forwardRef: React.Ref<HTMLDivElement>
-  group: Group.Group
+  group: GroupData
   onClearButtonClick?: () => void
   onSortButtonClick?: () => void
   popover?: {
@@ -29,26 +32,24 @@ const InitiativeSubList: React.FC<{
 }) => {
   const playerContext = useContext(PlayerContext)
   const permissionContext = useContext(PermissionContext)
+  const groupContext = useContext(GroupContext)
 
-  if (!playerContext || !permissionContext) {
+  if (!playerContext || !permissionContext || !groupContext) {
     throw new Error('PlayerContext is undefined')
   }
 
   const isGM = playerContext.playerState.role === Player.PlayerRole.GM
 
+  const allGroupTokensIds = Object.values(group.subGroupsById).flatMap(
+    subGroup => subGroup.tokenIds,
+  )
+
   // hide all tokens if all are hidden
   let allHidden = true
 
-  const allTokens = Object.values(group.subGroupsById).flatMap(subGroup =>
-    Object.values(subGroup.tokensById),
+  allHidden = allGroupTokensIds.every(
+    tokenId => !groupContext?.tokensById?.[tokenId]?.isVisible,
   )
-
-  for (const token of allTokens) {
-    if (token.isVisible) {
-      allHidden = false
-      break
-    }
-  }
 
   const listItems = getListItems(group, popover)
 
@@ -63,13 +64,13 @@ const InitiativeSubList: React.FC<{
               title={`Sort ${Group.getNameFromGroupType(group.groupType)}`}
               onClick={onSortButtonClick}
             >
-              {group.listOrder === Group.ListOrderType.ALPHA_ASC && (
+              {group.listOrder === ListOrderType.ALPHA_ASC && (
                 <SortFromBottomToTopIcon className='colored large' />
               )}
-              {group.listOrder === Group.ListOrderType.ALPHA_DESC && (
+              {group.listOrder === ListOrderType.ALPHA_DESC && (
                 <SortFromTopToBottomIcon className='colored large' />
               )}
-              {(group.listOrder === Group.ListOrderType.INDEX ||
+              {(group.listOrder === ListOrderType.INDEX ||
                 group.listOrder === undefined) && (
                 <HamburgerMenuIcon className='colored large' />
               )}
@@ -101,20 +102,20 @@ const InitiativeSubList: React.FC<{
     </div>
   )
 }
-const getSortedSubGroups = (group: Group.Group) => {
+const getSortedSubGroups = (group: GroupData) => {
   const subGroups = Object.values(group.subGroupsById)
 
-  if (group.listOrder === Group.ListOrderType.ALPHA_DESC) {
+  if (group.listOrder === ListOrderType.ALPHA_DESC) {
     subGroups.sort((a, b) => {
-      const nameComparison = a.subGroupName.localeCompare(b.subGroupName)
+      const nameComparison = a.subGroupName?.localeCompare(b?.subGroupName)
       if (nameComparison !== 0) return nameComparison
-      return Object.keys(b.tokensById).length - Object.keys(a.tokensById).length
+      return Object.keys(b.tokenIds).length - Object.keys(a.tokenIds).length
     })
-  } else if (group.listOrder === Group.ListOrderType.ALPHA_ASC) {
+  } else if (group.listOrder === ListOrderType.ALPHA_ASC) {
     subGroups.sort((a, b) => {
-      const nameComparison = b.subGroupName.localeCompare(a.subGroupName)
+      const nameComparison = b.subGroupName?.localeCompare(a?.subGroupName)
       if (nameComparison !== 0) return nameComparison
-      return Object.keys(b.tokensById).length - Object.keys(a.tokensById).length
+      return Object.keys(b.tokenIds).length - Object.keys(a?.tokenIds).length
     })
   } else {
     subGroups.sort((a, b) => {
@@ -124,12 +125,12 @@ const getSortedSubGroups = (group: Group.Group) => {
 
   return subGroups.map(subGroup => [subGroup.subGroupId, subGroup]) as [
     string,
-    Group.SubGroup,
+    SubGroup,
   ][]
 }
 
 const getListItems = (
-  group: Group.Group,
+  group: GroupData,
   popover?: {
     openPopover?: (options: PopoverOptions) => void
     closePopover?: () => void

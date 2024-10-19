@@ -1,5 +1,5 @@
-import RoomApi from '@owlbear-rodeo/sdk/lib/api/RoomApi'
 import OBR, { Permission as OBRPermission } from '@owlbear-rodeo/sdk'
+import RoomApi from '@owlbear-rodeo/sdk/lib/api/RoomApi'
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Permission {

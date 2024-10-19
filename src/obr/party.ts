@@ -1,6 +1,7 @@
-import { Player } from './player'
-import PartyApi from '@owlbear-rodeo/sdk/lib/api/PartyApi'
 import OBR, { Player as OBRPlayer } from '@owlbear-rodeo/sdk'
+import PartyApi from '@owlbear-rodeo/sdk/lib/api/PartyApi'
+
+import { Player } from './player'
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Party {

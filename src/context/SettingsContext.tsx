@@ -1,82 +1,52 @@
+import { SettingsMetadata } from '@data'
 import { Settings } from '@obr'
-import OBR from '@owlbear-rodeo/sdk'
+import { isEqual } from 'lodash'
 import React, { createContext, useEffect, useState } from 'react'
 
 interface SettingsContextProps {
-  settingsMetadata: Settings.SettingsMetadata
-  settings: Settings.Settings
-  setSettings: (settings: Settings.Settings) => void
+  settingsMetadata: SettingsMetadata
+  setSettingsMetadata: (settings: SettingsMetadata) => void
 }
 
 const SettingsContext = createContext<SettingsContextProps | undefined>(
   undefined,
 )
 
-const SettingsProvider = ({
-  children,
-  loadingChildren,
-}: {
-  children?: React.ReactNode
-  loadingChildren?: React.ReactNode
-}) => {
-  const [settingsReady, setSettingsReady] = useState(false)
-  const [settingsMetadata, setSettingsMetadata] =
-    useState<Settings.SettingsMetadata>()
-  const [settings, setLocalSettings] = useState<Settings.Settings>()
-
-  useEffect(() => {
-    OBR.scene.isReady().then(ready => {
-      setSettingsReady(ready)
-    })
-
-    OBR.scene.onReadyChange(ready => {
-      setSettingsReady(ready)
-    })
-  }, [])
+const SettingsProvider = ({ children }: { children?: React.ReactNode }) => {
+  const [settingsMetadata, setSettingsMetadata] = useState<SettingsMetadata>()
 
   useEffect(() => {
     const fetchSettingsMetadata = async () => {
-      const settingsMetadata = await Settings.getSettingsMetadata()
-      setSettingsMetadata(settingsMetadata)
+      const newSettingsMetadata = await Settings.getSettingsMetadata()
+      setSettingsMetadata(settingsMetadata =>
+        isEqual(settingsMetadata, newSettingsMetadata)
+          ? settingsMetadata
+          : newSettingsMetadata,
+      )
     }
 
-    if (settingsReady) {
-      Settings.onSettingsMetadataChange(metadata => {
-        setSettingsMetadata(metadata)
-      })
+    Settings.onSettingsMetadataChange(newSettingsMetadata => {
+      setSettingsMetadata(settingsMetadata =>
+        isEqual(settingsMetadata, newSettingsMetadata)
+          ? settingsMetadata
+          : newSettingsMetadata,
+      )
+    })
 
-      fetchSettingsMetadata()
-    }
-  }, [settingsReady])
-
-  useEffect(() => {
-    if (settingsMetadata) {
-      setLocalSettings(settingsMetadata.settings)
-    }
-  }, [settingsMetadata])
-
-  const setSettings = (settings: Settings.Settings) => {
-    Settings.updateSettings(settings)
-  }
-
-  useEffect(() => {
-    if (settingsMetadata) {
-      setLocalSettings(settingsMetadata.settings)
-    }
-  }, [settingsMetadata])
+    fetchSettingsMetadata()
+  }, [])
 
   if (settingsMetadata) {
     const contextValue: SettingsContextProps = {
       settingsMetadata,
-      settings: settings as Settings.Settings,
-      setSettings,
+      setSettingsMetadata,
     }
     return (
       <SettingsContext.Provider value={contextValue}>
         {children}
       </SettingsContext.Provider>
     )
-  } else return <>{loadingChildren}</>
+  } else return null
 }
 
 export { SettingsProvider, SettingsContext }

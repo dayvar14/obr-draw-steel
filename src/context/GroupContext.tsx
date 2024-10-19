@@ -1,67 +1,93 @@
 import { Token, Group } from '@obr'
+import { GroupMetadata, SubGroup, GroupType } from '@data'
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import lodash from 'lodash'
-import { SettingsContext } from 'context/SettingsContext'
+import lodash, { isEqual } from 'lodash'
+import { TokenContext } from './TokenContext'
 
 interface GroupContextProps {
-  groupMetadata: Group.GroupMetadata
-  setGroupMetadata: (metadata: Group.GroupMetadata) => void
+  groupMetadata: GroupMetadata
+  tokensById: { [key: string]: Token.Token }
 }
 
 const GroupContext = createContext<GroupContextProps | undefined>(undefined)
 
 const GroupProvider = ({ children }: { children?: React.ReactNode }) => {
-  const [groupMetadata, setGroupMetadata] = useState<Group.GroupMetadata>()
-  const [tokens, setTokens] = useState<Token.Token[]>([])
-  const settingsContext = useContext(SettingsContext)
+  const [groupMetadata, setGroupMetadata] = useState<GroupMetadata>()
+  const [tokensById, setTokensById] = useState<{ [key: string]: Token.Token }>(
+    {},
+  )
 
-  if (!settingsContext) {
-    return null
-  }
+  const tokenContext = useContext(TokenContext)
+
   useEffect(() => {
-    const fetchGroupMetadata = async () => {
-      const groupMetadata = await Group.getGroupMetadata()
-      setGroupMetadata(groupMetadata)
-    }
-
-    Group.onGroupMetadataChange(metadata => {
-      setGroupMetadata(metadata)
+    Group.onGroupMetadataChange(newGroupMetadata => {
+      // Can optimize this by only updating if the metadata has changed
+      setGroupMetadata(newGroupMetadata)
     })
+
+    const fetchGroupMetadata = async () => {
+      const newGroupMetadata = await Group.getGroupMetadata()
+      setGroupMetadata(groupMetadata =>
+        isEqual(groupMetadata, newGroupMetadata)
+          ? groupMetadata
+          : newGroupMetadata,
+      )
+    }
 
     fetchGroupMetadata()
   }, [])
 
   useEffect(() => {
-    Token.setTokensListener(tokens => {
-      setTokens(tokens)
-    })
-
-    const fetchTokens = async () => {
-      try {
-        const tokens = await Token.getTokens()
-        setTokens(tokens)
-      } catch (error) {
-        console.error('Error fetching tokenState:', error)
-      }
+    if (!tokenContext) {
+      return
     }
-    if (!tokens) fetchTokens()
-  }, [])
+
+    const updateMetadata = async () => {
+      // Room for further optimization if we ignore fields we dont care about
+      if (isEqual(tokenContext.tokensById, tokensById)) return
+
+      let groupMetadataCopy = groupMetadata
+      if (!groupMetadataCopy) groupMetadataCopy = await Group.getGroupMetadata()
+
+      const newGroupMetadata = await updateGroupMetadataFromTokens(
+        tokenContext.tokensById,
+        groupMetadataCopy,
+      )
+
+      await Group.updateGroupMetadata(newGroupMetadata)
+    }
+
+    updateMetadata()
+  }, [tokenContext])
 
   useEffect(() => {
-    if (!groupMetadata) return
-    const newGroupMetadata = updateGroupMetadataFromTokens(
-      tokens,
-      groupMetadata,
+    if (!groupMetadata) {
+      return
+    }
+
+    let newTokensById = Object.values(groupMetadata.groupsByType).reduce(
+      (acc, group) => {
+        Object.values(group.subGroupsById).forEach(subGroup => {
+          subGroup.tokenIds.forEach(tokenId => {
+            // Firm assertaion since we know the token exists due to updating the metadata with new tokens
+            const token = tokenContext!.tokensById[tokenId]
+            if (token) acc[tokenId] = token
+          })
+        })
+        return acc
+      },
+      {} as { [key: string]: Token.Token },
     )
 
-    setGroupMetadata(newGroupMetadata)
-    Group.updateGroupMetadata(newGroupMetadata)
-  }, [tokens])
+    setTokensById(tokensById =>
+      isEqual(tokensById, newTokensById) ? tokensById : newTokensById,
+    )
+  }, [groupMetadata])
 
   if (groupMetadata) {
     const contextValue: GroupContextProps = {
       groupMetadata,
-      setGroupMetadata,
+      tokensById,
     }
     return (
       <GroupContext.Provider value={contextValue}>
@@ -71,18 +97,10 @@ const GroupProvider = ({ children }: { children?: React.ReactNode }) => {
   } else return null
 }
 
-const updateGroupMetadataFromTokens = (
-  tokens: Token.Token[],
-  groupMetadata: Group.GroupMetadata,
+const updateGroupMetadataFromTokens = async (
+  tokensById: { [key: string]: Token.Token },
+  groupMetadata: GroupMetadata,
 ) => {
-  const tokensById = tokens.reduce(
-    (acc, token) => {
-      acc[token.id] = token
-      return acc
-    },
-    {} as { [key: string]: Token.Token },
-  )
-
   const groupMetadataCopy = lodash.cloneDeep(groupMetadata)
   const groupsByType = groupMetadataCopy.groupsByType
 
@@ -95,13 +113,10 @@ const updateGroupMetadataFromTokens = (
     // Gets the max index to ensure item is placed at end of list
     let maxIndex = 0
 
-    let subGroup: Group.SubGroup =
-      group.subGroupsById[token.tokenMetadata.subGroupId]
+    let subGroup: SubGroup = group.subGroupsById[token.tokenMetadata.subGroupId]
     // If the token doesn't already exist in a subGroup, create a new subGroup
 
     const subGroupName = Group.getSubGroupName(subgroupNames)
-
-    subgroupNames.add(subGroupName)
 
     if (!subGroup) {
       subGroup = {
@@ -111,36 +126,32 @@ const updateGroupMetadataFromTokens = (
         maxReactions: 1,
         currentReaction: 0,
         subGroupId: token.tokenMetadata.subGroupId,
-        tokensById: {},
+        tokenIds: [],
         index: maxIndex + 1,
-        isVisible: token.isVisible,
         groupType: group.groupType,
       }
       group.subGroupsById[token.tokenMetadata.subGroupId] = subGroup
-      subgroupNames.add(subGroupName)
     }
 
-    subGroup.tokensById[token.id] = token
+    if (!subGroup.tokenIds.includes(tokenId)) {
+      subGroup.tokenIds.push(tokenId)
+    }
   })
 
   Object.keys(groupsByType).forEach(groupType => {
-    const group = groupsByType[groupType as Group.GroupType]
-    Object.keys(group.subGroupsById).forEach(subGroupId => {
+    const group = groupsByType[groupType as GroupType]
+    Object.keys(group.subGroupsById).forEach(async subGroupId => {
       const subGroup = group.subGroupsById[subGroupId]
-      // isVisible is false by default, set it to true if any token is visible
-      let isVisible = false
-      Object.keys(subGroup.tokensById).forEach(tokenId => {
+
+      subGroup.tokenIds.forEach(tokenId => {
         // If tokenId not exist in subgroup delete it
         if (!tokensById[tokenId]) {
-          delete subGroup.tokensById[tokenId]
-        } else {
-          isVisible = isVisible || tokensById[tokenId].isVisible
+          subGroup.tokenIds = subGroup.tokenIds.filter(id => id !== tokenId)
         }
       })
-      group.subGroupsById[subGroupId].isVisible = isVisible
 
       // If a subgroup has no tokens, delete it
-      if (Object.keys(subGroup.tokensById).length === 0)
+      if (Object.keys(subGroup.tokenIds).length === 0)
         delete group.subGroupsById[subGroupId]
     })
   })

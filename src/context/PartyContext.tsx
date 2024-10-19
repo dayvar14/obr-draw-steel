@@ -15,16 +15,20 @@ const PartyProvider = ({ children }: { children?: ReactNode }) => {
   const [partyState, setPartyState] = useState<Party.PartyState | undefined>()
 
   useEffect(() => {
-    Party.setPartyStateListener(partyState => {
-      setPartyState(partyState)
+    Party.setPartyStateListener(newPartyState => {
+      setPartyState(partyState =>
+        partyState === newPartyState ? partyState : newPartyState,
+      )
     })
   }, [])
 
   useEffect(() => {
     const fetchPartyState = async () => {
       try {
-        const partyStateValue = await Party.getPartyState()
-        setPartyState(partyStateValue)
+        const newPartyState = await Party.getPartyState()
+        setPartyState(partyState =>
+          partyState === newPartyState ? partyState : newPartyState,
+        )
       } catch (error) {
         console.error('Error fetching partyState:', error)
       }

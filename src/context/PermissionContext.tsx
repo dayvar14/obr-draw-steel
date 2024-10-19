@@ -1,5 +1,6 @@
 // ThemeContext.tsx
 import { Permission } from '@obr'
+import { isEqual } from 'lodash'
 import { createContext, ReactNode, useEffect, useState } from 'react'
 
 interface PermissionContextProps {
@@ -19,16 +20,24 @@ const PermissionProvider = ({ children }: { children?: ReactNode }) => {
   >()
 
   useEffect(() => {
-    Permission.setPermissionStateListener(permissionState => {
-      setPermissionState(permissionState)
+    Permission.setPermissionStateListener(newPermissionState => {
+      setPermissionState(permissionState =>
+        isEqual(permissionState, newPermissionState)
+          ? permissionState
+          : newPermissionState,
+      )
     })
   }, [])
 
   useEffect(() => {
     const fetchPermissionState = async () => {
       try {
-        const permissionStateValue = await Permission.getPermissionState()
-        setPermissionState(permissionStateValue)
+        const newPermissionState = await Permission.getPermissionState()
+        setPermissionState(permissionState =>
+          isEqual(permissionState, newPermissionState)
+            ? permissionState
+            : newPermissionState,
+        )
       } catch (error) {
         console.error('Error fetching permissionState:', error)
       }

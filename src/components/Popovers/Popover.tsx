@@ -1,9 +1,5 @@
-import React, { useRef, useState, useEffect, RefObject } from 'react'
-import { SettingsProvider } from 'context/SettingsContext'
-import { PlayerProvider } from 'context/PlayerContext'
-import { PermissionProvider } from 'context/PermissionContext'
-import ThemeWrapper from 'wrapper/ThemeWrapper'
 import clsx from 'clsx'
+import React, { RefObject, useEffect, useRef, useState } from 'react'
 
 interface PopoverProps {
   children?: React.ReactNode
@@ -105,13 +101,7 @@ export const Popover = React.forwardRef<HTMLElement, PopoverProps>(
           height: height,
         }}
       >
-        <ThemeWrapper>
-          <SettingsProvider>
-            <PlayerProvider>
-              <PermissionProvider>{children}</PermissionProvider>
-            </PlayerProvider>
-          </SettingsProvider>
-        </ThemeWrapper>
+        {children}
       </div>
     )
   },

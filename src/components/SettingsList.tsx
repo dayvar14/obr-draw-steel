@@ -1,10 +1,12 @@
-import GithubIcon from '@icons/github.svg?react'
+import { GroupSplittingMode } from '@data'
 import DiscordIcon from '@icons/discord.svg?react'
-import { APP_VERSION } from 'config'
-import { Group, Modal } from '@obr'
-import { SettingsContext } from 'context/SettingsContext'
-import { useContext, useState } from 'react'
+import GithubIcon from '@icons/github.svg?react'
+import { Group, Modal, Settings } from '@obr'
 import clsx from 'clsx'
+import { useContext, useState } from 'react'
+
+import { APP_VERSION } from 'config'
+import { SettingsContext } from 'context/SettingsContext'
 
 const SettingsList = () => {
   const settingsContext = useContext(SettingsContext)
@@ -14,7 +16,7 @@ const SettingsList = () => {
   }
 
   const [unsavedSettings, setUnsavedSettings] = useState(
-    settingsContext.settings,
+    settingsContext.settingsMetadata.settings,
   )
 
   const handleInputChange = (
@@ -32,7 +34,7 @@ const SettingsList = () => {
   }
 
   const onSave = () => {
-    settingsContext.setSettings(unsavedSettings)
+    Settings.updateSettings(unsavedSettings)
     Modal.closeSettings()
   }
 
@@ -209,18 +211,16 @@ const SettingsList = () => {
                   )
                 }
               >
-                {Object.keys(Group.GroupSplittingMode).map(key => (
+                {Object.keys(GroupSplittingMode).map(key => (
                   <option
                     key={key}
                     value={
-                      Group.GroupSplittingMode[
-                        key as keyof typeof Group.GroupSplittingMode
-                      ]
+                      GroupSplittingMode[key as keyof typeof GroupSplittingMode]
                     }
                   >
                     {Group.getGroupSplittingName(
-                      Group.GroupSplittingMode[
-                        key as keyof typeof Group.GroupSplittingMode
+                      GroupSplittingMode[
+                        key as keyof typeof GroupSplittingMode
                       ],
                     )}
                   </option>
@@ -229,29 +229,6 @@ const SettingsList = () => {
             </div>
           </div>
         </div>
-        {/* <h2>Misc.</h2>
-        <hr />
-        <div>
-          <div className='settings-item'>
-            <p>Set flags color to player owner's color</p>
-            <div className='settings-item-input'>
-              <label className='switch'>
-                <input
-                  type='checkbox'
-                  checked={unsavedSettings.misc.flagColorIsPlayerOwnerColor}
-                  onChange={e =>
-                    handleInputChange(
-                      'misc',
-                      'flagColorIsPlayerOwnerColor',
-                      e.target.checked,
-                    )
-                  }
-                />
-                <span className='slider round'></span>
-              </label>
-            </div>
-          </div>
-        </div> */}
         <hr />
         <div className='settings-body-footnote'>
           <p>
