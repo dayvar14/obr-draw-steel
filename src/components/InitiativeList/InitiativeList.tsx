@@ -1,8 +1,11 @@
-import { useContext, useEffect, useRef, useState } from 'react'
-import InitiativeSubList from './InitiativeSubList.tsx'
-import { GroupContext } from 'context/GroupContext.tsx'
-import { Group, Token } from '@obr'
 import { PopoverOptions } from '@components/Popovers/Popover.tsx'
+import { Group as GroupData, GroupType, ListOrderType } from '@data'
+import { Group, Token } from '@obr'
+import { useContext, useEffect, useRef, useState } from 'react'
+
+import { GroupContext } from 'context/GroupContext.tsx'
+
+import InitiativeSubList from './InitiativeSubList.tsx'
 
 const InitiativeList: React.FC<{
   onListHeightChange?: (height: number) => void
@@ -65,30 +68,32 @@ const InitiativeList: React.FC<{
   }, [foeListHeight, friendListHeight])
 
   if (!groupContext) {
-    throw new Error('TokenContext is undefined')
+    return
   }
 
   return (
     <div className={'list-container'}>
       <InitiativeSubList
         forwardRef={registerFriendListResizeObserver}
-        group={groupContext.groupMetadata.groupsByType[Group.GroupType.FRIEND]}
+        group={groupContext.groupMetadata.groupsByType[GroupType.ALLY]}
         onSortButtonClick={onSortButtonClick(
-          groupContext.groupMetadata.groupsByType[Group.GroupType.FRIEND],
+          groupContext.groupMetadata.groupsByType[GroupType.ALLY],
         )}
         onClearButtonClick={onClearButtonClick(
-          groupContext.groupMetadata.groupsByType[Group.GroupType.FRIEND],
+          groupContext.groupMetadata.groupsByType[GroupType.ALLY],
+          GroupType.ALLY,
         )}
         popover={popover}
       />
       <InitiativeSubList
         forwardRef={registerFoeListResizeObserver}
-        group={groupContext.groupMetadata.groupsByType[Group.GroupType.FOE]}
+        group={groupContext.groupMetadata.groupsByType[GroupType.ENEMY]}
         onSortButtonClick={onSortButtonClick(
-          groupContext.groupMetadata.groupsByType[Group.GroupType.FOE],
+          groupContext.groupMetadata.groupsByType[GroupType.ENEMY],
         )}
         onClearButtonClick={onClearButtonClick(
-          groupContext.groupMetadata.groupsByType[Group.GroupType.FOE],
+          groupContext.groupMetadata.groupsByType[GroupType.ENEMY],
+          GroupType.ENEMY,
         )}
         popover={popover}
       />
@@ -97,13 +102,13 @@ const InitiativeList: React.FC<{
 }
 export default InitiativeList
 
-const onSortButtonClick = (group: Group.Group) => () => {
-  let newListOrder: Group.ListOrderType
+const onSortButtonClick = (group: GroupData) => () => {
+  let newListOrder: ListOrderType
 
-  if (group.listOrder === Group.ListOrderType.ALPHA_DESC) {
-    newListOrder = Group.ListOrderType.ALPHA_ASC
+  if (group.listOrder === ListOrderType.ALPHA_DESC) {
+    newListOrder = ListOrderType.ALPHA_ASC
   } else {
-    newListOrder = Group.ListOrderType.ALPHA_DESC
+    newListOrder = ListOrderType.ALPHA_DESC
   }
 
   Group.getGroupMetadata().then(groupMetadata => {
@@ -112,10 +117,10 @@ const onSortButtonClick = (group: Group.Group) => () => {
   })
 }
 
-const onClearButtonClick = (group: Group.Group) => () => {
-  const tokens = Object.values(group.subGroupsById)
-    .map(subGroup => Object.values(subGroup.tokensById))
+const onClearButtonClick = (group: GroupData, groupType: GroupType) => () => {
+  const tokensId = Object.values(group.subGroupsById)
+    .map(subGroup => Object.values(subGroup.tokenIds))
     .flat()
-
-  Token.clearTokens(tokens)
+  Token.clearTokensById(tokensId)
+  Group.clearSubGroups(groupType)
 }

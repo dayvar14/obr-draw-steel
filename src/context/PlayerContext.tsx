@@ -1,5 +1,6 @@
 // ThemeContext.tsx
 import { Player } from '@obr'
+import { isEqual } from 'lodash'
 import {
   createContext,
   Dispatch,
@@ -22,16 +23,20 @@ const PlayerProvider = ({ children }: { children?: ReactNode }) => {
   >()
 
   useEffect(() => {
-    Player.setPlayerStateListener(playerState => {
-      setPlayerState(playerState)
+    Player.setPlayerStateListener(newPlayerState => {
+      setPlayerState(playerState =>
+        isEqual(playerState, newPlayerState) ? playerState : newPlayerState,
+      )
     })
   }, [])
 
   useEffect(() => {
     const fetchPlayerState = async () => {
       try {
-        const playerStateValue = await Player.getPlayerState()
-        setPlayerState(playerStateValue)
+        const newPlayerState = await Player.getPlayerState()
+        setPlayerState(playerState =>
+          isEqual(playerState, newPlayerState) ? playerState : newPlayerState,
+        )
       } catch (error) {
         console.error('Error fetching playerState:', error)
       }

@@ -1,29 +1,29 @@
-import clsx from 'clsx'
+import { GroupOptionsList } from '@components/OptionsList/GroupOptionsList'
+import { PopoverOptions } from '@components/Popovers/Popover'
+import { SubGroup } from '@data'
+import ChevronRightIcon from '@icons/chevron_right.svg?react'
+import DownLineIcon from '@icons/down_line.svg?react'
+import EyeClosedIcon from '@icons/eye_closed.svg?react'
+import FlagFilledIcon from '@icons/flag_filled.svg?react'
+import FlagUnfilledIcon from '@icons/flag_unfilled.svg?react'
+import HamburgerMenuDotsIcon from '@icons/hamburger_menu_dots.svg?react'
+import ReactionFilledIcon from '@icons/reaction_filled.svg?react'
+import ReactionUnfilledIcon from '@icons/reaction_unfilled.svg?react'
 import { Group, Player, Token } from '@obr'
+import clsx from 'clsx'
+import { useContext, useEffect, useState } from 'react'
+
+import { GroupContext } from 'context/GroupContext'
 import { PartyContext } from 'context/PartyContext'
 import { PermissionContext } from 'context/PermissionContext'
 import { PlayerContext } from 'context/PlayerContext'
-
-import { useContext, useEffect, useState } from 'react'
-
-import FlagFilledIcon from '@icons/flag_filled.svg?react'
-import FlagUnfilledIcon from '@icons/flag_unfilled.svg?react'
-import ReactionFilledIcon from '@icons/reaction_filled.svg?react'
-import ReactionUnfilledIcon from '@icons/reaction_unfilled.svg?react'
-import HamburgerMenuDotsIcon from '@icons/hamburger_menu_dots.svg?react'
-import EyeClosedIcon from '@icons/eye_closed.svg?react'
-import ChevronRightIcon from '@icons/chevron_right.svg?react'
-import DownLineIcon from '@icons/down_line.svg?react'
-import { PLACE_HOLDER_TOKEN_IMAGE } from 'config'
 import { SettingsContext } from 'context/SettingsContext'
+
 import InitiativeSubListSubItem from './InitiativeSubListSubItem'
-import { PopoverOptions } from '@components/Popovers/Popover'
-import { GroupOptionsList } from '@components/OptionsList/GroupOptionsList'
-import { GroupContext } from 'context/GroupContext'
-import lodash from 'lodash'
+import { PLACE_HOLDER_TOKEN_IMAGE } from 'config'
 
 const InitiativeSubListItem: React.FC<{
-  subGroup: Group.SubGroup
+  subGroup: SubGroup
   onTurnChange?: () => void
   onReactionChange?: () => void
   onDragStart?: (event: React.DragEvent<HTMLLIElement>) => void
@@ -46,10 +46,9 @@ const InitiativeSubListItem: React.FC<{
   const partyContext = useContext(PartyContext)
   const settingsContext = useContext(SettingsContext)
   const groupContext = useContext(GroupContext)
-  const tokens = Object.values(subGroup.tokensById)
+
   const [, setMouseOverToken] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
-  const [imageSrc, setImageSrc] = useState<string>(tokens[0].imageUrl)
   const [isEditingName, setIsEditingName] = useState(false)
   const [newName, setNewName] = useState(subGroup.subGroupName)
 
@@ -61,9 +60,17 @@ const InitiativeSubListItem: React.FC<{
     !groupContext
   ) {
     throw new Error(
-      'PlayerContext, PermissionContext, PartyContext, or SettingsContext is undefined',
+      'One or more required contexts (PlayerContext, PermissionContext, PartyContext, SettingsContext, GroupContext) are undefined',
     )
   }
+
+  const tokens = subGroup.tokenIds.map(
+    tokenId => groupContext.tokensById[tokenId],
+  ) as Token.Token[]
+
+  const [imageSrc, setImageSrc] = useState<string>(
+    tokens[0]?.imageUrl || PLACE_HOLDER_TOKEN_IMAGE,
+  )
 
   const isOwnerOnly = permissionContext.permissionState.permissions.includes(
     'CHARACTER_OWNER_ONLY',
@@ -74,17 +81,21 @@ const InitiativeSubListItem: React.FC<{
   const hasReaction = subGroup.currentReaction < subGroup.maxReactions
 
   const ownerIds = new Set<string>()
+
   for (const token of tokens) {
-    ownerIds.add(token.createdUserId)
+    ownerIds.add(token?.createdUserId)
   }
+
+  const isVisble = tokens.some(token => token?.isVisible)
 
   const isOwner =
     ownerIds.has(playerContext.playerState.id) && ownerIds.size === 1
 
   const canOpenAllOptions =
-    settingsContext.settings.playerAccess.canOpenAllOptions
+    settingsContext.settingsMetadata.settings.playerAccess.canOpenAllOptions
   const canOpenOptionsIfPlayerOwned =
-    settingsContext.settings.playerAccess.canOpenOptionsIfPlayerOwned
+    settingsContext.settingsMetadata.settings.playerAccess
+      .canOpenOptionsIfPlayerOwned
   // if players can only update their own tokens, then check to make sure they are the owner. Otherwise the player cannot modify
 
   const canAdjustFlags = isGM || (isOwner && isOwnerOnly) || canOpenAllOptions
@@ -94,7 +105,7 @@ const InitiativeSubListItem: React.FC<{
     canOpenAllOptions
 
   const playerOwners: Player.PlayerState[] = []
-  const visibleTokensCount = tokens.filter(token => token.isVisible).length
+  const visibleTokensCount = tokens.filter(token => token?.isVisible).length
 
   if (
     !isOwner &&
@@ -109,19 +120,40 @@ const InitiativeSubListItem: React.FC<{
   }
 
   useEffect(() => {
-    if (tokens.length === 1) setIsExpanded(false)
+    if (tokens.length === 1) {
+      setIsExpanded(false)
+
+      const tokenName = tokens[0]?.plainTextName || tokens[0]?.name
+
+      if (tokenName !== subGroup.subGroupName) {
+        subGroup.subGroupName = tokenName
+        Group.updateSubgroupByGroupType(subGroup.groupType, subGroup)
+      }
+    }
+
+    setImageSrc(tokens[0]?.imageUrl || PLACE_HOLDER_TOKEN_IMAGE)
   }, [tokens])
 
   const handleNameChange = async () => {
-    let newNameCopy = newName
-    const subGroupCopy = lodash.cloneDeep(subGroup)
+    let updatedName = newName || tokens[0]?.name
+    const { subGroupName, groupType } = subGroup
 
-    if (newNameCopy !== subGroup.subGroupName) {
-      if (!newNameCopy) newNameCopy = tokens[0].name
-      subGroupCopy.subGroupName = newNameCopy
-      await Group.updateSubgroupByGroupType(subGroup.groupType, subGroupCopy)
-      setNewName(newNameCopy)
+    if (updatedName !== subGroupName) {
+      const subGroupCopy = { ...subGroup, subGroupName: updatedName }
+      await Group.updateSubgroupByGroupType(groupType, subGroupCopy)
+
+      if (tokens.length === 1) {
+        const tokenName = tokens[0]?.plainTextName || tokens[0]?.name
+
+        if (tokenName !== updatedName) {
+          const updatedToken = { ...tokens[0], plainTextName: updatedName }
+          Token.updateTokens([updatedToken])
+        }
+      }
+
+      setNewName(updatedName)
     }
+
     setIsEditingName(false)
   }
 
@@ -129,7 +161,7 @@ const InitiativeSubListItem: React.FC<{
     <>
       <li
         className={clsx(['sub-list-item'], {
-          hidden: !subGroup.isVisible && !isGM,
+          hidden: !isVisble && !isGM,
         })}
         onDragStart={onDragStart}
         onDragEnd={onDragEnd}
@@ -205,14 +237,12 @@ const InitiativeSubListItem: React.FC<{
               </span>
             )}
           </div>
-          {(tokens.length > 1 || !subGroup.isVisible) && (
+          {(tokens.length > 1 || !isVisble) && (
             <div className='sub-list-item-caption'>
               {tokens.length > 1 && (visibleTokensCount > 1 || isGM) && (
                 <p>x{isGM ? tokens.length : visibleTokensCount}</p>
               )}
-              {!subGroup.isVisible && (
-                <EyeClosedIcon className='colored medium' />
-              )}
+              {!isVisble && <EyeClosedIcon className='colored medium' />}
             </div>
           )}
         </div>
@@ -241,7 +271,9 @@ const InitiativeSubListItem: React.FC<{
             htmlFor={subGroup.subGroupId + '-flag'}
             role={'application'}
           >
-            {(settingsContext.settings.playerAccess.canSeeTurnCount || isGM) &&
+            {(settingsContext.settingsMetadata.settings.playerAccess
+              .canSeeTurnCount ||
+              isGM) &&
               subGroup.maxTurns > 1 && (
                 <span>{subGroup.maxTurns - subGroup.currentTurn}</span>
               )}
@@ -262,7 +294,7 @@ const InitiativeSubListItem: React.FC<{
               />
             )}
           </label>
-          {settingsContext.settings.main?.reactionsEnabled && (
+          {settingsContext.settingsMetadata.settings.main?.reactionsEnabled && (
             <>
               <input
                 checked={!hasReaction}
@@ -382,7 +414,7 @@ const handleClick =
   }
 
 const getSubItems = (
-  subGroup: Group.SubGroup,
+  subGroup: SubGroup,
   tokens: Token.Token[],
   popover?: {
     openPopover?: (options: PopoverOptions) => void
@@ -397,7 +429,6 @@ const getSubItems = (
         key={tokens[i].id}
         hasTurn={subGroup.currentTurn < subGroup.maxTurns}
         token={tokens[i]}
-        subGroup={subGroup}
         isLastItem={i === tokens.length - 1}
         popover={popover}
       />,

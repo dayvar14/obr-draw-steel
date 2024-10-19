@@ -1,28 +1,15 @@
-import React from 'react'
+import { useContext } from 'react'
 import SelectIcon from '@icons/select.svg?react'
 import DeleteIcon from '@icons/delete.svg?react'
-import { Player, Group } from '@obr'
-import { GroupContext } from 'context/GroupContext'
+import { Player } from '@obr'
+import { TokenContext } from 'context/TokenContext'
 
 export const TokenOptionsList: React.FC<{
-  subGroupId: string
-  groupType: Group.GroupType
   tokenId: string
   onClickButton: () => void
-}> = ({ subGroupId, groupType, tokenId, onClickButton }) => {
-  const groupContext = React.useContext(GroupContext)
-  if (!groupContext) {
-    return null
-  }
-
-  const subGroup =
-    groupContext.groupMetadata.groupsByType[groupType].subGroupsById[subGroupId]
-
-  if (!subGroup) {
-    return <></>
-  }
-
-  const token = subGroup.tokensById[tokenId]
+}> = ({ tokenId, onClickButton }) => {
+  const tokenContext = useContext(TokenContext)
+  const token = tokenContext?.tokensById[tokenId]
 
   if (!token) {
     return <></>

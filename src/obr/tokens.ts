@@ -1,8 +1,9 @@
-import OBR, { Image, isImage, Item, ContextMenuItem } from '@owlbear-rodeo/sdk'
+import { GroupType, TokenMetadata } from '@data'
+import OBR, { ContextMenuItem, Image, isImage, Item } from '@owlbear-rodeo/sdk'
 import SceneItemsApi from '@owlbear-rodeo/sdk/lib/api/scene/SceneItemsApi'
-import { TOKEN_METADATA_ID } from '../config'
-import { Group } from '@obr'
 import { v5 as uuidv5 } from 'uuid'
+
+import { APP_VERSION, TOKEN_METADATA_ID } from '../config'
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Token {
@@ -18,13 +19,9 @@ export namespace Token {
       x: number
       y: number
     }
-    scale: {
-      x: number
-      y: number
-    }
   }
 
-  type OnStateChange = (tokens: Token[]) => void
+  type OnStateChange = (tokens: Token.Token[]) => void
   const createOnTokenStateChangeFunc = (onStateChange: OnStateChange) => {
     const onStateChangeFunc: Parameters<
       SceneItemsApi['onChange']
@@ -35,30 +32,13 @@ export namespace Token {
     return onStateChangeFunc
   }
 
-  const generateTokensFromItems = (items: Item[]) => {
-    // Uses the group id as a key and Token as a value
-    const tokens: Token[] = []
-
-    for (const item of items) {
-      if (!obrItemIsValidToken(item)) {
-        continue
-      }
-
-      const token = generateTokenFromValidItem(item)
-
-      tokens.push(token)
-    }
-
-    return tokens
-  }
-
   export const setTokensListener = (onStateChange: OnStateChange) => {
     OBR.onReady(() => {
       OBR.scene.items.onChange(createOnTokenStateChangeFunc(onStateChange))
     })
   }
 
-  export const clearTokens = (tokens: Token[]) => {
+  export const clearTokens = (tokens: Token.Token[]) => {
     const tokenIds = tokens.map(token => token.id)
     OBR.scene.items.updateItems(tokenIds, items => {
       for (const item of items) {
@@ -67,7 +47,15 @@ export namespace Token {
     })
   }
 
-  export const getTokens = (): Promise<Token[]> => {
+  export const clearTokensById = (tokenIds: string[]) => {
+    OBR.scene.items.updateItems(tokenIds, items => {
+      for (const item of items) {
+        delete item.metadata[TOKEN_METADATA_ID]
+      }
+    })
+  }
+
+  export const getTokens = (): Promise<Token.Token[]> => {
     return new Promise(resolve => {
       try {
         OBR.onReady(async () => {
@@ -86,8 +74,18 @@ export namespace Token {
     })
   }
 
-  export const updateTokens = (token: Token[]): void => {
-    const tokenMap = new Map<string, Token>()
+  export const getTokensById = async (
+    tokenIds: string[],
+  ): Promise<Token.Token[]> => {
+    const tokens = generateTokensFromItems(
+      await OBR.scene.items.getItems(tokenIds),
+    )
+
+    return tokens
+  }
+
+  export const updateTokens = (token: Token.Token[]): void => {
+    const tokenMap = new Map<string, Token.Token>()
     for (const t of token) {
       tokenMap.set(t.id, t)
     }
@@ -106,14 +104,14 @@ export namespace Token {
     )
   }
 
-  export const updateTokenMetadata = (token: Token): void => {
+  export const updateTokenMetadata = (token: Token.Token): void => {
     OBR.scene.items.updateItems([token.id], items => {
       if (items.length === 0) return
       ;(items[0] as Image).text.plainText = token.plainTextName
     })
   }
 
-  export const createToggleClickFunc = (groupType: Group.GroupType) => {
+  export const createToggleClickFunc = (groupType: GroupType) => {
     const ToggleClickFunc: ContextMenuItem['onClick'] = context => {
       const toggleEnabled = context.items.every(
         item => item.metadata[TOKEN_METADATA_ID] === undefined,
@@ -127,6 +125,7 @@ export namespace Token {
             const tokenMetadata: TokenMetadata = {
               groupType: groupType,
               subGroupId: subGroupId,
+              appVersion: APP_VERSION,
             }
             item.metadata[TOKEN_METADATA_ID] = tokenMetadata
           }
@@ -143,11 +142,6 @@ export namespace Token {
   }
 }
 
-export interface TokenMetadata {
-  groupType: Group.GroupType
-  subGroupId: string
-}
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const obrItemIsValidToken = (item: any) => {
   return (
@@ -155,6 +149,23 @@ const obrItemIsValidToken = (item: any) => {
     item.layer === 'CHARACTER' &&
     item.metadata[TOKEN_METADATA_ID] !== undefined
   )
+}
+
+const generateTokensFromItems = (items: Item[]) => {
+  // Uses the group id as a key and Token as a value
+  const tokens: Token.Token[] = []
+
+  for (const item of items) {
+    if (!obrItemIsValidToken(item)) {
+      continue
+    }
+
+    const token = generateTokenFromValidItem(item)
+
+    tokens.push(token)
+  }
+
+  return tokens
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -175,10 +186,6 @@ const generateTokenFromValidItem = (item: any): Token.Token => {
     mapPosition: {
       x: image.position.x,
       y: image.position.y,
-    },
-    scale: {
-      x: image.scale.x,
-      y: image.scale.y,
     },
   }
 

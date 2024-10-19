@@ -1,39 +1,49 @@
-import React, { useEffect } from 'react'
-import SelectIcon from '@icons/select.svg?react'
+import { GroupType } from '@data'
 import DeleteIcon from '@icons/delete.svg?react'
-import PlusIcon from '@icons/plus_circle.svg?react'
 import MinusIcon from '@icons/minus_circle.svg?react'
-import { Player, Group } from '@obr'
-import { SettingsContext } from 'context/SettingsContext'
-import { GroupContext } from 'context/GroupContext'
+import PlusIcon from '@icons/plus_circle.svg?react'
+import SelectIcon from '@icons/select.svg?react'
+import { Group, Player, Token } from '@obr'
 import clsx from 'clsx'
+import React, { useContext, useEffect, useState } from 'react'
+
+import { GroupContext } from 'context/GroupContext'
+import { SettingsContext } from 'context/SettingsContext'
 
 export const GroupOptionsList: React.FC<{
   subGroupId: string
-  groupType: Group.GroupType
+  groupType: GroupType
   onClickButton: () => void
 }> = ({ subGroupId, groupType, onClickButton }) => {
-  const [splitCount, setSplitCount] = React.useState<number>(0)
-  const settingsContext = React.useContext(SettingsContext)
-  const groupContext = React.useContext(GroupContext)
-  const [maxTurnCount, setMaxTurnCount] = React.useState(1)
+  const [splitCount, setSplitCount] = useState<number>(0)
+  const settingsContext = useContext(SettingsContext)
+  const groupContext = useContext(GroupContext)
+  const [maxTurnCount, setMaxTurnCount] = useState(1)
+
+  useEffect(() => {
+    if (settingsContext && groupContext) {
+      const subGroup =
+        groupContext.groupMetadata.groupsByType[groupType].subGroupsById[
+          subGroupId
+        ]
+      setMaxTurnCount(subGroup?.maxTurns ?? 1)
+    }
+  }, [settingsContext, groupContext, groupType, subGroupId])
 
   if (!settingsContext || !groupContext) {
-    return null
+    return
   }
 
   const subGroup =
     groupContext.groupMetadata.groupsByType[groupType].subGroupsById[subGroupId]
 
-  useEffect(() => {
-    setMaxTurnCount(subGroup?.maxTurns ?? 1)
-  }, [])
-
   if (!subGroup) {
     return <></>
   }
 
-  const tokens = Object.values(subGroup?.tokensById)
+  const tokens = subGroup.tokenIds.map(
+    tokenId => groupContext?.tokensById[tokenId],
+  ) as Token.Token[]
 
   if (!tokens) {
     return <></>
@@ -200,7 +210,9 @@ export const GroupOptionsList: React.FC<{
               Group.splitSubgroup(
                 subGroup,
                 splitCount,
-                settingsContext.settings.grouping.groupSplittingMode,
+                settingsContext.settingsMetadata.settings.grouping
+                  .groupSplittingMode,
+                tokens,
               )
               onClickButton()
             }}

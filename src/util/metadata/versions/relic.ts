@@ -1,10 +1,6 @@
 import OBR from '@owlbear-rodeo/sdk'
 
-export const upgradeMetadata = async () => {
-  deleteRelicMetadata()
-}
-
-const deleteRelicMetadata = async () => {
+export const deleteRelicMetadata = async () => {
   const FRIENDS_TOGGLE_METADATA_ID =
     'com.danielayvar.obr-draw-steel/friends-toggle-metadata-id'
   OBR.scene.items.updateItems(

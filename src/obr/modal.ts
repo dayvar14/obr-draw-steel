@@ -1,4 +1,5 @@
 import OBR from '@owlbear-rodeo/sdk'
+
 import { SETTINGS_HEIGHT, SETTINGS_MODAL_ID, SETTINGS_WIDTH } from 'config'
 
 // eslint-disable-next-line @typescript-eslint/no-namespace

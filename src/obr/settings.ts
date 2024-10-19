@@ -1,32 +1,14 @@
-import { Group } from '@obr'
+import {
+  GroupSplittingMode,
+  Settings as SettingsData,
+  SettingsMetadata,
+} from '@data'
 import OBR from '@owlbear-rodeo/sdk'
+
 import { APP_VERSION, SETTINGS_METADATA_ID } from 'config'
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Settings {
-  export interface SettingsMetadata {
-    appVersion: string
-    settings: Settings
-  }
-
-  export interface Settings {
-    main: {
-      reactionsEnabled: boolean
-    }
-    playerAccess: {
-      canOpenAllOptions: boolean
-      canSeeTurnCount: boolean
-      canOpenOptionsIfPlayerOwned: boolean
-    }
-    grouping: {
-      isEnabled: boolean
-      groupSplittingMode: Group.GroupSplittingMode
-    }
-    misc: {
-      flagColorIsPlayerOwnerColor: boolean
-    }
-  }
-
   const DEFAULT_SCENE_METADATA: SettingsMetadata = {
     appVersion: APP_VERSION,
     settings: {
@@ -40,7 +22,7 @@ export namespace Settings {
       },
       grouping: {
         isEnabled: true,
-        groupSplittingMode: Group.GroupSplittingMode.CLOSEST,
+        groupSplittingMode: GroupSplittingMode.CLOSEST,
       },
       misc: {
         flagColorIsPlayerOwnerColor: false,
@@ -81,7 +63,7 @@ export namespace Settings {
     return settingsMetadata.settings
   }
 
-  export const updateSettings = async (settings: Settings) => {
+  export const updateSettings = async (settings: SettingsData) => {
     const settingsMetadata = await getSettingsMetadata()
     settingsMetadata.settings = settings
     await updateSettingsMetadata(settingsMetadata)

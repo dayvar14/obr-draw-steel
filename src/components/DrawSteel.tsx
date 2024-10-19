@@ -1,6 +1,6 @@
 import InitiativeList from './InitiativeList/InitiativeList.tsx'
 import ThemeWrapper from '../wrapper/ThemeWrapper.tsx'
-import { Header } from './Header.tsx'
+import { Header } from './Header/Header.tsx'
 import { PermissionProvider } from '../context/PermissionContext.tsx'
 import { PartyProvider } from '../context/PartyContext.tsx'
 import { PlayerProvider } from '../context/PlayerContext.tsx'
@@ -11,9 +11,13 @@ import { SettingsProvider } from 'context/SettingsContext.tsx'
 import { GroupProvider } from 'context/GroupContext.tsx'
 import { Popover, PopoverOptions } from './Popovers/Popover.tsx'
 import { Footer } from './Footer.tsx'
+import { TokenProvider } from 'context/TokenContext.tsx'
+import { SceneGate } from 'wrapper/SceneGate.tsx'
+import { upgradeMetadata } from 'util/metadata/upgrader.ts'
 
 const DrawSteel = () => {
-  const [listHeight, setListHeight] = useState(0)
+  const [listHeight, setListHeight] = useState(APP_HEIGHT)
+  const [appHeight, setAppHeight] = useState<number>(APP_HEIGHT)
   const [popoverVisible, setPopoverVisible] = useState<boolean>(false)
   const [popoverOptions, setPopoverOptions] = useState<PopoverOptions>()
   const baseRef = useRef<HTMLDivElement>(null)
@@ -25,79 +29,94 @@ const DrawSteel = () => {
   /* might want to refactor this in the future */
   useEffect(() => {
     const setNewAppHeight = async () => {
-      // extra height needed to be accounted for. Header and footer
-      const extraHeight = 78
-      const hrHeight = 1
-      const defaultListHeight = APP_HEIGHT - (extraHeight + hrHeight)
-
-      /* needed because owl-bear-rodeo height clips the bottom of the list */
-      /* needed to match the manifest app height of 300px */
-      const padding = 32
-
-      const newHeight = Math.max(
-        extraHeight + hrHeight + listHeight + padding,
-        defaultListHeight + padding,
-      )
-      await Action.setHeight(newHeight)
+      setAppHeight(getCurrentAppHeight(listHeight))
     }
     setNewAppHeight()
   }, [listHeight])
 
-  return (
-    <div ref={baseRef} className={'app-container'}>
-      <ThemeWrapper className={'app-container'}>
-        {popoverOptions?.triggerRef && (
-          <Popover
-            isVisible={popoverVisible}
-            onClose={() => setPopoverVisible(false)}
-            triggerRef={popoverOptions?.triggerRef}
-            baseRef={baseRef}
-            width={popoverOptions.width}
-            height={popoverOptions.height}
-          >
-            {popoverOptions?.content}
-          </Popover>
-        )}
+  useEffect(() => {
+    Action.setHeight(appHeight)
+  }, [appHeight])
 
-        <PlayerProvider>
+  return (
+    <ThemeWrapper>
+      <div ref={baseRef} className='app-container'>
+        <SceneGate
+          onSceneNotReady={async () => setAppHeight(APP_HEIGHT)}
+          onSceneReady={async () => {
+            await upgradeMetadata()
+            setAppHeight(getCurrentAppHeight(listHeight))
+          }}
+          loadIfNotReady
+        >
           <Header />
           <hr />
-
-          <SettingsProvider
+          <SceneGate
             loadingChildren={
-              <div className={'no-scene'}>
+              <div className='no-scene'>
                 <p>Select a scene to start combat.</p>
               </div>
             }
           >
-            <PartyProvider>
-              <PermissionProvider>
-                <GroupProvider>
-                  <InitiativeList
-                    onListHeightChange={(listHeight: number) =>
-                      onListHeightChange(listHeight)
-                    }
-                    popover={{
-                      openPopover: (options: PopoverOptions) => {
-                        setPopoverOptions(options)
-                        setPopoverVisible(true)
-                      },
-                      closePopover: () => {
-                        setPopoverVisible(false)
-                      },
-                      isVisible: popoverVisible,
-                    }}
-                  />
-                </GroupProvider>
-              </PermissionProvider>
-            </PartyProvider>
-          </SettingsProvider>
+            <SettingsProvider>
+              <PlayerProvider>
+                <PartyProvider>
+                  <PermissionProvider>
+                    <TokenProvider>
+                      {popoverOptions?.triggerRef && (
+                        <Popover
+                          isVisible={popoverVisible}
+                          onClose={() => setPopoverVisible(false)}
+                          triggerRef={popoverOptions.triggerRef}
+                          baseRef={baseRef}
+                          width={popoverOptions.width}
+                          height={popoverOptions.height}
+                        >
+                          {popoverOptions.content}
+                        </Popover>
+                      )}
+                      <GroupProvider>
+                        <InitiativeList
+                          onListHeightChange={onListHeightChange}
+                          popover={{
+                            openPopover: (options: PopoverOptions) => {
+                              setPopoverOptions(options)
+                              setPopoverVisible(true)
+                            },
+                            closePopover: () => setPopoverVisible(false),
+                            isVisible: popoverVisible,
+                          }}
+                        />
+                      </GroupProvider>
+                    </TokenProvider>
+                  </PermissionProvider>
+                </PartyProvider>
+              </PlayerProvider>
+            </SettingsProvider>
+          </SceneGate>
           <hr />
           <Footer />
-        </PlayerProvider>
-      </ThemeWrapper>
-    </div>
+        </SceneGate>
+      </div>
+    </ThemeWrapper>
   )
 }
 
 export default DrawSteel
+
+const getCurrentAppHeight = (listHeight: number) => {
+  const extraHeight = 78
+  const hrHeight = 1
+  const defaultListHeight = APP_HEIGHT - (extraHeight + hrHeight)
+
+  /* needed because owl-bear-rodeo height clips the bottom of the list */
+  /* needed to match the manifest app height of 300px */
+  const padding = 32
+
+  const newHeight = Math.max(
+    extraHeight + hrHeight + listHeight + padding,
+    defaultListHeight + padding,
+  )
+
+  return newHeight
+}

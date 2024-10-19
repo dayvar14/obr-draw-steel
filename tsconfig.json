@@ -26,7 +26,8 @@
       "@components/*": ["components/*"],
       "@icons/*": ["icons/*"],
       "@styles/*": ["styles/*"],
-      "@obr": ["obr/obr.ts"]
+      "@obr": ["obr/obr.ts"],
+      "@data": ["data/data.ts"]
     },
     "allowJs": true
   },

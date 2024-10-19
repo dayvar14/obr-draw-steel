@@ -1,67 +1,39 @@
-import OBR from '@owlbear-rodeo/sdk'
-import { APP_VERSION, GROUP_METADATA_ID } from 'config'
+import {
+  GroupMetadata,
+  GroupSplittingMode,
+  GroupType,
+  ListOrderType,
+  SubGroup,
+} from '@data'
 import { Token } from './tokens'
+import OBR from '@owlbear-rodeo/sdk'
 import { v5 as uuidv5 } from 'uuid'
 
+import { APP_VERSION, GROUP_METADATA_ID } from 'config'
+
 // eslint-disable-next-line @typescript-eslint/no-namespace
-export module Group {
-  export interface GroupMetadata {
-    groupsByType: { [groupType in GroupType]: Group }
-    appVersion: string
-  }
-
-  export enum GroupType {
-    FRIEND = 'FRIEND',
-    FOE = 'FOE',
-  }
-
+export namespace Group {
   export const getNameFromGroupType = (groupType: GroupType) => {
     switch (groupType) {
-      case GroupType.FRIEND:
+      case GroupType.ALLY:
         return 'Allies'
-      case GroupType.FOE:
+      case GroupType.ENEMY:
         return 'Enemies'
     }
   }
 
-  export enum ListOrderType {
-    ALPHA_ASC = 'ALPHA_ASC',
-    ALPHA_DESC = 'ALPHA_DESC',
-    INDEX = 'INDEX',
-  }
-
-  export interface Group {
-    subGroupsById: { [subGroupId: string]: SubGroup }
-    index: number
-    groupType: GroupType
-    listOrder: ListOrderType
-  }
-
-  export interface SubGroup {
-    subGroupName: string
-    maxTurns: number
-    currentTurn: number
-    maxReactions: number
-    currentReaction: number
-    subGroupId: string
-    groupType: GroupType
-    tokensById: { [tokenId: string]: Token.Token }
-    isVisible: boolean
-    index: number
-  }
-
   const DEFAULT_GROUP_METADATA: GroupMetadata = {
     groupsByType: {
-      [GroupType.FRIEND]: {
+      [GroupType.ALLY]: {
         subGroupsById: {},
         index: 0,
-        groupType: GroupType.FRIEND,
+        groupType: GroupType.ALLY,
         listOrder: ListOrderType.ALPHA_DESC,
       },
-      [GroupType.FOE]: {
+      [GroupType.ENEMY]: {
         subGroupsById: {},
         index: 1,
-        groupType: GroupType.FOE,
+        groupType: GroupType.ENEMY,
         listOrder: ListOrderType.ALPHA_DESC,
       },
     },
@@ -81,7 +53,9 @@ export module Group {
   }
 
   export const updateGroupMetadata = async (metadata: GroupMetadata) => {
-    await OBR.scene.setMetadata({ [GROUP_METADATA_ID]: metadata })
+    await OBR.scene
+      .setMetadata({ [GROUP_METADATA_ID]: metadata })
+      .then(() => {})
   }
 
   export const onGroupMetadataChange = (
@@ -94,6 +68,12 @@ export module Group {
       }
       onChange(groupMetadata)
     })
+  }
+
+  export const clearSubGroups = async (groupType: GroupType) => {
+    const groupMetadata = await getGroupMetadata()
+    groupMetadata.groupsByType[groupType].subGroupsById = {}
+    await updateGroupMetadata(groupMetadata)
   }
 
   export const getSubGroupById = async (
@@ -113,13 +93,8 @@ export module Group {
     const groupMetadata = await getGroupMetadata()
     const group = groupMetadata.groupsByType[groupType]
     group.subGroupsById[subGroup.subGroupId] = subGroup
+    groupMetadata.groupsByType[groupType] = group
     await updateGroupMetadata(groupMetadata)
-  }
-
-  export enum GroupSplittingMode {
-    CLOSEST = 'CLOSEST',
-    RANDOM = 'RANDOM',
-    LAYERED = 'LAYERED',
   }
 
   export const getGroupSplittingName = (splittingMode: GroupSplittingMode) => {
@@ -133,7 +108,7 @@ export module Group {
     }
   }
 
-  export const getSetOfSubGroupNames = (groupMetadata: Group.GroupMetadata) => {
+  export const getSetOfSubGroupNames = (groupMetadata: GroupMetadata) => {
     const subGroupNames = new Set<string>()
 
     Object.values(groupMetadata.groupsByType).forEach(group => {
@@ -174,16 +149,17 @@ export module Group {
     subGroup: SubGroup,
     groupSize: number,
     splittingMode: GroupSplittingMode,
+    tokens: Token.Token[],
   ) => {
     const groupMetadata = await getGroupMetadata()
-    let splitSubgroupsById: { [subGroupId: string]: Group.SubGroup } = {
+    let splitSubgroupsById: { [subGroupId: string]: SubGroup } = {
       [subGroup.subGroupId]: subGroup,
     }
 
     const subGroupNames = getSetOfSubGroupNames(groupMetadata)
     subGroupNames.delete(subGroup.subGroupName)
 
-    if (Object.keys(subGroup.tokensById).length <= groupSize) return
+    if (Object.keys(subGroup.tokenIds).length <= groupSize) return
 
     switch (splittingMode) {
       case GroupSplittingMode.CLOSEST:
@@ -191,6 +167,7 @@ export module Group {
           subGroup,
           groupSize,
           subGroupNames,
+          tokens,
         )
         break
       case GroupSplittingMode.LAYERED:
@@ -198,6 +175,7 @@ export module Group {
           subGroup,
           groupSize,
           subGroupNames,
+          tokens,
         )
         break
       default:
@@ -205,6 +183,7 @@ export module Group {
           subGroup,
           groupSize,
           subGroupNames,
+          tokens,
         )
         break
     }
@@ -219,16 +198,16 @@ export module Group {
     })
 
     await updateGroupMetadata(groupMetadata)
-    await Token.updateTokens(Object.values(subGroup.tokensById))
+    await Token.updateTokens(tokens)
   }
 }
 
 function proximityBasedSplittingAlgorithm(
-  subGroup: Group.SubGroup,
+  subGroup: SubGroup,
   groupSize: number,
   subGroupNames: Set<string>,
+  tokens: Token.Token[],
 ) {
-  const tokens = Object.values(subGroup.tokensById)
   const totalGroups = Math.ceil(tokens.length / groupSize) // Correctly calculate the number of groups
 
   if (totalGroups === 0) {
@@ -288,7 +267,7 @@ function proximityBasedSplittingAlgorithm(
   })
 
   // Create subGroups and assign tokens
-  let subGroupById: { [subGroupId: string]: Group.SubGroup } = {}
+  let subGroupById: { [subGroupId: string]: SubGroup } = {}
 
   tokenGroups.forEach((group, groupIndex) => {
     if (group.length > 0) {
@@ -307,22 +286,21 @@ function proximityBasedSplittingAlgorithm(
         subGroupNames.add(subGroupName)
       }
 
-      let newSubGroup: Group.SubGroup = {
+      let newSubGroup: SubGroup = {
         maxTurns: 1,
         subGroupName: subGroupName,
         currentTurn: 0,
         maxReactions: 1,
         currentReaction: 0,
         subGroupId: subGroupId,
-        tokensById: {},
+        tokenIds: [],
         index: groupIndex,
-        isVisible: group[0].isVisible,
         groupType: subGroup.groupType,
       }
 
       group.forEach(token => {
         token.tokenMetadata.subGroupId = subGroupId
-        newSubGroup.tokensById[token.id] = token
+        newSubGroup.tokenIds.push(token.id)
       })
 
       subGroupById[subGroupId] = newSubGroup
@@ -333,11 +311,11 @@ function proximityBasedSplittingAlgorithm(
 }
 
 function hierarchicalClusteringSplittingAlgorithm(
-  subGroup: Group.SubGroup,
+  subGroup: SubGroup,
   groupSize: number,
   subGroupNames: Set<string>,
+  tokens: Token.Token[],
 ) {
-  const tokens = Object.values(subGroup.tokensById)
   const totalGroups = Math.ceil(tokens.length / groupSize) // Number of groups
 
   if (totalGroups === 0) {
@@ -456,7 +434,7 @@ function hierarchicalClusteringSplittingAlgorithm(
   })
 
   // Create subGroups from split clusters
-  let subGroupById: { [subGroupId: string]: Group.SubGroup } = {}
+  let subGroupById: { [subGroupId: string]: SubGroup } = {}
 
   splitClusters.forEach((cluster, clusterIndex) => {
     const subGroupId = uuidv5(
@@ -473,22 +451,21 @@ function hierarchicalClusteringSplittingAlgorithm(
       subGroupNames.add(subGroupName)
     }
 
-    let newSubGroup: Group.SubGroup = {
+    let newSubGroup: SubGroup = {
       maxTurns: 1,
       subGroupName: subGroupName,
       currentTurn: 0,
       maxReactions: 1,
       currentReaction: 0,
       subGroupId: subGroupId,
-      tokensById: {},
+      tokenIds: [],
       index: clusterIndex,
-      isVisible: cluster.tokens[0].isVisible,
       groupType: subGroup.groupType,
     }
 
     cluster.tokens.forEach(token => {
       token.tokenMetadata.subGroupId = subGroupId
-      newSubGroup.tokensById[token.id] = token
+      newSubGroup.tokenIds.push(token.id)
     })
 
     subGroupById[subGroupId] = newSubGroup
@@ -498,12 +475,11 @@ function hierarchicalClusteringSplittingAlgorithm(
 }
 
 function randomSplittingAlgorithm(
-  subGroup: Group.SubGroup,
+  subGroup: SubGroup,
   groupSize: number,
   subGroupNames: Set<string>,
+  tokens: Token.Token[],
 ) {
-  const tokens = Object.values(subGroup.tokensById)
-
   // Shuffle the tokens array
   const shuffledTokens = tokens
     .map(value => ({ value, sort: Math.random() }))
@@ -516,7 +492,7 @@ function randomSplittingAlgorithm(
     tokenGroups.push(shuffledTokens.slice(i, i + groupSize))
   }
 
-  let subGroupById: { [subGroupId: string]: Group.SubGroup } = {}
+  let subGroupById: { [subGroupId: string]: SubGroup } = {}
 
   tokenGroups.forEach((group, groupIndex) => {
     if (group.length > 0) {
@@ -535,22 +511,21 @@ function randomSplittingAlgorithm(
         subGroupNames.add(subGroupName)
       }
 
-      let newSubGroup: Group.SubGroup = {
+      let newSubGroup: SubGroup = {
         maxTurns: 1,
         subGroupName: subGroupName,
         currentTurn: 0,
         maxReactions: 1,
         currentReaction: 0,
         subGroupId: subGroupId,
-        tokensById: {},
+        tokenIds: [],
         index: groupIndex,
-        isVisible: group[0].isVisible,
         groupType: subGroup.groupType,
       }
 
       group.forEach(token => {
         token.tokenMetadata.subGroupId = subGroupId
-        newSubGroup.tokensById[token.id] = token
+        newSubGroup.tokenIds.push(token.id)
       })
 
       subGroupById[subGroupId] = newSubGroup

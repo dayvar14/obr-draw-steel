@@ -5,8 +5,8 @@ export const SETTINGS_METADATA_ID = `${EXTENSION_ID}/settings-metadata-id`
 export const GROUP_METADATA_ID = `${EXTENSION_ID}/group-metadata-id`
 
 // Metadata for deciding the group and group id of a token
-export const TOKEN_CONTEXT_MENU_ID = `${EXTENSION_ID}/token-toggle-id`
-export const TOKEN_METADATA_ID = `${EXTENSION_ID}/token-toggle-metadata-id`
+export const TOKEN_CONTEXT_MENU_ID = `${EXTENSION_ID}/token-context-id`
+export const TOKEN_METADATA_ID = `${EXTENSION_ID}/token-metadata-id`
 
 // Size of the app
 export const APP_WIDTH = 350

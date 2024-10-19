@@ -1,24 +1,22 @@
+import { TokenOptionsList } from '@components/OptionsList/TokenOptionsList'
+import { PopoverOptions } from '@components/Popovers/Popover'
+import DownRightArrowWithLineIcon from '@icons/down_right_arrow_with_line.svg?react'
+import DownRightArrowIcon from '@icons/down_right_arrow.svg?react'
+import EyeClosedIcon from '@icons/eye_closed.svg?react'
+import HamburgerMenuDotsIcon from '@icons/hamburger_menu_dots.svg?react'
+import { Player, Token } from '@obr'
 import clsx from 'clsx'
-import { Group, Player, Token } from '@obr'
-
+import lodash from 'lodash'
 import { useContext, useState } from 'react'
 
 import { PLACE_HOLDER_TOKEN_IMAGE } from 'config'
-import DownRightArrowIcon from '@icons/down_right_arrow.svg?react'
-import DownRightArrowWithLineIcon from '@icons/down_right_arrow_with_line.svg?react'
-import HamburgerMenuDotsIcon from '@icons/hamburger_menu_dots.svg?react'
-import EyeClosedIcon from '@icons/eye_closed.svg?react'
-import { PopoverOptions } from '@components/Popovers/Popover'
-import { TokenOptionsList } from '@components/OptionsList/TokenOptionsList'
-import { SettingsContext } from 'context/SettingsContext'
 import { GroupContext } from 'context/GroupContext'
-import { PlayerContext } from 'context/PlayerContext'
 import { PermissionContext } from 'context/PermissionContext'
-import lodash from 'lodash'
+import { PlayerContext } from 'context/PlayerContext'
+import { SettingsContext } from 'context/SettingsContext'
 
 const InitiativeSubListSubItem: React.FC<{
   token: Token.Token
-  subGroup: Group.SubGroup
   isLastItem: boolean
   hasTurn: boolean
   popover?: {
@@ -26,7 +24,7 @@ const InitiativeSubListSubItem: React.FC<{
     closePopover?: () => void
     isVisble?: boolean
   }
-}> = ({ token, subGroup, isLastItem, popover, hasTurn }) => {
+}> = ({ token, isLastItem, popover, hasTurn }) => {
   const [, setMouseOverToken] = useState(false)
   const [imageSrc, setImageSrc] = useState<string>(token.imageUrl)
   const [isEditingName, setIsEditingName] = useState(false)
@@ -52,12 +50,13 @@ const InitiativeSubListSubItem: React.FC<{
 
   const isGM = playerContext.playerState.role === Player.PlayerRole.GM
 
-  const isOwner = token.createdUserId === playerContext.playerState.id
+  const isOwner = token?.createdUserId === playerContext.playerState.id
 
   const canOpenAllOptions =
-    settingsContext.settings.playerAccess.canOpenAllOptions
+    settingsContext.settingsMetadata.settings.playerAccess.canOpenAllOptions
   const canOpenOptionsIfPlayerOwned =
-    settingsContext.settings.playerAccess.canOpenOptionsIfPlayerOwned
+    settingsContext.settingsMetadata.settings.playerAccess
+      .canOpenOptionsIfPlayerOwned
 
   const canOpenOptions =
     isGM ||
@@ -143,7 +142,7 @@ const InitiativeSubListSubItem: React.FC<{
             )}
           </div>
           <div className='sub-list-sub-item-caption'>
-            {!token.isVisible && <EyeClosedIcon className='colored medium' />}
+            {!token?.isVisible && <EyeClosedIcon className='colored medium' />}
           </div>
         </div>
         <div className={'sub-list-sub-item-icons'}>
@@ -175,8 +174,6 @@ const InitiativeSubListSubItem: React.FC<{
                       <GroupContext.Provider value={groupContext}>
                         <TokenOptionsList
                           tokenId={token.id}
-                          subGroupId={subGroup.subGroupId}
-                          groupType={subGroup.groupType}
                           onClickButton={
                             popover.closePopover
                               ? popover.closePopover
