@@ -13,6 +13,7 @@ import { Group, Player, Token } from '@obr'
 import clsx from 'clsx'
 import { useContext, useEffect, useState } from 'react'
 
+import { PLACE_HOLDER_TOKEN_IMAGE } from 'config'
 import { GroupContext } from 'context/GroupContext'
 import { PartyContext } from 'context/PartyContext'
 import { PermissionContext } from 'context/PermissionContext'
@@ -20,7 +21,6 @@ import { PlayerContext } from 'context/PlayerContext'
 import { SettingsContext } from 'context/SettingsContext'
 
 import InitiativeSubListSubItem from './InitiativeSubListSubItem'
-import { PLACE_HOLDER_TOKEN_IMAGE } from 'config'
 
 const InitiativeSubListItem: React.FC<{
   subGroup: SubGroup
@@ -120,11 +120,12 @@ const InitiativeSubListItem: React.FC<{
   }
 
   useEffect(() => {
-    if (tokens.length === 1) {
+    if (tokens.length === 1 && tokens[0]) {
       setIsExpanded(false)
 
-      const tokenName = tokens[0]?.plainTextName || tokens[0]?.name
-
+      const tokenName = tokens[0]?.plainTextName
+        ? tokens[0]?.plainTextName
+        : tokens[0]?.name
       if (tokenName !== subGroup.subGroupName) {
         subGroup.subGroupName = tokenName
         Group.updateSubgroupByGroupType(subGroup.groupType, subGroup)
@@ -132,7 +133,7 @@ const InitiativeSubListItem: React.FC<{
     }
 
     setImageSrc(tokens[0]?.imageUrl || PLACE_HOLDER_TOKEN_IMAGE)
-  }, [tokens])
+  }, [tokens, subGroup])
 
   const handleNameChange = async () => {
     let updatedName = newName || tokens[0]?.name
@@ -140,7 +141,6 @@ const InitiativeSubListItem: React.FC<{
 
     if (updatedName !== subGroupName) {
       const subGroupCopy = { ...subGroup, subGroupName: updatedName }
-      await Group.updateSubgroupByGroupType(groupType, subGroupCopy)
 
       if (tokens.length === 1) {
         const tokenName = tokens[0]?.plainTextName || tokens[0]?.name
@@ -150,6 +150,8 @@ const InitiativeSubListItem: React.FC<{
           Token.updateTokens([updatedToken])
         }
       }
+
+      await Group.updateSubgroupByGroupType(groupType, subGroupCopy)
 
       setNewName(updatedName)
     }
